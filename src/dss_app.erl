@@ -15,6 +15,14 @@
 %%====================================================================
 
 start(_StartType, _StartArgs) ->
+    Dispatch = cowboy_router:compile([
+        {'_', [
+            {"/dss/sample", d_webui_sample, element}
+        ]}
+    ]),
+    {ok, _} = cowboy:start_clear(http, [{port, 80}], #{
+        env => #{dispatch => Dispatch}
+    }),
     dss_sup:start_link().
 
 %%--------------------------------------------------------------------
