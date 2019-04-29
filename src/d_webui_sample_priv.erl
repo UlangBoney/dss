@@ -1,4 +1,4 @@
--module(d_webui_sample).
+-module(d_webui_sample_priv).
 -behavior(cowboy_rest).
 -export([
     init/2
