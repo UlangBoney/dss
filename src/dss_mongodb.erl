@@ -6,12 +6,12 @@
 -include_lib("mongodb/include/mongo_protocol.hrl").
 -include_lib("mongodb/include/mongo_types.hrl").
 
--type resource() :: dss_sample:sample().
+-type resource() :: dss_sample:sample()
+                  | dss_classes:class()
+                  .
 
 
--spec auth_admin(
-        database()
-    ) -> connection().
+-spec auth_admin(database()) -> connection().
 auth_admin(DB) ->
     {ok, Host} = application:get_env(mongodb_config, hostname),
     {ok, Port} = application:get_env(mongodb_config, port),
@@ -27,9 +27,7 @@ auth_admin(DB) ->
     Conn.
 
 
--spec cursor(
-        database(), collection(), [] | [binary()], fun()
-    ) -> [resource()].
+-spec cursor(database(), collection(), [] | [binary()], fun()) -> [resource()].
 cursor(DB, Coll, Args, Fun) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find(Conn, Coll, Args) of
@@ -39,9 +37,7 @@ cursor(DB, Coll, Args, Fun) ->
 end.
 
 
--spec lookup(
-        database(), collection(), selector(), fun()
-    ) -> dss_maybe:maybe(resource()).
+-spec lookup(database(), collection(), selector(), fun()) -> dss_maybe:maybe(resource()).
 lookup(DB, Coll, Selector, Fun) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find_one(Conn, Coll, Selector) of

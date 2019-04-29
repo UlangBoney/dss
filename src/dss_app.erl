@@ -16,13 +16,8 @@
 
 start(_StartType, _StartArgs) ->
     start_mongodb(),
-    Dispatch = cowboy_router:compile([
-        {'_', [
-            {"/dss/sample", d_webui_sample, element}
-        ]}
-    ]),
     {ok, _} = cowboy:start_clear(http, [{port, 80}], #{
-        env => #{dispatch => Dispatch}
+        env => #{dispatch => dss_handler:handler()}
     }),
     dss_sup:start_link().
 
