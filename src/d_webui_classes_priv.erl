@@ -5,6 +5,7 @@
   , allowed_methods/2
   , resource_exists/2
   , content_types_provided/2
+  , element_to_list/2
   , element_to_JSON/2
 ]).
 
@@ -18,17 +19,26 @@
 
 
 -spec init(cowboy_req:req(), state()) -> {resource(), cowboy_req:req(), state()}.
+init(Req, collection) ->
+    {cowboy_rest, Req, inited_collection};
+
 init(Req, element) ->
     ClassID = cowboy_req:binding(classID, Req),
     {cowboy_rest, Req, {inited_element, ClassID}}.
 
 
 -spec allowed_methods(cowboy_req:req(), state()) -> {[binary()], cowboy_req:req(), state()}.
+allowed_methods(Req, inited_collection) ->
+    {[<<"HEAD">>, <<"GET">>], Req, allowed_collection};
+
 allowed_methods(Req, {inited_element, ClassID}) ->
     {[<<"HEAD">>, <<"GET">>], Req, {allowed_element, ClassID}}.
 
 
 -spec resource_exists(cowboy_req:req(), state()) -> {boolean(), cowboy_req:req(), state()}.
+resource_exists(Req, provided_collection) ->
+    {true,  Req, {existed_collection, dss_classes:list()}};
+
 resource_exists(Req, State={provided_element, ClassID}) ->
     case dss_classes:lookup(ClassID) of
         {value, Class} ->
@@ -45,8 +55,18 @@ resource_exists(Req, State={provided_element, ClassID}) ->
         cowboy_req:req(), state()
     ) -> {[{binary() | {binary(), binary(), '*'
             | [{binary(), binary()}]}, atom()}], cowboy_req:req(), state()}.
-content_types_provided(Req, {allowed_element, ClassID}) ->
-    {[{{<<"application">>, <<"json">>, '*'}, element_to_JSON}], Req, {provided_element, ClassID}}.
+content_types_provided(Req, allowed_collection) ->
+    {[{{<<"application">>, <<"json">>, '*'}, element_to_list}], Req, provided_collection};
+
+content_types_provided(Req, {allowed_element, Class}) ->
+    {[{{<<"application">>, <<"json">>, '*'}, element_to_JSON}], Req, {provided_element, Class}}.
+
+
+-spec element_to_list(cowboy_req:req(), state()) -> {[dss_classes:class()], cowboy_req:req(), state()}.
+element_to_list(Req, State={existed_collection, List}) ->
+    Classes    = [element_to_json_value(Class) || Class <- List],
+    {ok, JSON} = jsone_encode:encode(Classes),
+    {JSON, Req, State}.
 
 
 -spec element_to_JSON(cowboy_req:req(), state()) -> {dss_classes:class(), cowboy_req:req(), state()}.

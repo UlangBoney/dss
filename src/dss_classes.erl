@@ -5,7 +5,8 @@
 ]).
 -export([
     % * Read
-    lookup/1
+    list/0
+  , lookup/1
   , get/1
 
     % * Getters
@@ -38,6 +39,13 @@
      , intelligence => pos_integer()
      , faith        => pos_integer()
     }.
+
+
+-spec list() -> [class()].
+list() ->
+    DB   = <<"dss_master">>,
+    Coll = <<"classes">>,
+    dss_mongodb:cursor(DB, Coll, [], fun from_mongo_map/1).
 
 
 -spec lookup(id()) -> dss_maybe:maybe(class()).

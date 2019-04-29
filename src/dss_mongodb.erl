@@ -1,6 +1,7 @@
 -module(dss_mongodb).
 -export([
-  lookup/4
+    cursor/4
+  , lookup/4
 ]).
 
 -include_lib("mongodb/include/mongo_protocol.hrl").

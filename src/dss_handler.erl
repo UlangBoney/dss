@@ -21,6 +21,7 @@ handler() ->
     cowboy_router:compile([
         {'_', [
             {"/dss/sample", d_webui_sample, element}
+          , {"/v1/classes", d_webui_classes_priv, collection}
           , {"/v1/classes/:classID"
             , [{classID, fun id/2}]
             , d_webui_classes_priv, element}
