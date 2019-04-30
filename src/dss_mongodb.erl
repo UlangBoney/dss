@@ -45,7 +45,7 @@ cursor(DB, Coll, Args, Fun, Type) ->
       , collection()
       , selector()
       , fun()
-      , classes | daggers
+      , classes | daggers | straight_swords
     ) -> dss_maybe:maybe(dss_material:material()).
 lookup(DB, Coll, Selector, Fun, Type) ->
     Conn = auth_admin(DB),

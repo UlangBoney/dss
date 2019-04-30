@@ -23,6 +23,8 @@ init(Req, State) ->
     case State of
         element_classes -> {cowboy_rest, Req, {element_classes, cowboy_req:binding(classID, Req)}};
         element_daggers -> {cowboy_rest, Req, {element_daggers, cowboy_req:binding(daggerID, Req)}};
+        element_straight_swords ->
+            {cowboy_rest, Req, {element_straight_swords, cowboy_req:binding(straightSwordID, Req)}};
         _               -> {cowboy_rest, Req, State}
     end.
 
@@ -37,11 +39,15 @@ resource_exists(Req, State=collection_classes) ->
     {true,  Req, {State, dss_material:list(classes)}};
 resource_exists(Req, State=collection_daggers) ->
     {true,  Req, {State, dss_material:list(daggers)}};
+resource_exists(Req, State=collection_straight_swords) ->
+    {true,  Req, {State, dss_material:list(straight_swords)}};
 
 resource_exists(Req, State={element_classes, _}) ->
     resource_exists_(Req, State, classes);
 resource_exists(Req, State={element_daggers, _}) ->
-    resource_exists_(Req, State, daggers).
+    resource_exists_(Req, State, daggers);
+resource_exists(Req, State={element_straight_swords, _}) ->
+    resource_exists_(Req, State, straight_swords).
 
 resource_exists_(Req, State={Resource, ID}, Type) ->
     case dss_material:lookup(ID, Type) of
@@ -63,38 +69,60 @@ content_types_provided(Req, State=collection_classes) ->
     {[{{<<"application">>, <<"json">>, '*'}, element_to_list}], Req, State};
 content_types_provided(Req, State=collection_daggers) ->
     {[{{<<"application">>, <<"json">>, '*'}, element_to_list}], Req, State};
+content_types_provided(Req, State=collection_straight_swords) ->
+    {[{{<<"application">>, <<"json">>, '*'}, element_to_list}], Req, State};
 
 content_types_provided(Req, State={element_classes, _}) ->
     {[{{<<"application">>, <<"json">>, '*'}, element_to_JSON}], Req, State};
 content_types_provided(Req, State={element_daggers, _}) ->
+    {[{{<<"application">>, <<"json">>, '*'}, element_to_JSON}], Req, State};
+content_types_provided(Req, State={element_straight_swords, _}) ->
     {[{{<<"application">>, <<"json">>, '*'}, element_to_JSON}], Req, State}.
 
 
 -spec element_to_list(cowboy_req:req(), state()) -> {[dss_material:material()], cowboy_req:req(), state()}.
 element_to_list(Req, State={collection_classes, List}) ->
-    Classes    = [element_to_json_value(Class, classes) || Class <- List],
-    {ok, JSON} = jsone_encode:encode(Classes),
-    {JSON, Req, State};
+    element_to_list_(Req, State, classes);
 element_to_list(Req, State={collection_daggers, List}) ->
-    Daggars    = [element_to_json_value(Daggar, daggers) || Daggar <- List],
-    {ok, JSON} = jsone_encode:encode(Daggars),
+    element_to_list_(Req, State, daggers);
+element_to_list(Req, State={collection_straight_swords, List}) ->
+    element_to_list_(Req, State, straight_swords).
+
+
+-spec element_to_list_(
+        cowboy_req:req()
+      , state()
+      , classes | daggers | straight_swords
+    ) -> {[dss_material:material()], cowboy_req:req(), state()}.
+element_to_list_(Req, State={_, List}, Type) ->
+    Materials  = [element_to_json_value(Material, Type) || Material <- List],
+    {ok, JSON} = jsone_encode:encode(Materials),
     {JSON, Req, State}.
 
 
 -spec element_to_JSON(cowboy_req:req(), state()) -> {dss_material:class(), cowboy_req:req(), state()}.
 element_to_JSON(Req, State={element_classes, Class}) ->
-    {ok, JSON} = jsone_encode:encode(
-        element_to_json_value(Class, classes)),
-    {JSON, Req, State};
+    element_to_JSON_(Req, State, classes);
 element_to_JSON(Req, State={element_daggers, Dagger}) ->
+    element_to_JSON_(Req, State, daggers);
+element_to_JSON(Req, State={element_straight_swords, Dagger}) ->
+    element_to_JSON_(Req, State, straight_swords).
+
+
+-spec element_to_JSON_(
+        cowboy_req:req()
+      , state()
+      , classes | daggers | straight_swords
+    ) -> {dss_material:class(), cowboy_req:req(), state()}.
+element_to_JSON_(Req, State={_, Material}, Type) ->
     {ok, JSON} = jsone_encode:encode(
-        element_to_json_value(Dagger, daggers)),
+        element_to_json_value(Material, Type)),
     {JSON, Req, State}.
 
 
 -spec element_to_json_value(
         dss_material:material()
-      , classes | daggers
+      , classes | daggers | straight_swords
     ) -> jsone:json_value().
 element_to_json_value(Class, classes) ->
     {[
@@ -110,11 +138,11 @@ element_to_json_value(Class, classes) ->
         {<<"intelligence">>, dss_material:intelligence(Class)},
         {<<"faith">>       , dss_material:faith(Class)}
     ]};
-element_to_json_value(Daggar, daggers) ->
+element_to_json_value(Material, Type) when Type == daggers; Type == straight_swords ->
     {[
-        {<<"id">>          , dss_material:id(Daggar)},
-        {<<"name">>        , dss_material:name(Daggar)},
-        {<<"weight">>      , dss_material:weigth(Daggar)},
-        {<<"requirements">>, dss_material:requirements(Daggar)}
+        {<<"id">>          , dss_material:id(Material)},
+        {<<"name">>        , dss_material:name(Material)},
+        {<<"weight">>      , dss_material:weigth(Material)},
+        {<<"requirements">>, dss_material:requirements(Material)}
     ]}.
 
