@@ -1,19 +1,31 @@
 -module(dss_handler).
 -export([
-    id/2
+    class_id/2
+  , dagger_id/2
   , handler/0
 ]).
 
 
--spec id(forward | reverse, unicode:unicode_binary())
-    -> {ok, bson:objectid()} | {error, atom()}.
-id(forward, ID) ->
+-spec class_id(forward | reverse, unicode:unicode_binary())
+    -> {ok, dss_material:id()} | {error, atom()}.
+class_id(forward, ID) ->
     case re:run(ID, <<"^[1-9]$|^10$">>, [global]) of
         {match, _} -> {ok, binary_to_integer(ID)};
         nomatch    -> {error, not_a_id}
     end;
-id(forward, _)  -> {error, not_a_id};
-id(reverse, ID) -> {ok, ID}.
+class_id(forward, _)  -> {error, not_a_id};
+class_id(reverse, ID) -> {ok, ID}.
+
+
+-spec dagger_id(forward | reverse, unicode:unicode_binary())
+    -> {ok, dss_material:id()} | {error, atom()}.
+dagger_id(forward, ID) ->
+    case re:run(ID, <<"^[1-6]$">>, [global]) of
+        {match, _} -> {ok, binary_to_integer(ID)};
+        nomatch    -> {error, not_a_id}
+    end;
+dagger_id(forward, _)  -> {error, not_a_id};
+dagger_id(reverse, ID) -> {ok, ID}.
 
 
 -spec handler() -> cowboy_router:dispatch_rules().
@@ -21,10 +33,14 @@ handler() ->
     cowboy_router:compile([
         {'_', [
             {"/dss/sample", d_webui_sample, element}
-          , {"/v1/classes", d_webui_classes_priv, collection}
-          , {"/v1/classes/:classID"
-            , [{classID, fun id/2}]
-            , d_webui_classes_priv, element}
+          , {"/v1/character/classes", d_webui_material_priv, collection_classes}
+          , {"/v1/character/classes/:classID"
+            , [{classID, fun class_id/2}]
+            , d_webui_material_priv, element_classes}
+          , {"/v1/equipment/weapons/daggers", d_webui_material_priv, collection_daggers}
+          , {"/v1/equipment/weapons/daggers/:daggerID"
+            , [{daggerID, fun dagger_id/2}]
+            , d_webui_material_priv, element_daggers}
         ]}
     ]).
 

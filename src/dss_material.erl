@@ -1,13 +1,13 @@
--module(dss_classes).
+-module(dss_material).
 -export_type([
     id/0
-  , class/0
+  , material/0
 ]).
 -export([
     % * Read
-    list/0
-  , lookup/1
-  , get/1
+    list/1
+  , lookup/2
+  , get/2
 
     % * Getters
   , id/1
@@ -21,11 +21,16 @@
   , resistance/1
   , intelligence/1
   , faith/1
+  , weigth/1
+  , requirements/1
 ]).
 
 -include("dss_error.hrl").
 
 -type id() :: pos_integer().
+-type material() :: class()
+                 |  daggar()
+                 .
 -opaque class() ::
     #{ id           => id()
      , name         => #{ english  => unicode:unicode_binary()
@@ -40,34 +45,57 @@
      , intelligence => pos_integer()
      , faith        => pos_integer()
     }.
+-opaque daggar() ::
+    #{ id           => id()
+     , name         => #{ english  => unicode:unicode_binary()
+                        , japanese => unicode:unicode_binary()}
+     , weigth       => float()
+     , requirements => requirements()
+    }.
+-type requirements() ::
+    #{ strength     => pos_integer()
+     , dexterity    => pos_integer()
+     , intelligence => pos_integer()
+     , faith        => pos_integer()
+    }.
 
 
--spec list() -> [class()].
-list() ->
+-spec list(
+        classes | daggers
+    ) -> material().
+list(Type) ->
     DB   = <<"dss_master">>,
-    Coll = <<"classes">>,
-    dss_mongodb:cursor(DB, Coll, [], fun from_mongo_map/1).
-
-
--spec lookup(id()) -> dss_maybe:maybe(class()).
-lookup(ClassID) ->
-    DB   = <<"dss_master">>,
-    Coll = <<"classes">>,
-    dss_mongodb:lookup(DB, Coll, {<<"_id">>, ClassID}, fun from_mongo_map/1).
-
-
--spec get(id()) -> class().
-get(ClassID) ->
-    case lookup(ClassID) of
-        {value, Class} ->
-            Class;
-        none ->
-            dss_error:raise(?DSS_CLASS_NOT_FOUND)
+    case Type of
+        classes -> dss_mongodb:cursor(DB, <<"classes">>, [], fun from_mongo_map/2, classes);
+        daggers -> dss_mongodb:cursor(DB, <<"equipment.weapons.daggers">>, [], fun from_mongo_map/2, daggers)
     end.
 
 
--spec id(class()) -> id().
-id(Class) -> maps:get(id, Class).
+-spec lookup(
+        id()
+      , classes | daggers
+    ) -> dss_maybe:maybe(material()).
+lookup(ID, Type) ->
+    DB   = <<"dss_master">>,
+    case Type of
+        classes -> dss_mongodb:lookup(DB, <<"classes">>, {<<"_id">>, ID}, fun from_mongo_map/2, classes);
+        daggers -> dss_mongodb:lookup(DB, <<"equipment.weapons.daggers">>, {<<"_id">>, ID}, fun from_mongo_map/2, daggers)
+    end.
+
+
+-spec get(
+        id()
+      , classes | daggers
+    ) -> material().
+get(ID, Type) ->
+    case lookup(ID, Type) of
+        {value, Material} -> Material;
+        none -> dss_error:raise(?DSS_NOT_FOUND)
+    end.
+
+
+-spec id(material()) -> id().
+id(Material) -> maps:get(id, Material).
 
 
 -spec name(class()) -> unicode:unicode_binary().
@@ -110,8 +138,18 @@ intelligence(Class) -> maps:get(intelligence, Class).
 faith(Class) -> maps:get(faith, Class).
 
 
--spec from_mongo_map(map()) -> class().
-from_mongo_map(MongoMap) ->
+-spec weigth(material()) -> float().
+weigth(Material) -> maps:get(weight, Material).
+
+
+-spec requirements(material()) -> requirements().
+requirements(Material) -> maps:get(requirements, Material).
+
+
+-spec from_mongo_map(
+        map(), classes | daggers
+    ) -> material().
+from_mongo_map(MongoMap, classes) ->
     #{ id           => maps:get(<<"_id">>         , MongoMap)
      , name         => maps:get(<<"name">>        , MongoMap)
      , levels       => maps:get(<<"levels">>      , MongoMap)
@@ -123,5 +161,11 @@ from_mongo_map(MongoMap) ->
      , resistance   => maps:get(<<"resistance">>  , MongoMap)
      , intelligence => maps:get(<<"intelligence">>, MongoMap)
      , faith        => maps:get(<<"faith">>       , MongoMap)
+    };
+from_mongo_map(MongoMap, daggers) ->
+    #{ id           => maps:get(<<"_id">>         , MongoMap)
+     , name         => maps:get(<<"name">>        , MongoMap)
+     , weight       => maps:get(<<"weight">>      , MongoMap)
+     , requirements => maps:get(<<"requirements">>, MongoMap)
     }.
 

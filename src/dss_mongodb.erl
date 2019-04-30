@@ -1,15 +1,11 @@
 -module(dss_mongodb).
 -export([
-    cursor/4
-  , lookup/4
+    cursor/5
+  , lookup/5
 ]).
 
 -include_lib("mongodb/include/mongo_protocol.hrl").
 -include_lib("mongodb/include/mongo_types.hrl").
-
--type resource() :: dss_sample:sample()
-                  | dss_classes:class()
-                  .
 
 
 -spec auth_admin(database()) -> connection().
@@ -28,21 +24,33 @@ auth_admin(DB) ->
     Conn.
 
 
--spec cursor(database(), collection(), [] | [binary()], fun()) -> [resource()].
-cursor(DB, Coll, Args, Fun) ->
+-spec cursor(
+        database()
+      , collection()
+      , [] | [binary()]
+      , fun()
+      , classes | daggers
+    ) -> [dss_material:material()].
+cursor(DB, Coll, Args, Fun, Type) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find(Conn, Coll, Args) of
         {ok, Cursor} -> List = mc_cursor:rest(Cursor),
-                        [ Fun(Next) || Next <- List ];
+                        [ Fun(Next, Type) || Next <- List ];
         []           -> []
-end.
+    end.
 
 
--spec lookup(database(), collection(), selector(), fun()) -> dss_maybe:maybe(resource()).
-lookup(DB, Coll, Selector, Fun) ->
+-spec lookup(
+        database()
+      , collection()
+      , selector()
+      , fun()
+      , classes | daggers
+    ) -> dss_maybe:maybe(dss_material:material()).
+lookup(DB, Coll, Selector, Fun, Type) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find_one(Conn, Coll, Selector) of
         undefined -> none;
-        Map       -> {value, Fun(Map)}
+        Map       -> {value, Fun(Map, Type)}
     end.
 

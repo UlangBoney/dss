@@ -29,11 +29,11 @@
         message = <<"JSON property is invalid."/utf8>>
     }).
 
--define(DSS_CLASS_NOT_FOUND,
+-define(DSS_NOT_FOUND,
     #dss_error{
-        reason  = 'DSS_CLASS_NOT_FOUND',
+        reason  = 'DSS_NOT_FOUND',
         status_code = 400,
-        message = <<"The specified class is not found."/utf8>>
+        message = <<"Requested resource does not exist."/utf8>>
     }).
 
 -endif.
