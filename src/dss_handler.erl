@@ -2,11 +2,13 @@
 -export([
     class_id/2
   , dagger_id/2
+  , straight_sword_id/2
+  , small_shield_id/2
   , handler/0
 ]).
 
 
--spec class_id(forward | reverse, unicode:unicode_binary())
+-spec class_id(forward | reverse, dss_material:id())
     -> {ok, dss_material:id()} | {error, atom()}.
 class_id(forward, ID) ->
     case re:run(ID, <<"^[1-9]$|^10$">>, [global]) of
@@ -17,7 +19,7 @@ class_id(forward, _)  -> {error, not_a_id};
 class_id(reverse, ID) -> {ok, ID}.
 
 
--spec dagger_id(forward | reverse, unicode:unicode_binary())
+-spec dagger_id(forward | reverse, dss_material:id())
     -> {ok, dss_material:id()} | {error, atom()}.
 dagger_id(forward, ID) ->
     case re:run(ID, <<"^[1-6]$">>, [global]) of
@@ -28,7 +30,7 @@ dagger_id(forward, _)  -> {error, not_a_id};
 dagger_id(reverse, ID) -> {ok, ID}.
 
 
--spec straight_sword_id(forward | reverse, unicode:unicode_binary())
+-spec straight_sword_id(forward | reverse, dss_material:id())
     -> {ok, dss_material:id()} | {error, atom()}.
 straight_sword_id(forward, ID) ->
     case re:run(ID, <<"^[1-9]$|^[1][0-3]$">>, [global]) of
@@ -37,6 +39,17 @@ straight_sword_id(forward, ID) ->
     end;
 straight_sword_id(forward, _)  -> {error, not_a_id};
 straight_sword_id(reverse, ID) -> {ok, ID}.
+
+
+-spec small_shield_id(forward | reverse, dss_material:id())
+    -> {ok, dss_material:id()} | {error, atom()}.
+small_shield_id(forward, ID) ->
+    case re:run(ID, <<"^[1-9]$|^[1][0-1]$">>, [global]) of
+        {match, _} -> {ok, binary_to_integer(ID)};
+        nomatch    -> {error, not_a_id}
+    end;
+small_shield_id(forward, _)  -> {error, not_a_id};
+small_shield_id(reverse, ID) -> {ok, ID}.
 
 
 -spec handler() -> cowboy_router:dispatch_rules().
@@ -56,6 +69,10 @@ handler() ->
           , {"/v1/equipment/weapons/straight-swords/:straightSwordID"
             , [{straightSwordID, fun straight_sword_id/2}]
             , d_webui_material_priv, element_straight_swords}
+          , {"/v1/equipment/shields/small-shields", d_webui_material_priv, collection_small_shields}
+          , {"/v1/equipment/shields/small-shields/:smallShieldID"
+            , [{smallShieldID, fun small_shield_id/2}]
+            , d_webui_material_priv, element_small_shields}
         ]}
     ]).
 

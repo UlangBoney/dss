@@ -29,8 +29,9 @@
 
 -type id() :: pos_integer().
 -type material() :: class()
-                 |  daggar()
-                 | straight_sword()
+                 |  dagger()
+                 |  straight_sword()
+                 |  small_shield()
                  .
 -opaque class() ::
     #{ id           => id()
@@ -46,7 +47,7 @@
      , intelligence => pos_integer()
      , faith        => pos_integer()
     }.
--opaque daggar() ::
+-opaque dagger() ::
     #{ id           => id()
      , name         => #{ english  => unicode:unicode_binary()
                         , japanese => unicode:unicode_binary()}
@@ -54,6 +55,13 @@
      , requirements => requirements()
     }.
 -opaque straight_sword() ::
+    #{ id           => id()
+     , name         => #{ english  => unicode:unicode_binary()
+                        , japanese => unicode:unicode_binary()}
+     , weigth       => float()
+     , requirements => requirements()
+    }.
+-opaque small_shield() ::
     #{ id           => id()
      , name         => #{ english  => unicode:unicode_binary()
                         , japanese => unicode:unicode_binary()}
@@ -69,33 +77,35 @@
 
 
 -spec list(
-        classes | daggers | straight_swords
+        classes | daggers | straight_swords | small_shields
     ) -> material().
 list(Type) ->
     DB   = <<"dss_master">>,
     case Type of
         classes         -> dss_mongodb:cursor(DB, <<"classes">>, [], fun from_mongo_map/2, classes);
         daggers         -> dss_mongodb:cursor(DB, <<"equipment.weapons.daggers">>, [], fun from_mongo_map/2, daggers);
-        straight_swords -> dss_mongodb:cursor(DB, <<"equipment.weapons.straightSwords">>, [], fun from_mongo_map/2, straight_swords)
+        straight_swords -> dss_mongodb:cursor(DB, <<"equipment.weapons.straightSwords">>, [], fun from_mongo_map/2, straight_swords);
+        small_shields   -> dss_mongodb:cursor(DB, <<"equipment.shields.smallShields">>, [], fun from_mongo_map/2, small_shields)
     end.
 
 
 -spec lookup(
         id()
-      , classes | daggers | straight_swords
+      , classes | daggers | straight_swords | small_shields
     ) -> dss_maybe:maybe(material()).
 lookup(ID, Type) ->
     DB   = <<"dss_master">>,
     case Type of
         classes -> dss_mongodb:lookup(DB, <<"classes">>, {<<"_id">>, ID}, fun from_mongo_map/2, classes);
         daggers -> dss_mongodb:lookup(DB, <<"equipment.weapons.daggers">>, {<<"_id">>, ID}, fun from_mongo_map/2, daggers);
-        straight_swords -> dss_mongodb:lookup(DB, <<"equipment.weapons.straightSwords">>, {<<"_id">>, ID}, fun from_mongo_map/2, straight_swords)
+        straight_swords -> dss_mongodb:lookup(DB, <<"equipment.weapons.straightSwords">>, {<<"_id">>, ID}, fun from_mongo_map/2, straight_swords);
+        small_shields   -> dss_mongodb:lookup(DB, <<"equipment.shields.smallShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, small_shields)
     end.
 
 
 -spec get(
         id()
-      , classes | daggers | straight_swords
+      , classes | daggers | straight_swords | small_shields
     ) -> material().
 get(ID, Type) ->
     case lookup(ID, Type) of
@@ -173,7 +183,8 @@ from_mongo_map(MongoMap, classes) ->
      , intelligence => maps:get(<<"intelligence">>, MongoMap)
      , faith        => maps:get(<<"faith">>       , MongoMap)
     };
-from_mongo_map(MongoMap, Type) when Type == daggers; Type == straight_swords ->
+from_mongo_map(MongoMap, Type)
+    when Type == daggers; Type == straight_swords; Type == small_shields ->
     #{ id           => maps:get(<<"_id">>         , MongoMap)
      , name         => maps:get(<<"name">>        , MongoMap)
      , weight       => maps:get(<<"weight">>      , MongoMap)
