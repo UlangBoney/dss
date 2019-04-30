@@ -28,7 +28,8 @@
 -type id() :: pos_integer().
 -opaque class() ::
     #{ id           => id()
-     , name         => unicode:unicode_binary()
+     , name         => #{ english  => unicode:unicode_binary()
+                        , japanese => unicode:unicode_binary()}
      , levels       => pos_integer()
      , vitality     => pos_integer()
      , attunement   => pos_integer()
@@ -111,7 +112,7 @@ faith(Class) -> maps:get(faith, Class).
 
 -spec from_mongo_map(map()) -> class().
 from_mongo_map(MongoMap) ->
-    #{ id           => maps:get(<<"_id">>          , MongoMap)
+    #{ id           => maps:get(<<"_id">>         , MongoMap)
      , name         => maps:get(<<"name">>        , MongoMap)
      , levels       => maps:get(<<"levels">>      , MongoMap)
      , vitality     => maps:get(<<"vitality">>    , MongoMap)
