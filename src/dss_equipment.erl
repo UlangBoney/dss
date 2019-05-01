@@ -60,14 +60,35 @@
 list({weapon, Detail}) ->
     DB = <<"dss_master">>,
     case Detail of
-        dagger         -> dss_mongodb:cursor(DB, <<"equipment.weapons.daggers">>, [], fun from_mongo_map/2, {weapon, dagger});
-        straight_sword -> dss_mongodb:cursor(DB, <<"equipment.weapons.straightSwords">>, [], fun from_mongo_map/2, {weapon, straight_sword});
+        dagger            -> dss_mongodb:cursor(DB, <<"equipment.weapons.daggers">>, [], fun from_mongo_map/2, {weapon, dagger});
+        straight_sword    -> dss_mongodb:cursor(DB, <<"equipment.weapons.straightSwords">>, [], fun from_mongo_map/2, {weapon, straight_sword});
+        greats_sword      -> dss_mongodb:cursor(DB, <<"equipment.weapons.greatswords">>, [], fun from_mongo_map/2, {weapon, greats_sword});
+        ultra_greatsword  -> dss_mongodb:cursor(DB, <<"equipment.weapons.ultraGreatsword">>, [], fun from_mongo_map/2, {weapon, ultra_greatsword});
+        curved_sword      -> dss_mongodb:cursor(DB, <<"equipment.weapons.curvedSwords">>, [], fun from_mongo_map/2, {weapon, curved_sword});
+        curved_greatsword -> dss_mongodb:cursor(DB, <<"equipment.weapons.curvedGreatswords">>, [], fun from_mongo_map/2, {weapon, curved_greatsword});
+        thrusting_sword   -> dss_mongodb:cursor(DB, <<"equipment.weapons.thrustingSwords">>, [], fun from_mongo_map/2, {weapon, thrusting_sword});
+        katana            -> dss_mongodb:cursor(DB, <<"equipment.weapons.katanas">>, [], fun from_mongo_map/2, {weapon, katana});
+        axe               -> dss_mongodb:cursor(DB, <<"equipment.weapons.axes">>, [], fun from_mongo_map/2, {weapon, axe});
+        greataxe          -> dss_mongodb:cursor(DB, <<"equipment.weapons.greataxes">>, [], fun from_mongo_map/2, {weapon, greataxe});
+        hammer            -> dss_mongodb:cursor(DB, <<"equipment.weapons.hammers">>, [], fun from_mongo_map/2, {weapon, hammer});
+        great_hammer      -> dss_mongodb:cursor(DB, <<"equipment.weapons.greatHammers">>, [], fun from_mongo_map/2, {weapon, great_hammer});
+        spear             -> dss_mongodb:cursor(DB, <<"equipment.weapons.spears">>, [], fun from_mongo_map/2, {weapon, spear});
+        halberd           -> dss_mongodb:cursor(DB, <<"equipment.weapons.halberds">>, [], fun from_mongo_map/2, {weapon, halberd});
+        whip              -> dss_mongodb:cursor(DB, <<"equipment.weapons.whips">>, [], fun from_mongo_map/2, {weapon, whip});
+        fist              -> dss_mongodb:cursor(DB, <<"equipment.weapons.fists">>, [], fun from_mongo_map/2, {weapon, fist});
+        bow               -> dss_mongodb:cursor(DB, <<"equipment.weapons.bows">>, [], fun from_mongo_map/2, {weapon, bow});
+        crossbow          -> dss_mongodb:cursor(DB, <<"equipment.weapons.crossbows">>, [], fun from_mongo_map/2, {weapon, crossbow});
+        catalyst          -> dss_mongodb:cursor(DB, <<"equipment.weapons.catalysts">>, [], fun from_mongo_map/2, {weapon, catalyst});
+        talisman          -> dss_mongodb:cursor(DB, <<"equipment.weapons.talismans">>, [], fun from_mongo_map/2, {weapon, talisman});
+        pyromancy_flame   -> dss_mongodb:cursor(DB, <<"equipment.weapons.pyromancyFlames">>, [], fun from_mongo_map/2, {weapon, pyromancy_flame});
         _ -> []
     end;
 list({shield, Detail}) ->
     DB = <<"dss_master">>,
     case Detail of
-        small_shield -> dss_mongodb:cursor(DB, <<"equipment.shields.smallShields">>, [], fun from_mongo_map/2, {shield, small_shield});
+        small_shield  -> dss_mongodb:cursor(DB, <<"equipment.shields.smallShields">>, [], fun from_mongo_map/2, {shield, small_shield});
+        normal_shield -> dss_mongodb:cursor(DB, <<"equipment.shields.normalShields">>, [], fun from_mongo_map/2, {shield, normal_shield});
+        large_shield  -> dss_mongodb:cursor(DB, <<"equipment.shields.largeShields">>, [], fun from_mongo_map/2, {shield, large_shield});
         _ -> []
     end.
 
@@ -76,15 +97,36 @@ list({shield, Detail}) ->
 lookup({weapon, Detail}, ID) ->
     DB = <<"dss_master">>,
     case Detail of
-        dagger -> dss_mongodb:lookup(DB, <<"equipment.weapons.daggers">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, dagger});
-        straight_sword -> dss_mongodb:lookup(DB, <<"equipment.weapons.straightSwords">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, straight_sword});
+        dagger            -> dss_mongodb:lookup(DB, <<"equipment.weapons.daggers">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, dagger});
+        straight_sword    -> dss_mongodb:lookup(DB, <<"equipment.weapons.straightSwords">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, straight_sword});
+        greats_sword      -> dss_mongodb:lookup(DB, <<"equipment.weapons.greatswords">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, greats_sword});
+        ultra_greatsword  -> dss_mongodb:lookup(DB, <<"equipment.weapons.ultraGreatsword">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, ultra_greatsword});
+        curved_sword      -> dss_mongodb:lookup(DB, <<"equipment.weapons.curvedSwords">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, curved_sword});
+        curved_greatsword -> dss_mongodb:lookup(DB, <<"equipment.weapons.curvedGreatswords">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, curved_greatsword});
+        thrusting_sword   -> dss_mongodb:lookup(DB, <<"equipment.weapons.thrustingSwords">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, thrusting_sword});
+        katana            -> dss_mongodb:lookup(DB, <<"equipment.weapons.katanas">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, katana});
+        axe               -> dss_mongodb:lookup(DB, <<"equipment.weapons.axes">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, axe});
+        greataxe          -> dss_mongodb:lookup(DB, <<"equipment.weapons.greataxes">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, greataxe});
+        hammer            -> dss_mongodb:lookup(DB, <<"equipment.weapons.hammers">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, hammer});
+        great_hammer      -> dss_mongodb:lookup(DB, <<"equipment.weapons.greatHammers">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, great_hammer});
+        spear             -> dss_mongodb:lookup(DB, <<"equipment.weapons.spears">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, spear});
+        halberd           -> dss_mongodb:lookup(DB, <<"equipment.weapons.halberds">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, halberd});
+        whip              -> dss_mongodb:lookup(DB, <<"equipment.weapons.whips">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, whip});
+        fist              -> dss_mongodb:lookup(DB, <<"equipment.weapons.fists">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, fist});
+        bow               -> dss_mongodb:lookup(DB, <<"equipment.weapons.bows">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, bow});
+        crossbow          -> dss_mongodb:lookup(DB, <<"equipment.weapons.crossbows">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, crossbow});
+        catalyst          -> dss_mongodb:lookup(DB, <<"equipment.weapons.catalysts">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, catalyst});
+        talisman          -> dss_mongodb:lookup(DB, <<"equipment.weapons.talismans">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, talisman});
+        pyromancy_flame   -> dss_mongodb:lookup(DB, <<"equipment.weapons.pyromancyFlames">>, {<<"_id">>, ID}, fun from_mongo_map/2, {weapon, pyromancy_flame});
         _ -> none
     end;
 lookup({shield, Detail}, ID) ->
     DB = <<"dss_master">>,
     case Detail of
-        small_shield -> dss_mongodb:lookup(DB, <<"equipment.shields.smallShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, {shield, small_shield});
-        _            -> none
+        small_shield  -> dss_mongodb:lookup(DB, <<"equipment.shields.smallShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, {shield, small_shield});
+        normal_shield -> dss_mongodb:lookup(DB, <<"equipment.shields.normalShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, {shield, normal_shield});
+        large_shield  -> dss_mongodb:lookup(DB, <<"equipment.shields.largeShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, {shield, large_shield});
+        _             -> none
     end.
 
 
@@ -114,7 +156,13 @@ requirements(Equipment) -> maps:get(requirements, Equipment).
 
 -spec from_mongo_map(map(), {equipment_type(), detail()}) -> equipment().
 from_mongo_map(MongoMap, {_, Detail})
-    when Detail == dagger; Detail == straight_sword; Detail == small_shield ->
+    when Detail == dagger; Detail == straight_sword; Detail == greats_sword;
+         Detail == ultra_greatsword; Detail == curved_sword; Detail == curved_greatsword;
+         Detail == katana; Detail == thrusting_sword; Detail == axe; Detail == greataxe;
+         Detail == hammer; Detail == great_hammer; Detail == spear; Detail == halberd;
+         Detail == whip; Detail == fist; Detail == bow; Detail == crossbow;
+         Detail == catalyst; Detail == talisman; Detail == pyromancy_flame;
+         Detail == small_shield; Detail == normal_shield; Detail == large_shield ->
     #{ id           => maps:get(<<"_id">>         , MongoMap)
      , name         => maps:get(<<"name">>        , MongoMap)
      , weight       => maps:get(<<"weight">>      , MongoMap)

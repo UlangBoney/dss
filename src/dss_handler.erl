@@ -30,9 +30,30 @@ equipment_type(reverse, EqpType) -> {ok, EqpType}.
 
 -spec detail(forward | reverse, unicode:unicode_binary())
     -> {ok, dss_equipment:equipment_type()} | {error, atom()}.
-detail(forward, <<"dagger">>)         -> {ok, dagger};
-detail(forward, <<"straight-sword">>) -> {ok, straight_sword};
-detail(forward, <<"small-shield">>)   -> {ok, small_shield};
+detail(forward, <<"dagger">>)            -> {ok, dagger};
+detail(forward, <<"straight-sword">>)    -> {ok, straight_sword};
+detail(forward, <<"greats-sword">>)      -> {ok, greats_sword};
+detail(forward, <<"ultra-greatsword">>)  -> {ok, ultra_greatsword};
+detail(forward, <<"curved-sword">>)      -> {ok, curved_sword};
+detail(forward, <<"curved-greatsword">>) -> {ok, curved_greatsword};
+detail(forward, <<"katana">>)            -> {ok, katana};
+detail(forward, <<"thrusting-sword">>)   -> {ok, thrusting_sword};
+detail(forward, <<"axe">>)               -> {ok, axe};
+detail(forward, <<"greataxe">>)          -> {ok, greataxe};
+detail(forward, <<"hammer">>)            -> {ok, hammer};
+detail(forward, <<"great-hammer">>)      -> {ok, great_hammer};
+detail(forward, <<"spear">>)             -> {ok, spear};
+detail(forward, <<"halberd">>)           -> {ok, halberd};
+detail(forward, <<"whip">>)              -> {ok, whip};
+detail(forward, <<"fist">>)              -> {ok, fist};
+detail(forward, <<"bow">>)               -> {ok, bow};
+detail(forward, <<"crossbow">>)          -> {ok, crossbow};
+detail(forward, <<"catalyst">>)          -> {ok, catalyst};
+detail(forward, <<"talisman">>)          -> {ok, talisman};
+detail(forward, <<"pyromancy-flame">>)   -> {ok, pyromancy_flame};
+detail(forward, <<"small-shield">>)      -> {ok, small_shield};
+detail(forward, <<"normal-shield">>)     -> {ok, normal_shield};
+detail(forward, <<"large-shield">>)      -> {ok, large_shield};
 detail(forward, _) -> {error, not_a_detail};
 detail(reverse, Detail) -> {ok, Detail}.
 

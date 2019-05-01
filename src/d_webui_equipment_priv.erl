@@ -87,7 +87,13 @@ element_to_JSON(Req, State={existed_element_detail, Equipment, EqpType, Detail})
       , dss_equipment:detail()}
     ) -> jsone:json_value().
 element_to_json_value(Equipment, {_, Detail})
-    when Detail == dagger; Detail == straight_sword; Detail == small_shield ->
+    when Detail == dagger; Detail == straight_sword; Detail == greats_sword;
+         Detail == ultra_greatsword; Detail == curved_sword; Detail == curved_greatsword;
+         Detail == katana; Detail == thrusting_sword; Detail == axe; Detail == greataxe;
+         Detail == hammer; Detail == great_hammer; Detail == spear; Detail == halberd;
+         Detail == whip; Detail == fist; Detail == bow; Detail == crossbow;
+         Detail == catalyst; Detail == talisman; Detail == pyromancy_flame;
+         Detail == small_shield; Detail == normal_shield; Detail == large_shield ->
     {[
         {<<"id">>          , dss_equipment:id(Equipment)},
         {<<"name">>        , dss_equipment:name(Equipment)},
