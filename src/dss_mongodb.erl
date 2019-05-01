@@ -29,13 +29,13 @@ auth_admin(DB) ->
       , collection()
       , [] | [binary()]
       , fun()
-      , classes | daggers
-    ) -> [dss_material:material()].
-cursor(DB, Coll, Args, Fun, Type) ->
+      , {dss_equipment:equipment_type(), dss_equipment:detail()} | {none, classes}
+    ) -> [dss_equipment:equipment()].
+cursor(DB, Coll, Args, Fun, {EqpType, Detail}) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find(Conn, Coll, Args) of
         {ok, Cursor} -> List = mc_cursor:rest(Cursor),
-                        [ Fun(Next, Type) || Next <- List ];
+                        [ Fun(Next, {EqpType, Detail}) || Next <- List ];
         []           -> []
     end.
 
@@ -45,12 +45,12 @@ cursor(DB, Coll, Args, Fun, Type) ->
       , collection()
       , selector()
       , fun()
-      , classes | daggers | straight_swords | small_shields
-    ) -> dss_maybe:maybe(dss_material:material()).
-lookup(DB, Coll, Selector, Fun, Type) ->
+      , {dss_equipment:equipment_type(), dss_equipment:detail()}
+    ) -> dss_maybe:maybe(dss_equipment:equipment()).
+lookup(DB, Coll, Selector, Fun, {EqpType, Detail}) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find_one(Conn, Coll, Selector) of
         undefined -> none;
-        Map       -> {value, Fun(Map, Type)}
+        Map       -> {value, Fun(Map, {EqpType, Detail})}
     end.
 

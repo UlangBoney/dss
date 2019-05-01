@@ -1,55 +1,40 @@
 -module(dss_handler).
 -export([
-    class_id/2
-  , dagger_id/2
-  , straight_sword_id/2
-  , small_shield_id/2
+    id/2
+  , equipment_type/2
+  , detail/2
   , handler/0
 ]).
 
 
--spec class_id(forward | reverse, dss_material:id())
+-spec id(forward | reverse, pos_integer())
     -> {ok, dss_material:id()} | {error, atom()}.
-class_id(forward, ID) ->
-    case re:run(ID, <<"^[1-9]$|^10$">>, [global]) of
+id(forward, ID) ->
+    case re:run(ID, <<"^[1-9]$|^[1-5][0-9]$|^6[0-7]$">>, [global]) of
         {match, _} -> {ok, binary_to_integer(ID)};
         nomatch    -> {error, not_a_id}
     end;
-class_id(forward, _)  -> {error, not_a_id};
-class_id(reverse, ID) -> {ok, ID}.
+id(forward, _)  -> {error, not_a_id};
+id(reverse, ID) -> {ok, ID}.
 
 
--spec dagger_id(forward | reverse, dss_material:id())
-    -> {ok, dss_material:id()} | {error, atom()}.
-dagger_id(forward, ID) ->
-    case re:run(ID, <<"^[1-6]$">>, [global]) of
-        {match, _} -> {ok, binary_to_integer(ID)};
-        nomatch    -> {error, not_a_id}
-    end;
-dagger_id(forward, _)  -> {error, not_a_id};
-dagger_id(reverse, ID) -> {ok, ID}.
+-spec equipment_type(forward | reverse, unicode:unicode_binary())
+    -> {ok, dss_equipment:equipment_type()} | {error, atom()}.
+equipment_type(forward, EqpType)
+    when EqpType == <<"weapon">>;
+         EqpType == <<"shield">> ->
+    {ok, binary_to_atom(EqpType, utf8)};
+equipment_type(forward, _) -> {error, not_a_equipment_type};
+equipment_type(reverse, EqpType) -> {ok, EqpType}.
 
 
--spec straight_sword_id(forward | reverse, dss_material:id())
-    -> {ok, dss_material:id()} | {error, atom()}.
-straight_sword_id(forward, ID) ->
-    case re:run(ID, <<"^[1-9]$|^[1][0-3]$">>, [global]) of
-        {match, _} -> {ok, binary_to_integer(ID)};
-        nomatch    -> {error, not_a_id}
-    end;
-straight_sword_id(forward, _)  -> {error, not_a_id};
-straight_sword_id(reverse, ID) -> {ok, ID}.
-
-
--spec small_shield_id(forward | reverse, dss_material:id())
-    -> {ok, dss_material:id()} | {error, atom()}.
-small_shield_id(forward, ID) ->
-    case re:run(ID, <<"^[1-9]$|^[1][0-1]$">>, [global]) of
-        {match, _} -> {ok, binary_to_integer(ID)};
-        nomatch    -> {error, not_a_id}
-    end;
-small_shield_id(forward, _)  -> {error, not_a_id};
-small_shield_id(reverse, ID) -> {ok, ID}.
+-spec detail(forward | reverse, unicode:unicode_binary())
+    -> {ok, dss_equipment:equipment_type()} | {error, atom()}.
+detail(forward, <<"dagger">>)         -> {ok, dagger};
+detail(forward, <<"straight-sword">>) -> {ok, straight_sword};
+detail(forward, <<"small-shield">>)   -> {ok, small_shield};
+detail(forward, _) -> {error, not_a_detail};
+detail(reverse, Detail) -> {ok, Detail}.
 
 
 -spec handler() -> cowboy_router:dispatch_rules().
@@ -57,22 +42,19 @@ handler() ->
     cowboy_router:compile([
         {'_', [
             {"/dss/sample", d_webui_sample, element}
-          , {"/v1/character/classes", d_webui_material_priv, collection_classes}
+          , {"/v1/character/classes", d_webui_classes_priv, collection}
           , {"/v1/character/classes/:classID"
-            , [{classID, fun class_id/2}]
-            , d_webui_material_priv, element_classes}
-          , {"/v1/equipment/weapons/daggers", d_webui_material_priv, collection_daggers}
-          , {"/v1/equipment/weapons/daggers/:daggerID"
-            , [{daggerID, fun dagger_id/2}]
-            , d_webui_material_priv, element_daggers}
-          , {"/v1/equipment/weapons/straight-swords", d_webui_material_priv, collection_straight_swords}
-          , {"/v1/equipment/weapons/straight-swords/:straightSwordID"
-            , [{straightSwordID, fun straight_sword_id/2}]
-            , d_webui_material_priv, element_straight_swords}
-          , {"/v1/equipment/shields/small-shields", d_webui_material_priv, collection_small_shields}
-          , {"/v1/equipment/shields/small-shields/:smallShieldID"
-            , [{smallShieldID, fun small_shield_id/2}]
-            , d_webui_material_priv, element_small_shields}
+            , [ {classID, fun id/2} ]
+            , d_webui_classes_priv, element}
+          , {"/v1/equipment/:equipmentType/:detail"
+            , [ {equipmentType, fun equipment_type/2}
+              , {detail, fun detail/2} ]
+            , d_webui_equipment_priv, collection_detail}
+          , {"/v1/equipment/:equipmentType/:detail/:id"
+            , [ {equipmentType, fun equipment_type/2}
+              , {detail, fun detail/2}
+              , {id, fun id/2} ]
+            , d_webui_equipment_priv, element_detail}
         ]}
     ]).
 
