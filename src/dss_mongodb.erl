@@ -29,13 +29,13 @@ auth_admin(DB) ->
       , collection()
       , [] | [binary()]
       , fun()
-      , {dss_equipment:equipment_type(), dss_equipment:detail()} | {none, classes}
+      , dss_equipment:equipment_type() | classes | weqpon | shield
     ) -> [dss_equipment:equipment()].
-cursor(DB, Coll, Args, Fun, {EqpType, Detail}) ->
+cursor(DB, Coll, Args, Fun, Type) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find(Conn, Coll, Args) of
         {ok, Cursor} -> List = mc_cursor:rest(Cursor),
-                        [ Fun(Next, {EqpType, Detail}) || Next <- List ];
+                        [ Fun(Next, Type) || Next <- List ];
         []           -> []
     end.
 
@@ -45,12 +45,12 @@ cursor(DB, Coll, Args, Fun, {EqpType, Detail}) ->
       , collection()
       , selector()
       , fun()
-      , {dss_equipment:equipment_type(), dss_equipment:detail()}
+      , dss_equipment:equipment_type() | classes | weqpon | shield
     ) -> dss_maybe:maybe(dss_equipment:equipment()).
-lookup(DB, Coll, Selector, Fun, {EqpType, Detail}) ->
+lookup(DB, Coll, Selector, Fun, Type) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find_one(Conn, Coll, Selector) of
         undefined -> none;
-        Map       -> {value, Fun(Map, {EqpType, Detail})}
+        Map       -> {value, Fun(Map, Type)}
     end.
 
