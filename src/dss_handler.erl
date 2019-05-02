@@ -20,10 +20,13 @@ id(reverse, ID) -> {ok, ID}.
 
 -spec equipment_type(forward | reverse, unicode:unicode_binary())
     -> {ok, dss_equipment:equipment_type()} | {error, atom()}.
-equipment_type(forward, EqpType)
-    when EqpType == <<"weapon">>;
-         EqpType == <<"shield">> ->
-    {ok, binary_to_atom(EqpType, utf8)};
+equipment_type(forward, <<"weapon">>)      -> {ok, weapon};
+equipment_type(forward, <<"shield">>)      -> {ok, shield};
+equipment_type(forward, <<"head-armor">>)  -> {ok, head_armor};
+equipment_type(forward, <<"chest-armor">>) -> {ok, chest_armor};
+equipment_type(forward, <<"hand-armor">>)  -> {ok, hand_armor};
+equipment_type(forward, <<"leg-armor">>)   -> {ok, leg_armor};
+equipment_type(forward, <<"ring">>)        -> {ok, ring};
 equipment_type(forward, _) -> {error, not_a_equipment_type};
 equipment_type(reverse, EqpType) -> {ok, EqpType}.
 
@@ -67,6 +70,13 @@ handler() ->
           , {"/v1/character/classes/:classID"
             , [ {classID, fun id/2} ]
             , d_webui_classes_priv, element}
+          , {"/v1/equipment/:equipmentType"
+            , [{equipmentType, fun equipment_type/2}]
+            , d_webui_equipment_priv, collection}
+          , {"/v1/equipment/:equipmentType/:id"
+            , [{equipmentType, fun equipment_type/2}
+              , {id, fun id/2}]
+            , d_webui_equipment_priv, element}
           , {"/v1/equipment/:equipmentType/:detail"
             , [ {equipmentType, fun equipment_type/2}
               , {detail, fun detail/2} ]

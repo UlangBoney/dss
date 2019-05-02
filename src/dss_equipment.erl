@@ -2,6 +2,7 @@
 -export_type([
     id/0
   , equipment/0
+  , ring/0
 ]).
 -export([
     % * Read
@@ -14,34 +15,49 @@
   , name/1
   , weight/1
   , requirements/1
+  , effects/1
+  , equip_weight/1
+  , attunement_slots/1
 ]).
 
 -include("dss_error.hrl").
 
 -type id() :: pos_integer().
--type equipment() :: dagger()
-                  |  straight_sword()
-                  |  small_shield()
-                  .
 -type equipment_type() :: weapon
                         | shield
+                        | head_armor
+                        | chest_armor
+                        | hand_armor
+                        | leg_armor
+                        | ring
                         .
--type detail() :: dagger.
--type dagger() ::
-    #{ id           => id()
-     , name         => #{ english  => unicode:unicode_binary()
-                        , japanese => unicode:unicode_binary()}
-     , weight       => float()
-     , requirements => requirements()
-    }.
--type straight_sword() ::
-    #{ id           => id()
-     , name         => #{ english  => unicode:unicode_binary()
-                        , japanese => unicode:unicode_binary()}
-     , weight       => float()
-     , requirements => requirements()
-    }.
--type small_shield() ::
+-type detail() :: dagger
+                | straight_sword
+                | greats_sword
+                | ultra_greatsword
+                | curved_sword
+                | curved_greatsword
+                | thrusting_sword
+                | katana
+                | axe
+                | greataxe
+                | hammer
+                | great_hammer
+                | spear
+                | halberd
+                | whip
+                | fist
+                | bow
+                | greatbow
+                | crossbow
+                | catalyst
+                | talisman
+                | pyromancy_flame
+                | small_shield
+                | normal_shield
+                | large_shield
+                .
+-type equipment() ::
     #{ id           => id()
      , name         => #{ english  => unicode:unicode_binary()
                         , japanese => unicode:unicode_binary()}
@@ -53,6 +69,15 @@
      , dexterity    => pos_integer()
      , intelligence => pos_integer()
      , faith        => pos_integer()
+    }.
+-type ring() ::
+    #{ id              => id()
+     , name            => #{ english  => unicode:unicode_binary()
+                           , japanese => unicode:unicode_binary()}
+     , effects         => #{ english  => unicode:unicode_binary()
+                           , japanese => unicode:unicode_binary()}
+     , equipWeight     => dss_maybe:maybe(pos_integer())
+     , attunementSlots => dss_maybe:maybe(pos_integer())
     }.
 
 
@@ -90,6 +115,16 @@ list({shield, Detail}) ->
         normal_shield -> dss_mongodb:cursor(DB, <<"equipment.shields.normalShields">>, [], fun from_mongo_map/2, {shield, normal_shield});
         large_shield  -> dss_mongodb:cursor(DB, <<"equipment.shields.largeShields">>, [], fun from_mongo_map/2, {shield, large_shield});
         _ -> []
+    end;
+list({EqpType, none}) ->
+    DB = <<"dss_master">>,
+    case EqpType of
+        head_armor  -> dss_mongodb:cursor(DB, <<"equipment.headArmor">>, [], fun from_mongo_map/2, {head_armor, none});
+        chest_armor -> dss_mongodb:cursor(DB, <<"equipment.chestArmor">>, [], fun from_mongo_map/2, {chest_armor, none});
+        hand_armor  -> dss_mongodb:cursor(DB, <<"equipment.handArmor">>, [], fun from_mongo_map/2, {hand_armor, none});
+        leg_armor   -> dss_mongodb:cursor(DB, <<"equipment.legArmor">>, [], fun from_mongo_map/2, {leg_armor, none});
+        ring        -> dss_mongodb:cursor(DB, <<"equipment.rings">>, [], fun from_mongo_map/2, {ring, none});
+        _           -> []
     end.
 
 
@@ -127,6 +162,16 @@ lookup({shield, Detail}, ID) ->
         normal_shield -> dss_mongodb:lookup(DB, <<"equipment.shields.normalShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, {shield, normal_shield});
         large_shield  -> dss_mongodb:lookup(DB, <<"equipment.shields.largeShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, {shield, large_shield});
         _             -> none
+    end;
+lookup({EqpType, none}, ID) ->
+    DB = <<"dss_master">>,
+    case EqpType of
+        head_armor  -> dss_mongodb:lookup(DB, <<"equipment.headArmor">>, {<<"_id">>, ID}, fun from_mongo_map/2, {head_armor, none});
+        chest_armor -> dss_mongodb:lookup(DB, <<"equipment.chestArmor">>, {<<"_id">>, ID}, fun from_mongo_map/2, {chest_armor, none});
+        hand_armor  -> dss_mongodb:lookup(DB, <<"equipment.handArmor">>, {<<"_id">>, ID}, fun from_mongo_map/2, {hand_armor, none});
+        leg_armor   -> dss_mongodb:lookup(DB, <<"equipment.legArmor">>, {<<"_id">>, ID}, fun from_mongo_map/2, {legd_armor, none});
+        ring        -> dss_mongodb:lookup(DB, <<"equipment.rings">>, {<<"_id">>, ID}, fun from_mongo_map/2, {ring, none});
+        _           -> none
     end.
 
 
@@ -142,7 +187,7 @@ get({EqpType, Detail}, ID) ->
 id(Equipment) -> maps:get(id, Equipment).
 
 
--spec name(equipment()) -> unicode:unicode_binary().
+-spec name(equipment()) -> #{english := unicode:unicode_binary(), japanese := unicode:unicode_binary()}.
 name(Equipment) -> maps:get(name, Equipment).
 
 
@@ -154,15 +199,42 @@ weight(Equipment) -> maps:get(weight, Equipment).
 requirements(Equipment) -> maps:get(requirements, Equipment).
 
 
--spec from_mongo_map(map(), {equipment_type(), detail()}) -> equipment().
-from_mongo_map(MongoMap, {_, Detail})
-    when Detail == dagger; Detail == straight_sword; Detail == greats_sword;
-         Detail == ultra_greatsword; Detail == curved_sword; Detail == curved_greatsword;
-         Detail == katana; Detail == thrusting_sword; Detail == axe; Detail == greataxe;
-         Detail == hammer; Detail == great_hammer; Detail == spear; Detail == halberd;
-         Detail == whip; Detail == fist; Detail == bow; Detail == crossbow;
-         Detail == catalyst; Detail == talisman; Detail == pyromancy_flame;
-         Detail == small_shield; Detail == normal_shield; Detail == large_shield ->
+-spec effects(equipment()) -> #{english := unicode:unicode_binary(), japanese := unicode:unicode_binary()}.
+effects(Equipment) -> maps:get(effects, Equipment).
+
+
+-spec equip_weight(equipment()) -> dss_maybe:maybe(pos_integer()).
+equip_weight(Equipment) ->
+    maps:get(equipWeight, Equipment).
+
+
+-spec attunement_slots(equipment()) -> dss_maybe:maybe(pos_integer()).
+attunement_slots(Equipment) ->
+    maps:get(attunementSlots, Equipment).
+
+
+-spec from_mongo_map(map(), {equipment_type(), detail() | none}) -> equipment().
+from_mongo_map(MongoMap, {ring, none}) ->
+    #{ id          => maps:get(<<"_id">>            , MongoMap)
+     , name        => maps:get(<<"name">>           , MongoMap)
+     , effects     => maps:get(<<"effects">>        , MongoMap)
+     , equipWeight =>
+            case maps:get(<<"equipWeight">>, MongoMap) of
+                undefined -> none;
+                EqpWeight -> EqpWeight
+            end
+     , attunementSlots =>
+            case maps:get(<<"attunementSlots">>, MongoMap) of
+                undefined       -> none;
+                AttunementSlots -> AttunementSlots
+            end
+    };
+from_mongo_map(MongoMap, {_, none}) ->
+    #{ id     => maps:get(<<"_id">>   , MongoMap)
+     , name   => maps:get(<<"name">>  , MongoMap)
+     , weight => maps:get(<<"weight">>, MongoMap)
+    };
+from_mongo_map(MongoMap, _) ->
     #{ id           => maps:get(<<"_id">>         , MongoMap)
      , name         => maps:get(<<"name">>        , MongoMap)
      , weight       => maps:get(<<"weight">>      , MongoMap)
