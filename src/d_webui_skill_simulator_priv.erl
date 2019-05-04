@@ -79,50 +79,60 @@ element_to_json_value(Character) ->
       , {<<"resistance">>  , dss_skill_simulator:resistance(Character)}
       , {<<"intelligence">>, dss_skill_simulator:intelligence(Character)}
       , {<<"faith">>       , dss_skill_simulator:faith(Character)}
-      , {<<"rightWeapon1">>,
-            case dss_skill_simulator:right_weapon1(Character) of
-                none -> null;
-                RW1  -> RW1
-            end}
-      , {<<"rightWeapon2">>,
-            case dss_skill_simulator:right_weapon2(Character) of
-                none -> null;
-                RW2  -> RW2
-            end}
-      , {<<"leftWeapon1">>,
-            case dss_skill_simulator:left_weapon1(Character) of
-                none -> null;
-                LW1  -> LW1
-            end}
-      , {<<"leftWeapon2">>,
-            case dss_skill_simulator:left_weapon2(Character) of
-                none -> null;
-                LW2  -> LW2
-            end}
-      , {<<"headArmor">>,
-            case dss_skill_simulator:head_armor(Character) of
-                none -> null;
-                HA   -> HA
-            end}
-      , {<<"chestArmor">>,
-            case dss_skill_simulator:chest_armor(Character) of
-                none -> null;
-                CA   -> CA
-            end}
-      , {<<"handArmor">>,
-            case dss_skill_simulator:hand_armor(Character) of
-                none -> null;
-                HaA  -> HaA
-            end}
-      , {<<"legArmor">>,
-            case dss_skill_simulator:leg_armor(Character) of
-                none -> null;
-                LA   -> LA
-            end}
-      , {<<"ring">>, case dss_skill_simulator:ring(Character) of
-            none -> null;
-            Ring -> Ring
-        end}
+      , {<<"rightWeapon1">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:right_weapon1(Character) of
+                    {value, Map} -> maps:get(equipmentID, Map);
+                    none         -> null
+                end}]}
+      , {<<"rightWeapon2">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:right_weapon2(Character) of
+                    {value, Map} -> maps:get(equipmentID, Map);
+                    none         -> null
+                end}]}
+      , {<<"leftWeapon1">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:left_weapon1(Character) of
+                    {value, Map} -> maps:get(equipmentID, Map);
+                    none         -> null
+                end}]}
+      , {<<"leftWeapon2">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:left_weapon2(Character) of
+                    {value, Map} -> maps:get(equipmentID, Map);
+                    none         -> null
+                end}]}
+      , {<<"headArmor">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:head_armor(Character) of
+                    {value, Map} -> maps:get(equipmentID, Map);
+                    none         -> null
+                end}]}
+      , {<<"chestArmor">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:chest_armor(Character) of
+                    {value, Map}-> maps:get(equipmentID, Map);
+                    none        -> null
+                end}]}
+      , {<<"handArmor">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:hand_armor(Character) of
+                    {value, Map} -> maps:get(equipmentID, Map);
+                    none         -> null
+                end}]}
+      , {<<"legArmor">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:leg_armor(Character) of
+                    {value, Map} -> maps:get(equipmentID, Map);
+                    none         -> null
+                end}]}
+      , {<<"ring">>, [
+            {<<"equipmentID">>,
+                case dss_skill_simulator:ring(Character) of
+                    {value, Map} -> maps:get(equipmentID, Map);
+                    none         -> null
+                end}]}
       , {<<"equipWeight">>, dss_skill_simulator:equip_weight(Character)}
       , {<<"attunementSlots">>, dss_skill_simulator:attunement_slots(Character)}
     ]}.

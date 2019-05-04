@@ -73,22 +73,22 @@
      , faith        => pos_integer()
     }.
 -type ring() ::
-    #{ id              => id()
-     , name            => #{ english  => unicode:unicode_binary()
+    #{ id      => id()
+     , name    => #{ english  => unicode:unicode_binary()
                            , japanese => unicode:unicode_binary()}
-     , effects         => #{ english  => unicode:unicode_binary()
+     , effects => #{ english  => unicode:unicode_binary()
                            , japanese => unicode:unicode_binary()}
-     , equipWeight     => dss_maybe:maybe(pos_integer())
+     , equipWeightMagnification => dss_maybe:maybe(pos_integer())
      , attunementSlots => dss_maybe:maybe(pos_integer())
     }.
 -type head_armor() ::
-    #{ id          => id()
-     , name        => #{ english  => unicode:unicode_binary()
-                       , japanese => unicode:unicode_binary()}
-     , weight      => float()
-     , effects     => #{ english  => unicode:unicode_binary()
-                       , japanese => unicode:unicode_binary()}
-     , equipWeight => dss_maybe:maybe(pos_integer())
+    #{ id      => id()
+     , name    => #{ english  => unicode:unicode_binary()
+                   , japanese => unicode:unicode_binary()}
+     , weight  => float()
+     , effects => #{ english  => unicode:unicode_binary()
+                   , japanese => unicode:unicode_binary()}
+     , equipWeightMagnification => dss_maybe:maybe(pos_integer())
     }.
 -type armor() ::
     #{ id     => id()
@@ -231,7 +231,7 @@ weight(Equipment) -> maps:get(weight, Equipment).
 requirements(Equipment) -> maps:get(requirements, Equipment).
 
 
--spec effects(equipment()) -> #{english := unicode:unicode_binary(), japanese := unicode:unicode_binary()}.
+-spec effects(equipment()) -> dss_maybe:maybe(#{english := unicode:unicode_binary(), japanese := unicode:unicode_binary()}).
 effects(Equipment) -> maps:get(effects, Equipment).
 
 
@@ -249,16 +249,20 @@ attunement_slots(Equipment) ->
 from_mongo_map(MongoMap, ring) ->
     #{ id          => maps:get(<<"_id">>    , MongoMap)
      , name        => maps:get(<<"name">>   , MongoMap)
-     , effects     => maps:get(<<"effects">>, MongoMap)
+     , effects     =>
+            case maps:get(<<"effects">>, MongoMap) of
+                undefined -> none;
+                Effects   -> {value, Effects}
+            end
      , equipWeightMagnification =>
             case maps:get(<<"equipWeightMagnification">>, MongoMap) of
                 undefined -> none;
-                EWM       -> EWM
+                EWM       -> {value, EWM}
             end
      , attunementSlots =>
             case maps:get(<<"attunementSlots">>, MongoMap) of
                 undefined       -> none;
-                AttunementSlots -> AttunementSlots
+                AttunementSlots -> {value, AttunementSlots}
             end
     };
 from_mongo_map(MongoMap, head_armor) ->
@@ -268,12 +272,12 @@ from_mongo_map(MongoMap, head_armor) ->
      , effects =>
             case maps:get(<<"effects">>, MongoMap) of
                 undefined -> none;
-                Effects   -> Effects
+                Effects   -> {value, Effects}
             end
-     , equipWeight =>
+     , equipWeightMagnification =>
             case maps:get(<<"equipWeight">>, MongoMap) of
                 undefined -> none;
-                EqpWeight -> EqpWeight
+                EqpWeight -> {value, EqpWeight}
             end
     };
 from_mongo_map(MongoMap, Type) when Type == weapon; Type == shield ->

@@ -75,16 +75,16 @@ element_to_JSON(Req, State={existed_element, Class}) ->
 -spec element_to_json_value(dss_classes:class()) -> jsone:json_value().
 element_to_json_value(Class) ->
     {[
-        {<<"id">>          , dss_classes:id(Class)},
-        {<<"name">>        , dss_classes:name(Class)},
-        {<<"levels">>      , dss_classes:levels(Class)},
-        {<<"vitality">>    , dss_classes:vitality(Class)},
-        {<<"attunement">>  , dss_classes:attunement(Class)},
-        {<<"endurance">>   , dss_classes:endurance(Class)},
-        {<<"strength">>    , dss_classes:strength(Class)},
-        {<<"dexterity">>   , dss_classes:dexterity(Class)},
-        {<<"resistance">>  , dss_classes:resistance(Class)},
-        {<<"intelligence">>, dss_classes:intelligence(Class)},
-        {<<"faith">>       , dss_classes:faith(Class)}
+        {<<"classID">>     , dss_classes:id(Class)}
+      , {<<"name">>        , dss_classes:name(Class)}
+      , {<<"levels">>      , dss_classes:levels(Class)}
+      , {<<"vitality">>    , dss_classes:vitality(Class)}
+      , {<<"attunement">>  , dss_classes:attunement(Class)}
+      , {<<"endurance">>   , dss_classes:endurance(Class)}
+      , {<<"strength">>    , dss_classes:strength(Class)}
+      , {<<"dexterity">>   , dss_classes:dexterity(Class)}
+      , {<<"resistance">>  , dss_classes:resistance(Class)}
+      , {<<"intelligence">>, dss_classes:intelligence(Class)}
+      , {<<"faith">>       , dss_classes:faith(Class)}
     ]}.
 

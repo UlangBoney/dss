@@ -86,42 +86,46 @@ element_to_JSON(Req, State={existed_element, Equipment, EqpType}) ->
     ) -> jsone:json_value().
 element_to_json_value(Ring, ring) ->
     EquipWeight = case dss_equipment:equip_weight(Ring) of
-        none -> null;
-        EW   -> EW
+        {value, EW} -> EW;
+        none        -> null
     end,
     AttunementSlots = case dss_equipment:attunement_slots(Ring) of
-        none -> null;
-        AS   -> AS
+        {value, AS} -> AS;
+        none        -> null
     end,
     {[
-        {<<"id">>             , dss_equipment:id(Ring)}
+        {<<"equipmentID">>    , dss_equipment:id(Ring)}
       , {<<"name">>           , dss_equipment:name(Ring)}
       , {<<"effects">>        , dss_equipment:effects(Ring)}
       , {<<"equipWeight">>    , EquipWeight}
       , {<<"attunementSlots">>, AttunementSlots}
     ]};
 element_to_json_value(HeadArmor, head_armor) ->
+    Effects = case dss_equipment:effects(HeadArmor) of
+        {value, Eff} -> Eff;
+        none         -> null
+    end,
     EWM = case dss_equipment:equip_weight_magnification(HeadArmor) of
-        none  -> null;
-        EqpWM -> EqpWM
+        {value, EqpWM} -> EqpWM;
+        none           -> null
     end,
     {[
-        {<<"id">>         , dss_equipment:id(HeadArmor)}
+        {<<"equipmentID">>         , dss_equipment:id(HeadArmor)}
       , {<<"name">>       , dss_equipment:name(HeadArmor)}
       , {<<"weight">>     , dss_equipment:weight(HeadArmor)}
-      , {<<"effects">>    , dss_equipment:effects(HeadArmor)}
+      , {<<"effects">>    , Effects}
       , {<<"equipWeightMagnification">>, EWM}
     ]};
 element_to_json_value(Equipment, EqpType)
     when EqpType == chest_armor; EqpType == hand_armor; EqpType == leg_armor ->
     {[
-        {<<"id">>    , dss_equipment:id(Equipment)}
-      , {<<"name">>  , dss_equipment:name(Equipment)}
-      , {<<"weight">>, dss_equipment:weight(Equipment)}
+        {<<"equipmentID">>, dss_equipment:id(Equipment)}
+      , {<<"name">>       , dss_equipment:name(Equipment)}
+      , {<<"weight">>     , dss_equipment:weight(Equipment)}
     ]};
 element_to_json_value(Equipment, _) ->
     {[
-        {<<"id">>          , dss_equipment:id(Equipment)}
+        {<<"equipmentID">> , dss_equipment:id(Equipment)}
       , {<<"name">>        , dss_equipment:name(Equipment)}
       , {<<"weight">>      , dss_equipment:weight(Equipment)}
       , {<<"requirements">>, dss_equipment:requirements(Equipment)}

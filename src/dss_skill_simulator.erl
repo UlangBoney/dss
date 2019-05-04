@@ -18,7 +18,6 @@
   , resistance/1
   , intelligence/1
   , faith/1
-  , rolling_levels/1
   , right_weapon1/1
   , right_weapon2/1
   , left_weapon1/1
@@ -45,15 +44,15 @@
      , resistance      => pos_integer()
      , intelligence    => pos_integer()
      , faith           => pos_integer()
-     , rightWeapon1    => dss_maybe:maybe(dss_equipment:equipment())
-     , rightWeapon2    => dss_maybe:maybe(dss_equipment:equipment())
-     , leftWeapon2     => dss_maybe:maybe(dss_equipment:equipment())
-     , leftWeapon2     => dss_maybe:maybe(dss_equipment:equipment())
-     , headArmor       => dss_maybe:maybe(pos_integer())
-     , chestArmor      => dss_maybe:maybe(pos_integer())
-     , handArmor       => dss_maybe:maybe(pos_integer())
-     , legArmor        => dss_maybe:maybe(pos_integer())
-     , ring            => dss_maybe:maybe(pos_integer())
+     , rightWeapon1    => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
+     , rightWeapon2    => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
+     , leftWeapon2     => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
+     , leftWeapon2     => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
+     , headArmor       => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
+     , chestArmor      => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
+     , handArmor       => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
+     , legArmor        => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
+     , ring            => dss_maybe:maybe(#{equipmentID => dss_equipment:id()})
      , equipWeight     => float()
      , attunementSlots => pos_integer()
     }.
@@ -68,11 +67,12 @@ simulator_list(QsList) ->
 -spec simulator(dss_classes:id(), [{unicode:unicode_binary(), unicode:unicode_binary()}]) -> character().
 simulator(ClassID, QsList) ->
     Class = dss_classes:get(ClassID),
-    EquipmentList = equipment_list(QsList),
-    Character0 = make_character(Class, EquipmentList),
+    EqpIDList  = equipment_list(QsList),
+    Character0 = make_character(Class, EqpIDList),
     LevelUped  = levels_up(Character0, QsList),
     SlotsPlus  = slots_plus_by_ring(LevelUped),
-    calculate_equip_weight(SlotsPlus, QsList).
+    Calculated = calculate_equip_weight(SlotsPlus, QsList),
+    requirement(Calculated).
 
 
 -spec equipment_list([{unicode:unicode_binary(), unicode:unicode_binary()}]) -> [dss_equipment:equipment()].
@@ -84,27 +84,20 @@ equipment_list(QsList) ->
 
 
 -spec equipment_list(
-        [{unicode:unicode_binary(), unicode:unicode_binary()}], [unicode:unicode_binary()], [dss_equipment:equipment()]
+        [{unicode:unicode_binary(), unicode:unicode_binary()}], [unicode:unicode_binary()], [dss_equipment:id()]
     ) -> [dss_equipment:equipment()].
-equipment_list(_, [], EqpList) -> EqpList;
+equipment_list(_, [], EqpIDList) -> EqpIDList;
 
-equipment_list(QsList, [Parameter | Tail], EqpList) ->
-    Equipment = case lists:keyfind(Parameter, 1, QsList) of
+equipment_list(QsList, [Parameter | Tail], EqpIDList) ->
+    EqpID = case lists:keyfind(Parameter, 1, QsList) of
         {Parameter, ID} ->
             case validate_id(ID) of
-                none ->
-                    none;
-                IntID ->
-                    case dss_equipment:lookup(
-                        dss_equipment:equipment_type(IntID), IntID)
-                    of
-                        {value, Eqp} -> Eqp;
-                        none         -> none
-                    end
+                none  -> none;
+                IntID -> IntID
             end;
         false -> none
     end,
-    equipment_list(QsList, Tail, lists:append(EqpList, [Equipment])).
+    equipment_list(QsList, Tail, lists:append(EqpIDList, [EqpID])).
 
 
 -spec validate_id(unicode:unicode_binary()) -> pos_integer() | none.
@@ -115,19 +108,23 @@ validate_id(ID) ->
     end.
 
 
--spec make_character(dss_classes:class(), [dss_equipment:equipment()]) -> character().
-make_character(Class, EqpList) ->
+-spec make_character(dss_classes:class(), [dss_maybe:maybe(dss_equipment:id())]) -> character().
+make_character(Class, EqpIDList) ->
     Params = [ rightWeapon1, rightWeapon2, leftWeapon1,
                leftWeapon2, headArmor, chestArmor,
                handArmor, legArmor, ring ],
-    make_character(Class, EqpList, Params).
+    make_character(Class, EqpIDList, Params).
 
 
--spec make_character(dss_classes:class(), [dss_equipment:equipment()], [atom()]) -> character().
+-spec make_character(dss_classes:class(), [dss_maybe:maybe(dss_equipment:id())], [atom()]) -> character().
 make_character(Class, [], []) -> Class;
 
-make_character(Class, [Equipment | EqpTail], [Parameter | ParamTail]) ->
-    make_character(maps:put(Parameter, Equipment, Class), EqpTail, ParamTail).
+make_character(Class, [EqpID | IDTail], [Parameter | ParamTail]) ->
+    MaybeEqpID = case EqpID of
+        none  -> none;
+        EqpID -> {value, #{equipmentID => EqpID}}
+    end,
+    make_character(maps:put(Parameter, MaybeEqpID, Class), IDTail, ParamTail).
 
 
 -spec levels_up(character(), [{unicode:unicode_binary(), unicode:unicode_binary()}]) -> character().
@@ -218,14 +215,15 @@ requirement_attunement(10) -> 50.
 -spec slots_plus_by_ring(character()) -> character().
 slots_plus_by_ring(Character) ->
     case ring(Character) of
-        none -> Character;
-        Ring -> case dss_equipment:id(Ring) of
-                    % 白教の司祭の指輪 or 暗月の司祭の指輪
-                    RingID when RingID == 435; RingID == 436 ->
-                        Slots = attunement_slots(Character),
-                        maps:put(attunementSlots, Slots + 1, Character);
-                    _ -> Character
-                end
+        {value, Ring} ->
+            case maps:get(equipmentID, Ring) of
+                % 白教の司祭の指輪 or 暗月の司祭の指輪
+                RingID when RingID == 435; RingID == 436 ->
+                    Slots = attunement_slots(Character),
+                    maps:put(attunementSlots, Slots + 1, Character);
+                _ -> Character
+            end;
+        none -> Character
     end.
 
 
@@ -236,11 +234,24 @@ calculate_equip_weight(Character, QsList) ->
     Weight = sum_weight(Character, List, 0),
     Endurance = endurance(Character),
     CharEQW = case ring(Character) of
-        none -> Endurance + 40;
-        Ring -> case dss_equipment:equip_weight_magnification(Ring) of
-                    none -> Endurance + 40;
-                    Mag  -> (Endurance + 40) * Mag
-                end
+        {value, RingIDMap} ->
+            HeadMag = case head_armor(Character) of
+                {value, HeadIDMap} ->
+                    HeadID = maps:get(equipmentID, HeadIDMap),
+                    HeadArmor = dss_equipment:get(head_armor, HeadID),
+                    case dss_equipment:equip_weight_magnification(HeadArmor) of
+                        {value, Mag} -> Mag;
+                        none -> 1
+                    end;
+                none -> 1
+            end,
+            RingID = maps:get(equipmentID, RingIDMap),
+            Ring   = dss_equipment:get(ring, RingID),
+            case dss_equipment:equip_weight_magnification(Ring) of
+                {value, RingMag} -> (Endurance + 40) * HeadMag * RingMag;
+                none             -> (Endurance + 40) * HeadMag
+            end;
+        none -> Endurance + 40
     end,
     Calculated = maps:put(equipWeight, Weight / CharEQW, Character),
     case lists:keyfind(<<"equipweight-levels">>, 1, QsList) of
@@ -259,8 +270,12 @@ sum_weight(Character, [], Sum) -> Sum;
 
 sum_weight(Character, [Parameter | Tail], Sum) ->
     case maps:get(Parameter, Character) of
-        none -> sum_weight(Character, Tail, Sum);
-        Eqp  -> sum_weight(Character, Tail, dss_equipment:weight(Eqp) + Sum)
+        {value, EqpIDMap} ->
+            EqpID = maps:get(equipmentID, EqpIDMap),
+            Equipment = dss_equipment:get(dss_equipment:equipment_type(EqpID), EqpID),
+            sum_weight(Character, Tail, dss_equipment:weight(Equipment) + Sum);
+        none ->
+            sum_weight(Character, Tail, Sum)
     end.
 
 
@@ -288,11 +303,53 @@ equip_weight_levels(Character, CharEQW, WantEQW) ->
                     Ceiled0
             end,
             Diff = Ceiled - CharEQW,
-            LevleUped = maps:put(levels, levels(Character) + Diff, Character),
-            EnduranceUped = maps:put(endurance, endurance(Character) + Diff, LevleUped),
-            maps:put(equipWeight, Weight / Ceiled, EnduranceUped);
+            LevelUped = maps:put(levels, round(levels(Character)+Diff), Character),
+            UpedEndurance = maps:put(endurance, round(endurance(Character)+Diff), LevelUped),
+            maps:put(equipWeight, Weight / (maps:get(endurance, UpedEndurance)+40), UpedEndurance);
         _ -> Character
     end.
+
+
+-spec requirement(character()) -> character().
+requirement(Character) ->
+    List = [ rightWeapon1, rightWeapon2, leftWeapon1, leftWeapon2 ],
+    requirement(Character, List).
+
+
+-spec requirement(character(), [atom()]) -> character().
+requirement(Character, []) -> Character;
+
+requirement(Character, [Parameter | Tail]) ->
+    case maps:get(Parameter, Character) of
+        {value, EqpIDMap} ->
+            Character1 = requirement_(Character, maps:get(equipmentID, EqpIDMap)),
+            requirement(Character1, Tail);
+        none -> ok
+    end,
+    requirement(Character, Tail).
+
+
+-spec requirement_(character(), pos_integer()) -> character().
+requirement_(Character, EqpID) ->
+    List = [ strength, dexterity, intelligence, faith ],
+    requirement_(Character, EqpID, List).
+
+-spec requirement_(character(), pos_integer(), [atom()]) -> character().
+requirement_(Character, EqpID, []) -> Character;
+
+requirement_(Character, EqpID, [Parameter | Tail]) ->
+    Eqp = dss_equipment:get(dss_equipment:equipment_type(EqpID), EqpID),
+    Require = dss_equipment:requirements(Eqp),
+    CharValue = maps:get(Parameter, Character),
+    Character1 = case maps:get(atom_to_binary(Parameter, utf8), Require) of
+        RequireVal when RequireVal > CharValue ->
+            Diff = Require - CharValue,
+            StrUped = maps:put(Parameter, CharValue + Diff, Character),
+            maps:put(levels, levels(Character) + Diff, StrUped);
+        RequireVal when RequireVal =< CharValue ->
+            Character
+    end,
+    requirement_(Character1, EqpID, Tail).
 
 
 -spec class_id(character()) -> dss_classes:id().
@@ -339,51 +396,47 @@ intelligence(Character) -> maps:get(intelligence, Character).
 faith(Character) -> maps:get(faith, Character).
 
 
--spec rolling_levels(character()) -> 1 | 2 | 3 | 4.
-rolling_levels(Character) -> maps:get(rollingLevels, Character).
-
-
--spec right_weapon1(character()) -> dss_maybe:maybe(dss_equipment:equipment()).
+-spec right_weapon1(character()) -> dss_maybe:maybe(dss_equipment:id()).
 right_weapon1(Character) ->
     maps:get(rightWeapon1, Character).
 
 
--spec right_weapon2(character()) -> dss_maybe:maybe(dss_equipment:equipment()).
+-spec right_weapon2(character()) -> dss_maybe:maybe(dss_equipment:id()).
 right_weapon2(Character) ->
     maps:get(rightWeapon2, Character).
 
 
--spec left_weapon1(character()) -> dss_maybe:maybe(dss_equipment:equipment()).
+-spec left_weapon1(character()) -> dss_maybe:maybe(dss_equipment:id()).
 left_weapon1(Character) ->
     maps:get(leftWeapon1, Character).
 
 
--spec left_weapon2(character()) -> dss_maybe:maybe(dss_equipment:equipment()).
+-spec left_weapon2(character()) -> dss_maybe:maybe(dss_equipment:id()).
 left_weapon2(Character) ->
     maps:get(leftWeapon2, Character).
 
 
--spec head_armor(character()) -> dss_maybe:maybe(dss_equipment:heas_armor()).
+-spec head_armor(character()) -> dss_maybe:maybe(dss_equipment:id()).
 head_armor(Character) ->
     maps:get(headArmor, Character).
 
 
--spec chest_armor(character()) -> dss_maybe:maybe(dss_equipment:armor()).
+-spec chest_armor(character()) -> dss_maybe:maybe(dss_equipment:id()).
 chest_armor(Character) ->
     maps:get(chestArmor, Character).
 
 
--spec hand_armor(character()) -> dss_maybe:maybe(dss_equipment:armor()).
+-spec hand_armor(character()) -> dss_maybe:maybe(dss_equipment:id()).
 hand_armor(Character) ->
     maps:get(handArmor, Character).
 
 
--spec leg_armor(character()) -> dss_maybe:maybe(dss_equipment:armor()).
+-spec leg_armor(character()) -> dss_maybe:maybe(dss_equipment:id()).
 leg_armor(Character) ->
     maps:get(legArmor, Character).
 
 
--spec ring(character()) -> dss_maybe:maybe(dss_equipment:ring()).
+-spec ring(character()) -> dss_maybe:maybe(dss_equipment:id()).
 ring(Character) ->
     maps:get(ring, Character).
 
