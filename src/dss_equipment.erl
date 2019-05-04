@@ -3,12 +3,15 @@
     id/0
   , equipment/0
   , ring/0
+  , head_armor/0
+  , armor/0
 ]).
 -export([
     % * Read
     list/1
   , lookup/2
   , get/2
+  , equipment_type/1
 
     % * Getters
   , id/1
@@ -16,7 +19,7 @@
   , weight/1
   , requirements/1
   , effects/1
-  , equip_weight/1
+  , equip_weight_magnification/1
   , attunement_slots/1
 ]).
 
@@ -36,6 +39,7 @@
                         | hammer
                         | great_hammer
                         | spear
+                        | long_spear
                         | halberd
                         | whip
                         | fist
@@ -48,6 +52,7 @@
                         | small_shield
                         | normal_shield
                         | large_shield
+                        | lanthanum
                         | head_armor
                         | chest_armor
                         | hand_armor
@@ -75,6 +80,21 @@
                            , japanese => unicode:unicode_binary()}
      , equipWeight     => dss_maybe:maybe(pos_integer())
      , attunementSlots => dss_maybe:maybe(pos_integer())
+    }.
+-type head_armor() ::
+    #{ id          => id()
+     , name        => #{ english  => unicode:unicode_binary()
+                       , japanese => unicode:unicode_binary()}
+     , weight      => float()
+     , effects     => #{ english  => unicode:unicode_binary()
+                       , japanese => unicode:unicode_binary()}
+     , equipWeight => dss_maybe:maybe(pos_integer())
+    }.
+-type armor() ::
+    #{ id     => id()
+     , name   => #{ english  => unicode:unicode_binary()
+                  , japanese => unicode:unicode_binary()}
+     , weight => float()
     }.
 
 
@@ -160,6 +180,41 @@ get(EqpType, ID) ->
     end.
 
 
+-spec equipment_type(pos_integer()) -> equipment_type().
+equipment_type(ID) when 1   =< ID, ID =< 6   -> dagger;
+equipment_type(ID) when 7   =< ID, ID =< 19  -> short_sword;
+equipment_type(ID) when 20  =< ID, ID =< 32  -> greatsword;
+equipment_type(ID) when 33  =< ID, ID =< 37  -> ultra_greatsword;
+equipment_type(ID) when 38  =< ID, ID =< 44  -> curved_sword;
+equipment_type(ID) when 45  =< ID, ID =< 47  -> curved_greatsword;
+equipment_type(ID) when 48  =< ID, ID =< 52  -> thrusting_sword;
+equipment_type(ID) when 53  =< ID, ID =< 56  -> katana;
+equipment_type(ID) when 57  =< ID, ID =< 62  -> axe;
+equipment_type(ID) when 63  =< ID, ID =< 67  -> greataxe;
+equipment_type(ID) when 68  =< ID, ID =< 76  -> hammer;
+equipment_type(ID) when 77  =< ID, ID =< 82  -> great_hammer;
+equipment_type(ID) when 83  =< ID, ID =< 91  -> spear;
+equipment_type(ID) when ID == 92             -> long_spear;
+equipment_type(ID) when 93  =< ID, ID =< 101 -> halberd;
+equipment_type(ID) when 102 =< ID, ID =< 104 -> whip;
+equipment_type(ID) when 105 =< ID, ID =< 108 -> fist;
+equipment_type(ID) when 109 =< ID, ID =< 113 -> bow;
+equipment_type(ID) when 114 =< ID, ID =< 115 -> greatbow;
+equipment_type(ID) when 116 =< ID, ID =< 119 -> crossbow;
+equipment_type(ID) when 120 =< ID, ID =< 130 -> catalyst;
+equipment_type(ID) when 131 =< ID, ID =< 132 -> pyromancy_flame;
+equipment_type(ID) when 133 =< ID, ID =< 139 -> talisman;
+equipment_type(ID) when 140 =< ID, ID =< 150 -> small_shield;
+equipment_type(ID) when 151 =< ID, ID =< 173 -> normal_shield;
+equipment_type(ID) when 174 =< ID, ID =< 182 -> large_shield;
+equipment_type(ID) when ID == 183            -> lanthanum;
+equipment_type(ID) when 184 =< ID, ID =< 250 -> head_armor;
+equipment_type(ID) when 251 =< ID, ID =< 306 -> chest_armor;
+equipment_type(ID) when 307 =< ID, ID =< 359 -> hand_armor;
+equipment_type(ID) when 360 =< ID, ID =< 415 -> leg_armor;
+equipment_type(ID) when 416 =< ID, ID =< 456 -> ring.
+
+
 -spec id(equipment()) -> id().
 id(Equipment) -> maps:get(id, Equipment).
 
@@ -180,9 +235,9 @@ requirements(Equipment) -> maps:get(requirements, Equipment).
 effects(Equipment) -> maps:get(effects, Equipment).
 
 
--spec equip_weight(equipment()) -> dss_maybe:maybe(pos_integer()).
-equip_weight(Equipment) ->
-    maps:get(equipWeight, Equipment).
+-spec equip_weight_magnification(equipment()) -> dss_maybe:maybe(pos_integer()).
+equip_weight_magnification(Equipment) ->
+    maps:get(equipWeightMagnification, Equipment).
 
 
 -spec attunement_slots(equipment()) -> dss_maybe:maybe(pos_integer()).
@@ -190,15 +245,15 @@ attunement_slots(Equipment) ->
     maps:get(attunementSlots, Equipment).
 
 
--spec from_mongo_map(map(), equipment_type() | weqpon | shield) -> equipment().
+-spec from_mongo_map(map(), equipment_type() | weqpon | shield) -> ring() | head_armor() | equipment() | armor().
 from_mongo_map(MongoMap, ring) ->
     #{ id          => maps:get(<<"_id">>    , MongoMap)
      , name        => maps:get(<<"name">>   , MongoMap)
      , effects     => maps:get(<<"effects">>, MongoMap)
-     , equipWeight =>
-            case maps:get(<<"equipWeight">>, MongoMap) of
+     , equipWeightMagnification =>
+            case maps:get(<<"equipWeightMagnification">>, MongoMap) of
                 undefined -> none;
-                EqpWeight -> EqpWeight
+                EWM       -> EWM
             end
      , attunementSlots =>
             case maps:get(<<"attunementSlots">>, MongoMap) of

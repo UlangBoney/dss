@@ -101,16 +101,16 @@ element_to_json_value(Ring, ring) ->
       , {<<"attunementSlots">>, AttunementSlots}
     ]};
 element_to_json_value(HeadArmor, head_armor) ->
-    EquipWeight = case dss_equipment:equip_weight(HeadArmor) of
-        none -> null;
-        EW   -> EW
+    EWM = case dss_equipment:equip_weight_magnification(HeadArmor) of
+        none  -> null;
+        EqpWM -> EqpWM
     end,
     {[
         {<<"id">>         , dss_equipment:id(HeadArmor)}
       , {<<"name">>       , dss_equipment:name(HeadArmor)}
       , {<<"weight">>     , dss_equipment:weight(HeadArmor)}
       , {<<"effects">>    , dss_equipment:effects(HeadArmor)}
-      , {<<"equipWeight">>, EquipWeight}
+      , {<<"equipWeightMagnification">>, EWM}
     ]};
 element_to_json_value(Equipment, EqpType)
     when EqpType == chest_armor; EqpType == hand_armor; EqpType == leg_armor ->

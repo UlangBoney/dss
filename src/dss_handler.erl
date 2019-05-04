@@ -21,7 +21,7 @@ class_id(reverse, ID) -> {ok, ID}.
 -spec equipment_id(forward | reverse, pos_integer())
     -> {ok, dss_equipment:id()} | {error, atom()}.
 equipment_id(forward, ID) ->
-    case re:run(ID, <<"^[1-9]$|^[1-5][0-9]$|^6[0-7]$">>, [global]) of
+    case re:run(ID, <<"^[1-9]$|^[1-9][0-9]$|^[1-3][0-9][0-9]$|^4[0-4][0-9]$|^45[0-6]$">>, [global]) of
         {match, _} -> {ok, binary_to_integer(ID)};
         nomatch    -> {error, not_a_id}
     end;
@@ -80,6 +80,11 @@ handler() ->
             , [{equipmentType, fun equipment_type/2}
               ,{equipmentID, fun equipment_id/2}]
             , d_webui_equipment_priv, element}
+          , {"/v1/skill-simulator"
+            , d_webui_skill_simulator_priv, collection}
+          , {"/v1/skill-simulator/:classID"
+            , [ {classID, fun class_id/2} ]
+            , d_webui_skill_simulator_priv, element}
         ]}
     ]).
 
