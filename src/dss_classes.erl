@@ -110,8 +110,9 @@ faith(Class) -> maps:get(faith, Class).
 
 -spec from_mongo_map(map(), {none, classes}) -> class().
 from_mongo_map(MongoMap, _) ->
-    #{ id           => maps:get(<<"_id">>         , MongoMap)
-     , name         => maps:get(<<"name">>        , MongoMap)
+    #{ id           => maps:get(<<"_id">>, MongoMap)
+     , name         => #{ english  => maps:get(<<"english">>, maps:get(<<"name">>, MongoMap))
+                        , japanese => maps:get(<<"japanese">>, maps:get(<<"name">>, MongoMap))}
      , levels       => maps:get(<<"levels">>      , MongoMap)
      , vitality     => maps:get(<<"vitality">>    , MongoMap)
      , attunement   => maps:get(<<"attunement">>  , MongoMap)
