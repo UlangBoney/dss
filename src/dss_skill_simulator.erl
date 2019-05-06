@@ -266,7 +266,7 @@ calculate_equip_weight(Character, QsList) ->
 
 
 -spec sum_weight(character(), [atom()], pos_integer()) -> pos_integer().
-sum_weight(Character, [], Sum) -> Sum;
+sum_weight(_, [], Sum) -> Sum;
 
 sum_weight(Character, [Parameter | Tail], Sum) ->
     case maps:get(Parameter, Character) of
@@ -280,7 +280,7 @@ sum_weight(Character, [Parameter | Tail], Sum) ->
 
 
 -spec equip_weight_levels(character(), integer() | float(), pos_integer()) -> character().
-equip_weight_levels(Character, CharEQW, 0) ->
+equip_weight_levels(Character, _, 0) ->
     Character;
 
 equip_weight_levels(Character, CharEQW, 1) ->
@@ -335,7 +335,7 @@ requirement_(Character, EqpID) ->
     requirement_(Character, EqpID, List).
 
 -spec requirement_(character(), pos_integer(), [atom()]) -> character().
-requirement_(Character, EqpID, []) -> Character;
+requirement_(Character, _, []) -> Character;
 
 requirement_(Character, EqpID, [Parameter | Tail]) ->
     Eqp = dss_equipment:get(dss_equipment:equipment_type(EqpID), EqpID),

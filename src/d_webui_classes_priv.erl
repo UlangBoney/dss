@@ -51,10 +51,10 @@ resource_exists(Req, State={provided_element, ClassID}) ->
         cowboy_req:req(), state()
     ) -> {[{binary() | {binary(), binary(), '*'
             | [{binary(), binary()}]}, atom()}], cowboy_req:req(), state()}.
-content_types_provided(Req, State=inited_collection) ->
+content_types_provided(Req, inited_collection) ->
     {[{{<<"application">>, <<"json">>, '*'}, element_to_list}], Req, provided_collection};
 
-content_types_provided(Req, State={inited_element, ClassID}) ->
+content_types_provided(Req, {inited_element, ClassID}) ->
     {[{{<<"application">>, <<"json">>, '*'}, element_to_JSON}], Req, {provided_element, ClassID}}.
 
 

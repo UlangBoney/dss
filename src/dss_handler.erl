@@ -14,7 +14,6 @@ class_id(forward, ID) ->
         {match, _} -> {ok, binary_to_integer(ID)};
         nomatch    -> {error, not_a_id}
     end;
-class_id(forward, _)  -> {error, not_a_id};
 class_id(reverse, ID) -> {ok, ID}.
 
 
@@ -25,7 +24,6 @@ equipment_id(forward, ID) ->
         {match, _} -> {ok, binary_to_integer(ID)};
         nomatch    -> {error, not_a_id}
     end;
-equipment_id(forward, _)  -> {error, not_a_id};
 equipment_id(reverse, ID) -> {ok, ID}.
 
 
