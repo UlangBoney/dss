@@ -21,6 +21,7 @@
   , resistance/1
   , intelligence/1
   , faith/1
+  , attunement_slots/1
 ]).
 
 -include("dss_error.hrl").
@@ -108,19 +109,24 @@ intelligence(Class) -> maps:get(intelligence, Class).
 faith(Class) -> maps:get(faith, Class).
 
 
+-spec attunement_slots(class()) -> pos_integer().
+attunement_slots(Class) -> maps:get(attunementSlots, Class).
+
+
 -spec from_mongo_map(map(), {none, classes}) -> class().
 from_mongo_map(MongoMap, _) ->
-    #{ id           => maps:get(<<"_id">>, MongoMap)
-     , name         => #{ english  => maps:get(<<"english">>, maps:get(<<"name">>, MongoMap))
-                        , japanese => maps:get(<<"japanese">>, maps:get(<<"name">>, MongoMap))}
-     , levels       => maps:get(<<"levels">>      , MongoMap)
-     , vitality     => maps:get(<<"vitality">>    , MongoMap)
-     , attunement   => maps:get(<<"attunement">>  , MongoMap)
-     , endurance    => maps:get(<<"endurance">>   , MongoMap)
-     , strength     => maps:get(<<"strength">>    , MongoMap)
-     , dexterity    => maps:get(<<"dexterity">>   , MongoMap)
-     , resistance   => maps:get(<<"resistance">>  , MongoMap)
-     , intelligence => maps:get(<<"intelligence">>, MongoMap)
-     , faith        => maps:get(<<"faith">>       , MongoMap)
+    #{ id              => maps:get(<<"_id">>, MongoMap)
+     , name            => #{ english  => maps:get(<<"english">>, maps:get(<<"name">>, MongoMap))
+                           , japanese => maps:get(<<"japanese">>, maps:get(<<"name">>, MongoMap))}
+     , levels          => maps:get(<<"levels">>         , MongoMap)
+     , vitality        => maps:get(<<"vitality">>       , MongoMap)
+     , attunement      => maps:get(<<"attunement">>     , MongoMap)
+     , endurance       => maps:get(<<"endurance">>      , MongoMap)
+     , strength        => maps:get(<<"strength">>       , MongoMap)
+     , dexterity       => maps:get(<<"dexterity">>      , MongoMap)
+     , resistance      => maps:get(<<"resistance">>     , MongoMap)
+     , intelligence    => maps:get(<<"intelligence">>   , MongoMap)
+     , faith           => maps:get(<<"faith">>          , MongoMap)
+     , attunementSlots => maps:get(<<"attunementSlots">>, MongoMap)
     }.
 
