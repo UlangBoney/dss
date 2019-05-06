@@ -343,7 +343,7 @@ requirement_(Character, EqpID, [Parameter | Tail]) ->
     CharValue = maps:get(Parameter, Character),
     Character1 = case maps:get(atom_to_binary(Parameter, utf8), Require) of
         RequireVal when RequireVal > CharValue ->
-            Diff = Require - CharValue,
+            Diff = RequireVal - CharValue,
             StrUped = maps:put(Parameter, CharValue + Diff, Character),
             maps:put(levels, levels(Character) + Diff, StrUped);
         RequireVal when RequireVal =< CharValue ->

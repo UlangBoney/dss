@@ -85,7 +85,7 @@ element_to_JSON(Req, State={existed_element, Equipment, EqpType}) ->
       , dss_equipment:detail()}
     ) -> jsone:json_value().
 element_to_json_value(Ring, ring) ->
-    EquipWeight = case dss_equipment:equip_weight(Ring) of
+    EWM = case dss_equipment:equip_weight_magnification(Ring) of
         {value, EW} -> EW;
         none        -> null
     end,
@@ -96,24 +96,18 @@ element_to_json_value(Ring, ring) ->
     {[
         {<<"equipmentID">>    , dss_equipment:id(Ring)}
       , {<<"name">>           , dss_equipment:name(Ring)}
-      , {<<"effects">>        , dss_equipment:effects(Ring)}
-      , {<<"equipWeight">>    , EquipWeight}
+      , {<<"equipWeightMagnification">>, EWM}
       , {<<"attunementSlots">>, AttunementSlots}
     ]};
 element_to_json_value(HeadArmor, head_armor) ->
-    Effects = case dss_equipment:effects(HeadArmor) of
-        {value, Eff} -> Eff;
-        none         -> null
-    end,
     EWM = case dss_equipment:equip_weight_magnification(HeadArmor) of
         {value, EqpWM} -> EqpWM;
         none           -> null
     end,
     {[
-        {<<"equipmentID">>         , dss_equipment:id(HeadArmor)}
+        {<<"equipmentID">>, dss_equipment:id(HeadArmor)}
       , {<<"name">>       , dss_equipment:name(HeadArmor)}
       , {<<"weight">>     , dss_equipment:weight(HeadArmor)}
-      , {<<"effects">>    , Effects}
       , {<<"equipWeightMagnification">>, EWM}
     ]};
 element_to_json_value(Equipment, EqpType)
