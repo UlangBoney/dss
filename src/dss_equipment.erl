@@ -271,7 +271,11 @@ from_mongo_map(MongoMap, Type) when Type == weapon; Type == shield ->
     #{ id           => maps:get(<<"_id">>         , MongoMap)
      , name         => maps:get(<<"name">>        , MongoMap)
      , weight       => maps:get(<<"weight">>      , MongoMap)
-     , requirements => maps:get(<<"requirements">>, MongoMap)
+     , requirements =>
+            #{ strength => maps:get(<<"strength">>, maps:get(<<"requirements">>, MongoMap))
+             , dexterity => maps:get(<<"dexterity">>, maps:get(<<"requirements">>, MongoMap))
+             , intelligence => maps:get(<<"intelligence">>, maps:get(<<"requirements">>, MongoMap))
+             , faith => maps:get(<<"faith">>, maps:get(<<"requirements">>, MongoMap))}
     };
 from_mongo_map(MongoMap, _) ->
     #{ id     => maps:get(<<"_id">>   , MongoMap)

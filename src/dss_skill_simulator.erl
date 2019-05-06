@@ -72,7 +72,7 @@ simulator(ClassID, QsList) ->
     LevelUped  = levels_up(Character0, QsList),
     SlotsPlus  = slots_plus_by_ring(LevelUped),
     Calculated = calculate_equip_weight(SlotsPlus, QsList),
-    requirement(Calculated).
+    requirement(Calculated, QsList).
 
 
 -spec equipment_list([{unicode:unicode_binary(), unicode:unicode_binary()}]) -> [dss_equipment:equipment()].
@@ -310,46 +310,102 @@ equip_weight_levels(Character, CharEQW, WantEQW) ->
     end.
 
 
--spec requirement(character()) -> character().
-requirement(Character) ->
+-spec requirement(character(), [{unicode:unicode_binary(), unicode:unicode_binary()}]) -> character().
+requirement(Character, QsList) ->
     List = [ rightWeapon1, rightWeapon2, leftWeapon1, leftWeapon2 ],
-    requirement(Character, List).
+    StrengthUped = strength_up(Character, List, QsList),
+    status_up(StrengthUped, List).
 
 
--spec requirement(character(), [atom()]) -> character().
-requirement(Character, []) -> Character;
+-spec strength_up(character(), [{unicode:unicode_binary(), unicode:unicode_binary()}], [atom()]) -> character().
+strength_up(Character, ParamList, QsList) ->
+    RequireStrList = requirement_strength(Character, ParamList),
+    BaseStr = maps:get(strength, Character),
+    case lists:max(RequireStrList) of
+        RequireStr when RequireStr > BaseStr ->
+            case lists:keyfind(<<"hold">>, 1, QsList) of
+                {<<"hold">>, Hold} ->
+                    HoldVal = case re:run(Hold, <<"^[0-2]$">>, [global, {capture, all, binary}]) of
+                        {match, [[Matched]]} -> binary_to_integer(Matched);
+                        nomatch -> 0
+                    end,
+                    Magnification = case HoldVal of
+                        2    -> 1.5;
+                        _    -> 1
+                    end,
+                    WantStr = RequireStr / Magnification,
+                    Diff = math:ceil(WantStr) - BaseStr,
+                    case Diff of
+                        Diff when Diff =< 0 ->
+                            Character;
+                        Diff when Diff > 0 ->
+                            StrUped = maps:put(strength, BaseStr + Diff, Character),
+                            maps:put(levels, levels(Character) + Diff, StrUped)
+                    end;
+                false ->
+                    Character
+            end;
+        RequireStr when RequireStr =< BaseStr ->
+            Character
+    end.
 
-requirement(Character, [Parameter | Tail]) ->
+
+-spec requirement_strength(character(), [atom()]) -> [pos_integer()].
+requirement_strength(Character, ParamList) ->
+    requirement_strength(Character, ParamList, []).
+
+
+-spec requirement_strength(character(), [atom()], [pos_integer()]) -> [pos_integer()].
+requirement_strength(_, [], RequireStrList) ->
+    RequireStrList;
+
+requirement_strength(Character, [Param | Tail], RequireStrList) ->
+    case maps:get(Param, Character) of
+        {value, EqpIDMap} ->
+            EqpID = maps:get(equipmentID, EqpIDMap),
+            Eqp = dss_equipment:get(dss_equipment:equipment_type(EqpID), EqpID),
+            EquipStr = maps:get(strength, maps:get(requirements, Eqp)),
+            requirement_strength(Character, Tail, lists:append(RequireStrList, [EquipStr]));
+        none ->
+            requirement_strength(Character, Tail, lists:append(RequireStrList, [0]))
+    end.
+
+
+-spec status_up(character(), [atom()]) -> character().
+status_up(Character, []) ->
+    Character;
+
+status_up(Character, [Parameter | Tail]) ->
     case maps:get(Parameter, Character) of
         {value, EqpIDMap} ->
-            Character1 = requirement_(Character, maps:get(equipmentID, EqpIDMap)),
-            requirement(Character1, Tail);
-        none -> ok
-    end,
-    requirement(Character, Tail).
+            Character1 = status_up_(Character, maps:get(equipmentID, EqpIDMap)),
+            status_up(Character1, Tail);
+        none ->
+            status_up(Character, Tail)
+    end.
 
 
--spec requirement_(character(), pos_integer()) -> character().
-requirement_(Character, EqpID) ->
-    List = [ strength, dexterity, intelligence, faith ],
-    requirement_(Character, EqpID, List).
+-spec status_up_(character(), pos_integer()) -> character().
+status_up_(Character, EqpID) ->
+    List = [ dexterity, intelligence, faith ],
+    status_up_(Character, EqpID, List).
 
--spec requirement_(character(), pos_integer(), [atom()]) -> character().
-requirement_(Character, _, []) -> Character;
+-spec status_up_(character(), pos_integer(), [atom()]) -> character().
+status_up_(Character, _, []) -> Character;
 
-requirement_(Character, EqpID, [Parameter | Tail]) ->
+status_up_(Character, EqpID, [Parameter | Tail]) ->
     Eqp = dss_equipment:get(dss_equipment:equipment_type(EqpID), EqpID),
     Require = dss_equipment:requirements(Eqp),
-    CharValue = maps:get(Parameter, Character),
-    Character1 = case maps:get(atom_to_binary(Parameter, utf8), Require) of
-        RequireVal when RequireVal > CharValue ->
-            Diff = RequireVal - CharValue,
-            StrUped = maps:put(Parameter, CharValue + Diff, Character),
+    BaseValue = maps:get(Parameter, Character),
+    Character1 = case maps:get(Parameter, Require) of
+        RequireVal when RequireVal > BaseValue ->
+            Diff = RequireVal - BaseValue,
+            StrUped = maps:put(Parameter, BaseValue + Diff, Character),
             maps:put(levels, levels(Character) + Diff, StrUped);
-        RequireVal when RequireVal =< CharValue ->
+        RequireVal when RequireVal =< BaseValue ->
             Character
     end,
-    requirement_(Character1, EqpID, Tail).
+    status_up_(Character1, EqpID, Tail).
 
 
 -spec class_id(character()) -> dss_classes:id().
