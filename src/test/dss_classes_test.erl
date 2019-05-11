@@ -1,11 +1,9 @@
 -module(dss_classes_test).
--export([
-    lookup_test/0
-]).
 
 -include_lib("eunit/include/eunit.hrl").
 
 
+-spec lookup_test() -> ok.
 lookup_test() ->
     ok = lists:foreach(
         fun(ClassID) ->
@@ -15,6 +13,14 @@ lookup_test() ->
     ).
 
 
+-spec list_test() -> ok.
+list_test() ->
+    ClassesList = dss_classes:list(),
+    10 = length(ClassesList),
+    ok.
+
+
+-spec lookup_test(pos_integer()) -> pos_integer().
 lookup_test(0) ->
     none = dss_classes:lookup(0);
 lookup_test(1) ->
@@ -40,6 +46,22 @@ lookup_test(10) ->
 lookup_test(11) ->
     none = dss_classes:lookup(11).
 
+
+-spec lookup_test(
+        dss_classes:id(),
+        unicode:unicode_binary(),
+        unicode:unicode_binary(),
+        pos_integer(),
+        pos_integer(),
+        pos_integer(),
+        pos_integer(),
+        pos_integer(),
+        pos_integer(),
+        pos_integer(),
+        pos_integer(),
+        pos_integer(),
+        pos_integer()
+    ) -> pos_integer().
 lookup_test(ClassID, Ename, Jname, Levels, Vitality, Attunement, Endurance
          , Strength, Dexterity, Resistance, Intelligence, Faith, AtttSlots) ->
     {value, Class} = dss_classes:lookup(ClassID),
