@@ -244,8 +244,12 @@ attunement_slots(Equipment) ->
 
 -spec from_mongo_map(map(), equipment_type() | weqpon | shield) -> ring() | head_armor() | equipment() | armor().
 from_mongo_map(MongoMap, ring) ->
-    #{ id          => maps:get(<<"_id">>    , MongoMap)
-     , name        => maps:get(<<"name">>   , MongoMap)
+    #{ id   => maps:get(<<"_id">>, MongoMap)
+     , name =>
+            case maps:get(<<"name">>, MongoMap) of
+                Name -> #{ english  => maps:get(<<"english">> , Name),
+                           japanese => maps:get(<<"japanese">>, Name)}
+            end
      , equipWeightMagnification =>
             case maps:get(<<"equipWeightMagnification">>, MongoMap) of
                 undefined -> none;
@@ -258,9 +262,13 @@ from_mongo_map(MongoMap, ring) ->
             end
     };
 from_mongo_map(MongoMap, head_armor) ->
-    #{ id      => maps:get(<<"_id">>   , MongoMap)
-     , name    => maps:get(<<"name">>  , MongoMap)
-     , weight  => float(maps:get(<<"weight">>, MongoMap))
+    #{ id   => maps:get(<<"_id">>, MongoMap)
+     , name =>
+            case maps:get(<<"name">>, MongoMap) of
+                Name -> #{ english  => maps:get(<<"english">> , Name),
+                           japanese => maps:get(<<"japanese">>, Name)}
+            end
+     , weight => maps:get(<<"weight">>, MongoMap)
      , equipWeightMagnification =>
             case maps:get(<<"equipWeightMagnification">>, MongoMap) of
                 undefined -> none;
@@ -268,9 +276,13 @@ from_mongo_map(MongoMap, head_armor) ->
             end
     };
 from_mongo_map(MongoMap, Type) when Type == weapon; Type == shield ->
-    #{ id           => maps:get(<<"_id">>         , MongoMap)
-     , name         => maps:get(<<"name">>        , MongoMap)
-     , weight       => maps:get(<<"weight">>      , MongoMap)
+    #{ id   => maps:get(<<"_id">>, MongoMap)
+     , name =>
+            case maps:get(<<"name">>, MongoMap) of
+                Name -> #{ english  => maps:get(<<"english">> , Name),
+                           japanese => maps:get(<<"japanese">>, Name)}
+            end
+     , weight => maps:get(<<"weight">>, MongoMap)
      , requirements =>
             #{ strength => maps:get(<<"strength">>, maps:get(<<"requirements">>, MongoMap))
              , dexterity => maps:get(<<"dexterity">>, maps:get(<<"requirements">>, MongoMap))
@@ -278,8 +290,12 @@ from_mongo_map(MongoMap, Type) when Type == weapon; Type == shield ->
              , faith => maps:get(<<"faith">>, maps:get(<<"requirements">>, MongoMap))}
     };
 from_mongo_map(MongoMap, _) ->
-    #{ id     => maps:get(<<"_id">>   , MongoMap)
-     , name   => maps:get(<<"name">>  , MongoMap)
+    #{ id   => maps:get(<<"_id">>, MongoMap)
+     , name =>
+            case maps:get(<<"name">>, MongoMap) of
+                Name -> #{ english  => maps:get(<<"english">> , Name),
+                           japanese => maps:get(<<"japanese">>, Name)}
+            end
      , weight => maps:get(<<"weight">>, MongoMap)
     }.
 
