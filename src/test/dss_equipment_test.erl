@@ -6,13 +6,15 @@
 -spec lookup_test() -> ok.
 lookup_test() ->
      ok = dagger_lookup_test(),
-     ok = straight_sword_lookup_test().
+     ok = straight_sword_lookup_test(),
+     ok = greats_sword_lookup_test().
 
 
 -spec list_test() -> ok.
 list_test() ->
      ok = dagger_list_test(),
-     ok = straight_sword_list_test().
+     ok = straight_sword_list_test(),
+     ok = greats_sword_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -36,6 +38,18 @@ straight_sword_lookup_test() ->
             straight_sword_lookup_test(EquipmentID)
         end,
         lists:seq(7, 19)
+    ).
+
+
+-spec greats_sword_lookup_test() -> ok.
+greats_sword_lookup_test() ->
+    none = dss_equipment:lookup(19, greats_sword),
+    none = dss_equipment:lookup(33, greats_sword),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            greats_sword_lookup_test(EquipmentID)
+        end,
+        lists:seq(20, 32)
     ).
 
 
@@ -70,6 +84,13 @@ dagger_list_test() ->
 straight_sword_list_test() ->
     StraightSwordList = dss_equipment:list(straight_sword),
     12 = length(StraightSwordList),
+    ok.
+
+
+-spec greats_sword_list_test() -> ok.
+greats_sword_list_test() ->
+    GreatsSwordList = dss_equipment:list(greats_sword),
+    12 = length(GreatsSwordList),
     ok.
 
 
@@ -191,4 +212,86 @@ straight_sword_lookup_test(19) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(19, straight_sword, <<"straight sword hilt">>, <<"直剣の柄">>, 1, Requirements).
+
+
+-spec greats_sword_lookup_test(pos_integer()) -> pos_integer().
+greats_sword_lookup_test(20) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(20, greats_sword, <<"bastard sword">>, <<"バスタードソード">>, 6, Requirements);
+greats_sword_lookup_test(21) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(21, greats_sword, <<"claymore">>, <<"クレイモア">>, 6, Requirements);
+greats_sword_lookup_test(22) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(22, greats_sword, <<"man serpent greatsword">>, <<"蛇人の大剣">>, 10, Requirements);
+greats_sword_lookup_test(23) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(23, greats_sword, <<"flamberge">>, <<"フランベルジェ">>, 6, Requirements);
+greats_sword_lookup_test(24) ->
+    Requirements = #{ strenght     => 20
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(24, greats_sword, <<"crystal greatsword">>, <<"結晶大剣">>, 8, Requirements);
+greats_sword_lookup_test(25) ->
+    Requirements = #{ strenght     => 20
+                    , dexterity    => 18
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(25, greats_sword, <<"black knight sword">>, <<"黒騎士の剣">>, 8, Requirements);
+greats_sword_lookup_test(26) ->
+    Requirements = #{ strenght     => 40
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(26, greats_sword, <<"stone greatsword">>, <<"石の大剣">>, 18, Requirements);
+greats_sword_lookup_test(27) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 18
+                    , intelligence => 18
+                    , faith        => 18},
+    weapon_lookup_test(27, greats_sword, <<"greatsword of artorias">>, <<"アウトリウスの大剣">>, 10, Requirements);
+greats_sword_lookup_test(28) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 18
+                    , intelligence => 20
+                    , faith        => 20},
+    weapon_lookup_test(28, greats_sword, <<"greatsword of artorias (cursed)">>, <<"アウトリウスの大剣 (聖)">>, 10, Requirements);
+greats_sword_lookup_test(29) ->
+    Requirements = #{ strenght     => 22
+                    , dexterity    => 18
+                    , intelligence => 18
+                    , faith        => 18},
+    weapon_lookup_test(29, greats_sword, <<"abyss greatsword">>, <<"深淵の大剣">>, 9, Requirements);
+greats_sword_lookup_test(30) ->
+    Requirements = #{ strenght     => 20
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(30, greats_sword, <<"great lord greatsword">>, <<"大王の大剣">>, 8, Requirements);
+greats_sword_lookup_test(31) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 10
+                    , intelligence => 28
+                    , faith        => 0},
+    weapon_lookup_test(31, greats_sword, <<"moonlight greatsword">>, <<"月光の大剣">>, 6, Requirements);
+greats_sword_lookup_test(32) ->
+    Requirements = #{ strenght     => 20
+                    , dexterity    => 16
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(32, greats_sword, <<"obsidian greatsword">>, <<"穀粒の大剣">>, 8, Requirements).
+
 
