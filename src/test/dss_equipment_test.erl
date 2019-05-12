@@ -7,7 +7,8 @@
 lookup_test() ->
      ok = dagger_lookup_test(),
      ok = straight_sword_lookup_test(),
-     ok = greats_sword_lookup_test().
+     ok = greats_sword_lookup_test(),
+     ok = ultra_greatsword_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -50,6 +51,18 @@ greats_sword_lookup_test() ->
             greats_sword_lookup_test(EquipmentID)
         end,
         lists:seq(20, 32)
+    ).
+
+
+-spec ultra_greatsword_lookup_test() -> ok.
+ultra_greatsword_lookup_test() ->
+    none = dss_equipment:lookup(32, ultra_greatsword),
+    none = dss_equipment:lookup(38, ultra_greatsword),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            ultra_greatsword_lookup_test(EquipmentID)
+        end,
+        lists:seq(33, 37)
     ).
 
 
@@ -294,4 +307,36 @@ greats_sword_lookup_test(32) ->
                     , faith        => 0},
     weapon_lookup_test(32, greats_sword, <<"obsidian greatsword">>, <<"穀粒の大剣">>, 8, Requirements).
 
+
+-spec ultra_greatsword_lookup_test(pos_integer()) -> pos_integer().
+ultra_greatsword_lookup_test(33) ->
+    Requirements = #{ strenght     => 28
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(33, ultra_greatsword, <<"greatsword">>, <<"グレートソード">>, 12, Requirements);
+ultra_greatsword_lookup_test(34) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(34, ultra_greatsword, <<"zweihander">>, <<"ツヴァイヘンダー">>, 10, Requirements);
+ultra_greatsword_lookup_test(35) ->
+    Requirements = #{ strenght     => 40
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(35, ultra_greatsword, <<"demon great machete">>, <<"デーモンの大鉈">>, 18, Requirements);
+ultra_greatsword_lookup_test(36) ->
+    Requirements = #{ strenght     => 32
+                    , dexterity    => 18
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(36, ultra_greatsword, <<"black knight greatsword">>, <<"黒騎士の大剣">>, 14, Requirements);
+ultra_greatsword_lookup_test(37) ->
+    Requirements = #{ strenght     => 50
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(37, ultra_greatsword, <<"dragon greatsword">>, <<"古竜の大剣">>, 24, Requirements).
 
