@@ -27,7 +27,8 @@ lookup_test() ->
      ok = long_spear_lookup_test(),
      ok = halberd_lookup_test(),
      ok = whip_lookup_test(),
-     ok = fist_lookup_test().
+     ok = fist_lookup_test(),
+     ok = bow_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -48,7 +49,8 @@ list_test() ->
      ok = long_spear_list_test(),
      ok = halberd_list_test(),
      ok = whip_list_test(),
-     ok = fist_list_test().
+     ok = fist_list_test(),
+     ok = bow_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -251,6 +253,18 @@ fist_lookup_test() ->
     ).
 
 
+-spec bow_lookup_test() -> ok.
+bow_lookup_test() ->
+    none = dss_equipment:lookup(108, bow),
+    none = dss_equipment:lookup(114, bow),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            bow_lookup_test(EquipmentID)
+        end,
+        lists:seq(109, 113)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -387,6 +401,13 @@ whip_list_test() ->
 fist_list_test() ->
     FistList = dss_equipment:list(fist),
     4 = length(FistList),
+    ok.
+
+
+-spec bow_list_test() -> ok.
+bow_list_test() ->
+    BowList = dss_equipment:list(bow),
+    5 = length(BowList),
     ok.
 
 
@@ -1087,4 +1108,37 @@ fist_lookup_test(108) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(108, fist, <<"dark hand">>, <<"ダークハンド">>, 0.5, Requirements).
+
+
+-spec bow_lookup_test(pos_integer()) -> pos_integer().
+bow_lookup_test(109) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(109, bow, <<"short bow">>, <<"ショートボウ">>, 0.5, Requirements);
+bow_lookup_test(110) ->
+    Requirements = #{ strenght     => 11
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(110, bow, <<"composite bow">>, <<"コンポジットボウ">>, 1, Requirements);
+bow_lookup_test(111) ->
+    Requirements = #{ strenght     => 9
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(111, bow, <<"long bow">>, <<"ロングボウ">>, 1, Requirements);
+bow_lookup_test(112) ->
+    Requirements = #{ strenght     => 9
+                    , dexterity    => 18
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(112, bow, <<"black bow of pharis">>, <<"ファリスの黒弓">>, 1, Requirements);
+bow_lookup_test(113) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 16
+                    , intelligence => 0
+                    , faith        => 16},
+    weapon_lookup_test(113, bow, <<"darkmoon bow">>, <<"暗月の弓">>, 1, Requirements).
 
