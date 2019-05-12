@@ -14,7 +14,8 @@ lookup_test() ->
      ok = dagger_lookup_test(),
      ok = straight_sword_lookup_test(),
      ok = greats_sword_lookup_test(),
-     ok = ultra_greatsword_lookup_test().
+     ok = ultra_greatsword_lookup_test(),
+     ok = curved_sword_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -22,7 +23,8 @@ list_test() ->
      ok = dagger_list_test(),
      ok = straight_sword_list_test(),
      ok = greats_sword_list_test(),
-     ok = ultra_greatsword_list_test().
+     ok = ultra_greatsword_list_test(),
+     ok = curved_sword_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -73,6 +75,18 @@ ultra_greatsword_lookup_test() ->
     ).
 
 
+-spec curved_sword_lookup_test() -> ok.
+curved_sword_lookup_test() ->
+    none = dss_equipment:lookup(37, curved_sword),
+    none = dss_equipment:lookup(45, curved_sword),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            curved_sword_lookup_test(EquipmentID)
+        end,
+        lists:seq(38, 44)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -118,6 +132,13 @@ greats_sword_list_test() ->
 ultra_greatsword_list_test() ->
     UltraGreatswordList = dss_equipment:list(ultra_greatsword),
     5 = length(UltraGreatswordList),
+    ok.
+
+
+-spec curved_sword_list_test() -> ok.
+curved_sword_list_test() ->
+    CurvedSwordList = dss_equipment:list(curved_sword),
+    7 = length(CurvedSwordList),
     ok.
 
 
@@ -353,4 +374,49 @@ ultra_greatsword_lookup_test(37) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(37, ultra_greatsword, <<"dragon greatsword">>, <<"古竜の大剣">>, 24, Requirements).
+
+
+-spec curved_sword_lookup_test(pos_integer()) -> pos_integer().
+curved_sword_lookup_test(38) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 13
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(38, curved_sword, <<"scimitar">>, <<"シミター">>, 1.5, Requirements);
+curved_sword_lookup_test(39) ->
+    Requirements = #{ strenght     => 9
+                    , dexterity    => 13
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(39, curved_sword, <<"falchion">>, <<"ファルシオン">>, 2.5, Requirements);
+curved_sword_lookup_test(40) ->
+    Requirements = #{ strenght     => 9
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(40, curved_sword, <<"shotel">>, <<"ショーテル">>, 2.5, Requirements);
+curved_sword_lookup_test(41) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 20
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(41, curved_sword, <<"painting guardian sword">>, <<"絵画守りの曲刀">>, 1.5, Requirements);
+curved_sword_lookup_test(42) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(42, curved_sword, <<"jagged ghost blade">>, <<"亡霊のギザギザ刃">>, 1.5, Requirements);
+curved_sword_lookup_test(43) ->
+    Requirements = #{ strenght     => 9
+                    , dexterity    => 25
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(43, curved_sword, <<"gold tracer">>, <<"黄金の残光">>, 2, Requirements);
+curved_sword_lookup_test(44) ->
+    Requirements = #{ strenght     => 11
+                    , dexterity    => 13
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(44, curved_sword, <<"quelaag's fury sword">>, <<"クラーグの魔剣">>, 3.5, Requirements).
 
