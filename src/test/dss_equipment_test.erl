@@ -29,7 +29,8 @@ lookup_test() ->
      ok = whip_lookup_test(),
      ok = fist_lookup_test(),
      ok = bow_lookup_test(),
-     ok = greatbow_lookup_test().
+     ok = greatbow_lookup_test(),
+     ok = crossbow_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -52,7 +53,8 @@ list_test() ->
      ok = whip_list_test(),
      ok = fist_list_test(),
      ok = bow_list_test(),
-     ok = greatbow_list_test().
+     ok = greatbow_list_test(),
+     ok = crossbow_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -279,6 +281,18 @@ greatbow_lookup_test() ->
     ).
 
 
+-spec crossbow_lookup_test() -> ok.
+crossbow_lookup_test() ->
+    none = dss_equipment:lookup(115, crossbow),
+    none = dss_equipment:lookup(120, crossbow),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            crossbow_lookup_test(EquipmentID)
+        end,
+        lists:seq(116, 119)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -429,6 +443,13 @@ bow_list_test() ->
 greatbow_list_test() ->
     GreatBowList = dss_equipment:list(greatbow),
     2 = length(GreatBowList),
+    ok.
+
+
+-spec crossbow_list_test() -> ok.
+crossbow_list_test() ->
+    CrossbowList = dss_equipment:list(crossbow),
+    4 = length(CrossbowList),
     ok.
 
 
@@ -1177,4 +1198,31 @@ greatbow_lookup_test(115) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(115, greatbow, <<"gough's greatbow">>, <<"ゴーの大弓">>, 13, Requirements).
+
+
+-spec crossbow_lookup_test(pos_integer()) -> pos_integer().
+crossbow_lookup_test(116) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 8
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(116, crossbow, <<"light crossbow">>, <<"ライトクロスボウ">>, 3, Requirements);
+crossbow_lookup_test(117) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 8
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(117, crossbow, <<"heavy crossbow">>, <<"ヘビークロスボウ">>, 5, Requirements);
+crossbow_lookup_test(118) ->
+    Requirements = #{ strenght     => 20
+                    , dexterity    => 16
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(118, crossbow, <<"sniper crossbow">>, <<"スナイパークロス">>, 8, Requirements);
+crossbow_lookup_test(119) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(119, crossbow, <<"avelyn">>, <<"アヴェリン">>, 6, Requirements).
 
