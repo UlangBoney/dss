@@ -15,7 +15,8 @@ lookup_test() ->
      ok = straight_sword_lookup_test(),
      ok = greats_sword_lookup_test(),
      ok = ultra_greatsword_lookup_test(),
-     ok = curved_sword_lookup_test().
+     ok = curved_sword_lookup_test(),
+     ok = curved_greatsword_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -24,7 +25,8 @@ list_test() ->
      ok = straight_sword_list_test(),
      ok = greats_sword_list_test(),
      ok = ultra_greatsword_list_test(),
-     ok = curved_sword_list_test().
+     ok = curved_sword_list_test(),
+     ok = curved_greatsword_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -87,6 +89,18 @@ curved_sword_lookup_test() ->
     ).
 
 
+-spec curved_greatsword_lookup_test() -> ok.
+curved_greatsword_lookup_test() ->
+    none = dss_equipment:lookup(44, curved_sword),
+    none = dss_equipment:lookup(48, curved_sword),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            curved_greatsword_lookup_test(EquipmentID)
+        end,
+        lists:seq(45, 47)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -139,6 +153,13 @@ ultra_greatsword_list_test() ->
 curved_sword_list_test() ->
     CurvedSwordList = dss_equipment:list(curved_sword),
     7 = length(CurvedSwordList),
+    ok.
+
+
+-spec curved_greatsword_list_test() -> ok.
+curved_greatsword_list_test() ->
+    CurvedGreatSwordList = dss_equipment:list(curved_greatsword),
+    3 = length(CurvedGreatSwordList),
     ok.
 
 
@@ -419,4 +440,25 @@ curved_sword_lookup_test(44) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(44, curved_sword, <<"quelaag's fury sword">>, <<"クラーグの魔剣">>, 3.5, Requirements).
+
+
+-spec curved_greatsword_lookup_test(pos_integer()) -> pos_integer().
+curved_greatsword_lookup_test(45) ->
+    Requirements = #{ strenght     => 28
+                    , dexterity    => 13
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(45, curved_greatsword, <<"murakumo">>, <<"ムラクモ">>, 12, Requirements);
+curved_greatsword_lookup_test(46) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 13
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(46, curved_greatsword, <<"server">>, <<"生贄刀">>, 10, Requirements);
+curved_greatsword_lookup_test(47) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 13
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(47, curved_greatsword, <<"gravelord sword">>, <<"墓王の剣">>, 10, Requirements).
 
