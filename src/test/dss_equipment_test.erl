@@ -21,7 +21,8 @@ lookup_test() ->
      ok = katana_lookup_test(),
      ok = axe_lookup_test(),
      ok = greataxe_lookup_test(),
-     ok = hammer_lookup_test().
+     ok = hammer_lookup_test(),
+     ok = great_hammer_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -36,7 +37,8 @@ list_test() ->
      ok = katana_list_test(),
      ok = axe_list_test(),
      ok = greataxe_list_test(),
-     ok = hammer_list_test().
+     ok = hammer_list_test(),
+     ok = great_hammer_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -171,6 +173,18 @@ hammer_lookup_test() ->
     ).
 
 
+-spec great_hammer_lookup_test() -> ok.
+great_hammer_lookup_test() ->
+    none = dss_equipment:lookup(76, hammer),
+    none = dss_equipment:lookup(83, hammer),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            great_hammer_lookup_test(EquipmentID)
+        end,
+        lists:seq(77, 82)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -265,6 +279,13 @@ greataxe_list_test() ->
 hammer_list_test() ->
     HammerList = dss_equipment:list(hammer),
     9 = length(HammerList),
+    ok.
+
+
+-spec great_hammer_list_test() -> ok.
+great_hammer_list_test() ->
+    GreatHammerList = dss_equipment:list(great_hammer),
+    6 = length(GreatHammerList),
     ok.
 
 
@@ -755,4 +776,43 @@ hammer_lookup_test(76) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(76, hammer, <<"hammer of vamos">>, <<"バモスのハンマー">>, 5, Requirements).
+
+
+-spec great_hammer_lookup_test(pos_integer()) -> pos_integer().
+great_hammer_lookup_test(77) ->
+    Requirements = #{ strenght     => 26
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(77, great_hammer, <<"large club">>, <<"ラージクラブ">>, 11, Requirements);
+great_hammer_lookup_test(78) ->
+    Requirements = #{ strenght     => 28
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(78, great_hammer, <<"great club">>, <<"グレートクラブ">>, 12, Requirements);
+great_hammer_lookup_test(79) ->
+    Requirements = #{ strenght     => 46
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(79, great_hammer, <<"demon's great hammer">>, <<"デーモンの大槌">>, 22, Requirements);
+great_hammer_lookup_test(80) ->
+    Requirements = #{ strenght     => 50
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 30},
+    weapon_lookup_test(80, great_hammer, <<"grant">>, <<"グラント">>, 24, Requirements);
+great_hammer_lookup_test(81) ->
+    Requirements = #{ strenght     => 40
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(81, great_hammer, <<"dragon tooth">>, <<"大竜牙">>, 18, Requirements);
+great_hammer_lookup_test(82) ->
+    Requirements = #{ strenght     => 58
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(82, great_hammer, <<"smough's hammer">>, <<"スモウハンマー">>, 28, Requirements).
 
