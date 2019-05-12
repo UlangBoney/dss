@@ -21,7 +21,8 @@ lookup_test() ->
 list_test() ->
      ok = dagger_list_test(),
      ok = straight_sword_list_test(),
-     ok = greats_sword_list_test().
+     ok = greats_sword_list_test(),
+     ok = ultra_greatsword_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -110,6 +111,13 @@ straight_sword_list_test() ->
 greats_sword_list_test() ->
     GreatsSwordList = dss_equipment:list(greats_sword),
     13 = length(GreatsSwordList),
+    ok.
+
+
+-spec ultra_greatsword_list_test() -> ok.
+ultra_greatsword_list_test() ->
+    UltraGreatswordList = dss_equipment:list(ultra_greatsword),
+    5 = length(UltraGreatswordList),
     ok.
 
 
