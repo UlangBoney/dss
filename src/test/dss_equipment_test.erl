@@ -26,7 +26,8 @@ lookup_test() ->
      ok = spear_lookup_test(),
      ok = long_spear_lookup_test(),
      ok = halberd_lookup_test(),
-     ok = whip_lookup_test().
+     ok = whip_lookup_test(),
+     ok = fist_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -46,7 +47,8 @@ list_test() ->
      ok = spear_list_test(),
      ok = long_spear_list_test(),
      ok = halberd_list_test(),
-     ok = whip_list_test().
+     ok = whip_list_test(),
+     ok = fist_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -237,6 +239,18 @@ whip_lookup_test() ->
     ).
 
 
+-spec fist_lookup_test() -> ok.
+fist_lookup_test() ->
+    none = dss_equipment:lookup(104, fist),
+    none = dss_equipment:lookup(109, fist),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            fist_lookup_test(EquipmentID)
+        end,
+        lists:seq(105, 108)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -366,6 +380,13 @@ halberd_list_test() ->
 whip_list_test() ->
     WhipList = dss_equipment:list(whip),
     3 = length(WhipList),
+    ok.
+
+
+-spec fist_list_test() -> ok.
+fist_list_test() ->
+    FistList = dss_equipment:list(fist),
+    4 = length(FistList),
     ok.
 
 
@@ -1039,4 +1060,31 @@ whip_lookup_test(104) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(104, whip, <<"guardian tail">>, <<"聖獣の尾">>, 5, Requirements).
+
+
+-spec fist_lookup_test(pos_integer()) -> pos_integer().
+fist_lookup_test(105) ->
+    Requirements = #{ strenght     => 5
+                    , dexterity    => 8
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(105, fist, <<"caestus">>, <<"セスタス">>, 0.5, Requirements);
+fist_lookup_test(106) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(106, fist, <<"craw">>, <<"かぎ爪">>, 1, Requirements);
+fist_lookup_test(107) ->
+    Requirements = #{ strenght     => 20
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(107, fist, <<"dragon bone fist">>, <<"竜骨の拳">>, 8, Requirements);
+fist_lookup_test(108) ->
+    Requirements = #{ strenght     => 0
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(108, fist, <<"dark hand">>, <<"ダークハンド">>, 0.5, Requirements).
 
