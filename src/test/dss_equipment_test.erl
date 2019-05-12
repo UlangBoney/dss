@@ -22,7 +22,8 @@ lookup_test() ->
      ok = axe_lookup_test(),
      ok = greataxe_lookup_test(),
      ok = hammer_lookup_test(),
-     ok = great_hammer_lookup_test().
+     ok = great_hammer_lookup_test(),
+     ok = spear_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -38,7 +39,8 @@ list_test() ->
      ok = axe_list_test(),
      ok = greataxe_list_test(),
      ok = hammer_list_test(),
-     ok = great_hammer_list_test().
+     ok = great_hammer_list_test(),
+     ok = spear_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -175,13 +177,25 @@ hammer_lookup_test() ->
 
 -spec great_hammer_lookup_test() -> ok.
 great_hammer_lookup_test() ->
-    none = dss_equipment:lookup(76, hammer),
-    none = dss_equipment:lookup(83, hammer),
+    none = dss_equipment:lookup(76, great_hammer),
+    none = dss_equipment:lookup(83, great_hammer),
     ok = lists:foreach(
         fun(EquipmentID) ->
             great_hammer_lookup_test(EquipmentID)
         end,
         lists:seq(77, 82)
+    ).
+
+
+-spec spear_lookup_test() -> ok.
+spear_lookup_test() ->
+    none = dss_equipment:lookup(82, spear),
+    none = dss_equipment:lookup(92, spear),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            spear_lookup_test(EquipmentID)
+        end,
+        lists:seq(83, 91)
     ).
 
 
@@ -286,6 +300,13 @@ hammer_list_test() ->
 great_hammer_list_test() ->
     GreatHammerList = dss_equipment:list(great_hammer),
     6 = length(GreatHammerList),
+    ok.
+
+
+-spec spear_list_test() -> ok.
+spear_list_test() ->
+    SpearList = dss_equipment:list(spear),
+    9 = length(SpearList),
     ok.
 
 
@@ -815,4 +836,61 @@ great_hammer_lookup_test(82) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(82, great_hammer, <<"smough's hammer">>, <<"スモウハンマー">>, 28, Requirements).
+
+
+-spec spear_lookup_test(pos_integer()) -> pos_integer().
+spear_lookup_test(83) ->
+    Requirements = #{ strenght     => 11
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(83, spear, <<"spear">>, <<"スピア">>, 3.5, Requirements);
+spear_lookup_test(84) ->
+    Requirements = #{ strenght     => 13
+                    , dexterity    => 15
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(84, spear, <<"winged spear">>, <<"ウィングドスピア">>, 4.5, Requirements);
+spear_lookup_test(85) ->
+    Requirements = #{ strenght     => 13
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(85, spear, <<"partizan">>, <<"パルチザン">>, 4.5, Requirements);
+spear_lookup_test(86) ->
+    Requirements = #{ strenght     => 15
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(86, spear, <<"four-pronged plow">>, <<"四又鋤">>, 5.5, Requirements);
+spear_lookup_test(87) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 16
+                    , intelligence => 24
+                    , faith        => 0},
+    weapon_lookup_test(87, spear, <<"channeler's trident">>, <<"伝道者の三又槍">>, 6, Requirements);
+spear_lookup_test(88) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(88, spear, <<"demon's spear">>, <<"デーモンの槍">>, 4, Requirements);
+spear_lookup_test(89) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 22
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(89, spear, <<"silver knight spear">>, <<"銀騎士の槍">>, 6, Requirements);
+spear_lookup_test(90) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 0
+                    , intelligence => 14
+                    , faith        => 0},
+    weapon_lookup_test(90, spear, <<"moonlight butterfly horn">>, <<"月光蝶の角">>, 4, Requirements);
+spear_lookup_test(91) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 24
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(91, spear, <<"dragonslayer spear">>, <<"竜狩りの槍">>, 10, Requirements).
 
