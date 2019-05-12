@@ -28,7 +28,8 @@ lookup_test() ->
      ok = halberd_lookup_test(),
      ok = whip_lookup_test(),
      ok = fist_lookup_test(),
-     ok = bow_lookup_test().
+     ok = bow_lookup_test(),
+     ok = greatbow_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -50,7 +51,8 @@ list_test() ->
      ok = halberd_list_test(),
      ok = whip_list_test(),
      ok = fist_list_test(),
-     ok = bow_list_test().
+     ok = bow_list_test(),
+     ok = greatbow_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -265,6 +267,18 @@ bow_lookup_test() ->
     ).
 
 
+-spec greatbow_lookup_test() -> ok.
+greatbow_lookup_test() ->
+    none = dss_equipment:lookup(113, greatbow),
+    none = dss_equipment:lookup(116, greatbow),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            greatbow_lookup_test(EquipmentID)
+        end,
+        lists:seq(114, 115)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -408,6 +422,13 @@ fist_list_test() ->
 bow_list_test() ->
     BowList = dss_equipment:list(bow),
     5 = length(BowList),
+    ok.
+
+
+-spec greatbow_list_test() -> ok.
+greatbow_list_test() ->
+    GreatBowList = dss_equipment:list(greatbow),
+    2 = length(GreatBowList),
     ok.
 
 
@@ -1141,4 +1162,19 @@ bow_lookup_test(113) ->
                     , intelligence => 0
                     , faith        => 16},
     weapon_lookup_test(113, bow, <<"darkmoon bow">>, <<"暗月の弓">>, 1, Requirements).
+
+
+-spec greatbow_lookup_test(pos_integer()) -> pos_integer().
+greatbow_lookup_test(114) ->
+    Requirements = #{ strenght     => 20
+                    , dexterity    => 20
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(114, greatbow, <<"dragonslayer greatbow">>, <<"竜狩りの大弓">>, 10, Requirements);
+greatbow_lookup_test(115) ->
+    Requirements = #{ strenght     => 27
+                    , dexterity    => 20
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(115, greatbow, <<"gough's greatbow">>, <<"ゴーの大弓">>, 13, Requirements).
 
