@@ -30,7 +30,8 @@ lookup_test() ->
      ok = fist_lookup_test(),
      ok = bow_lookup_test(),
      ok = greatbow_lookup_test(),
-     ok = crossbow_lookup_test().
+     ok = crossbow_lookup_test(),
+     ok = catalyst_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -54,7 +55,8 @@ list_test() ->
      ok = fist_list_test(),
      ok = bow_list_test(),
      ok = greatbow_list_test(),
-     ok = crossbow_list_test().
+     ok = crossbow_list_test(),
+     ok = catalyst_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -293,6 +295,18 @@ crossbow_lookup_test() ->
     ).
 
 
+-spec catalyst_lookup_test() -> ok.
+catalyst_lookup_test() ->
+    none = dss_equipment:lookup(119, catalyst),
+    none = dss_equipment:lookup(131, catalyst),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            catalyst_lookup_test(EquipmentID)
+        end,
+        lists:seq(120, 130)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -450,6 +464,13 @@ greatbow_list_test() ->
 crossbow_list_test() ->
     CrossbowList = dss_equipment:list(crossbow),
     4 = length(CrossbowList),
+    ok.
+
+
+-spec catalyst_list_test() -> ok.
+catalyst_list_test() ->
+    CatalystList = dss_equipment:list(catalyst),
+    11 = length(CatalystList),
     ok.
 
 
@@ -1225,4 +1246,73 @@ crossbow_lookup_test(119) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(119, crossbow, <<"avelyn">>, <<"アヴェリン">>, 6, Requirements).
+
+
+-spec catalyst_lookup_test(pos_integer()) -> pos_integer().
+catalyst_lookup_test(120) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 10
+                    , faith        => 0},
+    weapon_lookup_test(120, catalyst, <<"sorcerer's catalyst">>, <<"魔術師の杖">>, 2, Requirements);
+catalyst_lookup_test(121) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 10
+                    , faith        => 0},
+    weapon_lookup_test(121, catalyst, <<"beatrice's catalyst">>, <<"ビアトリスの杖">>, 2, Requirements);
+catalyst_lookup_test(122) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 24
+                    , faith        => 0},
+    weapon_lookup_test(122, catalyst, <<"logan's catalyst">>, <<"ローガンの杖">>, 2, Requirements);
+catalyst_lookup_test(123) ->
+    Requirements = #{ strenght     => 3
+                    , dexterity    => 0
+                    , intelligence => 12
+                    , faith        => 0},
+    weapon_lookup_test(123, catalyst, <<"oolacile ivory catalyst">>, <<"ウーラシールの白枝">>, 0.5, Requirements);
+catalyst_lookup_test(124) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 10
+                    , faith        => 0},
+    weapon_lookup_test(124, catalyst, <<"oolacile Catalyst">>, <<"ウーラシールの枝杖">>, 2, Requirements);
+catalyst_lookup_test(125) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 10
+                    , intelligence => 10
+                    , faith        => 0},
+    weapon_lookup_test(125, catalyst, <<"demon's catalyst">>, <<"デーモンの杖">>, 4, Requirements);
+catalyst_lookup_test(126) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 14
+                    , faith        => 0},
+    weapon_lookup_test(126, catalyst, <<"izalith catalyst">>, <<"イザリスの杖">>, 2, Requirements);
+catalyst_lookup_test(127) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 10
+                    , intelligence => 12
+                    , faith        => 0},
+    weapon_lookup_test(127, catalyst, <<"tin banishment catalyst">>, <<"封印の錫杖">>, 3, Requirements);
+catalyst_lookup_test(128) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 0
+                    , intelligence => 32
+                    , faith        => 0},
+    weapon_lookup_test(128, catalyst, <<"tin crystallization catalyst">>, <<"結晶の錫杖">>, 2.5, Requirements);
+catalyst_lookup_test(129) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 16},
+    weapon_lookup_test(129, catalyst, <<"tin darkmoon catalyst">>, <<"暗月の錫杖">>, 1, Requirements);
+catalyst_lookup_test(130) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 0
+                    , intelligence => 13
+                    , faith        => 0},
+    weapon_lookup_test(130, catalyst, <<"manus catalyst">>, <<"マヌスの大杖">>, 5, Requirements).
 
