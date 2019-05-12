@@ -16,7 +16,8 @@ lookup_test() ->
      ok = greats_sword_lookup_test(),
      ok = ultra_greatsword_lookup_test(),
      ok = curved_sword_lookup_test(),
-     ok = curved_greatsword_lookup_test().
+     ok = curved_greatsword_lookup_test(),
+     ok = thrusting_sword_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -26,7 +27,8 @@ list_test() ->
      ok = greats_sword_list_test(),
      ok = ultra_greatsword_list_test(),
      ok = curved_sword_list_test(),
-     ok = curved_greatsword_list_test().
+     ok = curved_greatsword_list_test(),
+     ok = thrusting_sword_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -101,6 +103,18 @@ curved_greatsword_lookup_test() ->
     ).
 
 
+-spec thrusting_sword_lookup_test() -> ok.
+thrusting_sword_lookup_test() ->
+    none = dss_equipment:lookup(47, thrusting_sword),
+    none = dss_equipment:lookup(53, thrusting_sword),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            thrusting_sword_lookup_test(EquipmentID)
+        end,
+        lists:seq(48, 52)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -160,6 +174,13 @@ curved_sword_list_test() ->
 curved_greatsword_list_test() ->
     CurvedGreatSwordList = dss_equipment:list(curved_greatsword),
     3 = length(CurvedGreatSwordList),
+    ok.
+
+
+-spec thrusting_sword_list_test() -> ok.
+thrusting_sword_list_test() ->
+    ThrustingSwordList = dss_equipment:list(thrusting_sword),
+    5 = length(ThrustingSwordList),
     ok.
 
 
@@ -461,4 +482,37 @@ curved_greatsword_lookup_test(47) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(47, curved_greatsword, <<"gravelord sword">>, <<"墓王の剣">>, 10, Requirements).
+
+
+-spec thrusting_sword_lookup_test(pos_integer()) -> pos_integer().
+thrusting_sword_lookup_test(48) ->
+    Requirements = #{ strenght     => 5
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(48, thrusting_sword, <<"mail breaker">>, <<"鎧貫き">>, 0.5, Requirements);
+thrusting_sword_lookup_test(49) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(49, thrusting_sword, <<"rapier">>, <<"レイピア">>, 1.5, Requirements);
+thrusting_sword_lookup_test(50) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(50, thrusting_sword, <<"estoc">>, <<"エストック">>, 3, Requirements);
+thrusting_sword_lookup_test(51) ->
+    Requirements = #{ strenght     => 8
+                    , dexterity    => 20
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(51, thrusting_sword, <<"ricard's rapier">>, <<"リカールの刺剣">>, 2, Requirements);
+thrusting_sword_lookup_test(52) ->
+    Requirements = #{ strenght     => 8
+                    , dexterity    => 16
+                    , intelligence => 16
+                    , faith        => 0},
+    weapon_lookup_test(52, thrusting_sword, <<"velka's rapier">>, <<"ベルカの刺剣">>, 2, Requirements).
 
