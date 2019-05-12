@@ -19,7 +19,8 @@ lookup_test() ->
      ok = curved_greatsword_lookup_test(),
      ok = thrusting_sword_lookup_test(),
      ok = katana_lookup_test(),
-     ok = axe_lookup_test().
+     ok = axe_lookup_test(),
+     ok = greataxe_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -32,7 +33,8 @@ list_test() ->
      ok = curved_greatsword_list_test(),
      ok = thrusting_sword_list_test(),
      ok = katana_list_test(),
-     ok = axe_list_test().
+     ok = axe_list_test(),
+     ok = greataxe_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -143,6 +145,18 @@ axe_lookup_test() ->
     ).
 
 
+-spec greataxe_lookup_test() -> ok.
+greataxe_lookup_test() ->
+    none = dss_equipment:lookup(62, greataxe),
+    none = dss_equipment:lookup(68, greataxe),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            greataxe_lookup_test(EquipmentID)
+        end,
+        lists:seq(63, 67)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -223,6 +237,13 @@ katana_list_test() ->
 axe_list_test() ->
     AxeList = dss_equipment:list(axe),
     6 = length(AxeList),
+    ok.
+
+
+-spec greataxe_list_test() -> ok.
+greataxe_list_test() ->
+    GreatAxeList = dss_equipment:list(greataxe),
+    5 = length(GreatAxeList),
     ok.
 
 
@@ -623,4 +644,37 @@ axe_lookup_test(62) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(62, axe, <<"golem axe">>, <<"ゴーレムアクス">>, 16, Requirements).
+
+
+-spec greataxe_lookup_test(pos_integer()) -> pos_integer().
+greataxe_lookup_test(63) ->
+    Requirements = #{ strenght     => 32
+                    , dexterity    => 8
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(63, greataxe, <<"greataxe">>, <<"グレートアクス">>, 14, Requirements);
+greataxe_lookup_test(64) ->
+    Requirements = #{ strenght     => 46
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(64, greataxe, <<"demon's greataxe">>, <<"デーモンの大斧">>, 22, Requirements);
+greataxe_lookup_test(65) ->
+    Requirements = #{ strenght     => 48
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(65, greataxe, <<"stone greataxe">>, <<"岩の大斧">>, 24, Requirements);
+greataxe_lookup_test(66) ->
+    Requirements = #{ strenght     => 36
+                    , dexterity    => 18
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(66, greataxe, <<"black knight greataxe">>, <<"黒騎士の大斧">>, 16, Requirements);
+greataxe_lookup_test(67) ->
+    Requirements = #{ strenght     => 50
+                    , dexterity    => 8
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(67, greataxe, <<"dragon king greataxe">>, <<"竜王の大斧">>, 24, Requirements).
 
