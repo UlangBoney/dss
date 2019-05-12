@@ -3,6 +3,12 @@
 -include_lib("eunit/include/eunit.hrl").
 
 
+-spec equipment_test() -> ok.
+equipment_test() ->
+    ok = lookup_test(),
+    ok = list_test().
+
+
 -spec lookup_test() -> ok.
 lookup_test() ->
      ok = dagger_lookup_test(),
@@ -96,14 +102,14 @@ dagger_list_test() ->
 -spec straight_sword_list_test() -> ok.
 straight_sword_list_test() ->
     StraightSwordList = dss_equipment:list(straight_sword),
-    12 = length(StraightSwordList),
+    13 = length(StraightSwordList),
     ok.
 
 
 -spec greats_sword_list_test() -> ok.
 greats_sword_list_test() ->
     GreatsSwordList = dss_equipment:list(greats_sword),
-    12 = length(GreatsSwordList),
+    13 = length(GreatsSwordList),
     ok.
 
 

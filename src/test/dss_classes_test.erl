@@ -3,6 +3,12 @@
 -include_lib("eunit/include/eunit.hrl").
 
 
+-spec classes_test() -> ok.
+classes_test() ->
+    ok = lookup_test(),
+    ok = list_test().
+
+
 -spec lookup_test() -> ok.
 lookup_test() ->
     ok = lists:foreach(
