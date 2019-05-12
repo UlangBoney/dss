@@ -17,7 +17,8 @@ lookup_test() ->
      ok = ultra_greatsword_lookup_test(),
      ok = curved_sword_lookup_test(),
      ok = curved_greatsword_lookup_test(),
-     ok = thrusting_sword_lookup_test().
+     ok = thrusting_sword_lookup_test(),
+     ok = katana_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -28,7 +29,8 @@ list_test() ->
      ok = ultra_greatsword_list_test(),
      ok = curved_sword_list_test(),
      ok = curved_greatsword_list_test(),
-     ok = thrusting_sword_list_test().
+     ok = thrusting_sword_list_test(),
+     ok = katana_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -115,6 +117,18 @@ thrusting_sword_lookup_test() ->
     ).
 
 
+-spec katana_lookup_test() -> ok.
+katana_lookup_test() ->
+    none = dss_equipment:lookup(52, katana),
+    none = dss_equipment:lookup(57, katana),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            katana_lookup_test(EquipmentID)
+        end,
+        lists:seq(53, 56)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -181,6 +195,13 @@ curved_greatsword_list_test() ->
 thrusting_sword_list_test() ->
     ThrustingSwordList = dss_equipment:list(thrusting_sword),
     5 = length(ThrustingSwordList),
+    ok.
+
+
+-spec katana_list_test() -> ok.
+katana_list_test() ->
+    KatanaList = dss_equipment:list(katana),
+    4 = length(KatanaList),
     ok.
 
 
@@ -515,4 +536,31 @@ thrusting_sword_lookup_test(52) ->
                     , intelligence => 16
                     , faith        => 0},
     weapon_lookup_test(52, thrusting_sword, <<"velka's rapier">>, <<"ベルカの刺剣">>, 2, Requirements).
+
+
+-spec katana_lookup_test(pos_integer()) -> pos_integer().
+katana_lookup_test(53) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(53, katana, <<"uchigatana">>, <<"打刀">>, 5, Requirements);
+katana_lookup_test(54) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 20
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(54, katana, <<"iaito">>, <<"居合い刀">>, 5, Requirements);
+katana_lookup_test(55) ->
+    Requirements = #{ strenght     => 20
+                    , dexterity    => 16
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(55, katana, <<"washing pole">>, <<"物干し竿">>, 8, Requirements);
+katana_lookup_test(56) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(56, katana, <<"chaos blade">>, <<"混沌の刃">>, 6, Requirements).
 
