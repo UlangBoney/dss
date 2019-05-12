@@ -18,7 +18,8 @@ lookup_test() ->
      ok = curved_sword_lookup_test(),
      ok = curved_greatsword_lookup_test(),
      ok = thrusting_sword_lookup_test(),
-     ok = katana_lookup_test().
+     ok = katana_lookup_test(),
+     ok = axe_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -30,7 +31,8 @@ list_test() ->
      ok = curved_sword_list_test(),
      ok = curved_greatsword_list_test(),
      ok = thrusting_sword_list_test(),
-     ok = katana_list_test().
+     ok = katana_list_test(),
+     ok = axe_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -129,6 +131,18 @@ katana_lookup_test() ->
     ).
 
 
+-spec axe_lookup_test() -> ok.
+axe_lookup_test() ->
+    none = dss_equipment:lookup(56, axe),
+    none = dss_equipment:lookup(63, axe),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            axe_lookup_test(EquipmentID)
+        end,
+        lists:seq(57, 62)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -202,6 +216,13 @@ thrusting_sword_list_test() ->
 katana_list_test() ->
     KatanaList = dss_equipment:list(katana),
     4 = length(KatanaList),
+    ok.
+
+
+-spec axe_list_test() -> ok.
+axe_list_test() ->
+    AxeList = dss_equipment:list(axe),
+    6 = length(AxeList),
     ok.
 
 
@@ -563,4 +584,43 @@ katana_lookup_test(56) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(56, katana, <<"chaos blade">>, <<"混沌の刃">>, 6, Requirements).
+
+
+-spec axe_lookup_test(pos_integer()) -> pos_integer().
+axe_lookup_test(57) ->
+    Requirements = #{ strenght     => 8
+                    , dexterity    => 8
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(57, axe, <<"hand axe">>, <<"ハンドアクス">>, 2, Requirements);
+axe_lookup_test(58) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 8
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(58, axe, <<"battle axe">>, <<"バトルアクス">>, 4, Requirements);
+axe_lookup_test(59) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(59, axe, <<"butcher knife">>, <<"肉断ち包丁">>, 10, Requirements);
+axe_lookup_test(60) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(60, axe, <<"gargoyle tail axe">>, <<"ガーゴイルの尾斧">>, 5, Requirements);
+axe_lookup_test(61) ->
+    Requirements = #{ strenght     => 18
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 16},
+    weapon_lookup_test(61, axe, <<"crescent axe">>, <<"三日月斧">>, 7, Requirements);
+axe_lookup_test(62) ->
+    Requirements = #{ strenght     => 36
+                    , dexterity    => 8
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(62, axe, <<"golem axe">>, <<"ゴーレムアクス">>, 16, Requirements).
 
