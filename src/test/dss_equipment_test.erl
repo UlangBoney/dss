@@ -24,7 +24,8 @@ lookup_test() ->
      ok = hammer_lookup_test(),
      ok = great_hammer_lookup_test(),
      ok = spear_lookup_test(),
-     ok = long_spear_lookup_test().
+     ok = long_spear_lookup_test(),
+     ok = halberd_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -42,7 +43,8 @@ list_test() ->
      ok = hammer_list_test(),
      ok = great_hammer_list_test(),
      ok = spear_list_test(),
-     ok = long_spear_list_test().
+     ok = long_spear_list_test(),
+     ok = halberd_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -209,6 +211,18 @@ long_spear_lookup_test() ->
     ok.
 
 
+-spec halberd_lookup_test() -> ok.
+halberd_lookup_test() ->
+    none = dss_equipment:lookup(92, halberd),
+    none = dss_equipment:lookup(102, halberd),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            halberd_lookup_test(EquipmentID)
+        end,
+        lists:seq(93, 101)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -324,6 +338,13 @@ spear_list_test() ->
 long_spear_list_test() ->
     LongSpearList = dss_equipment:list(long_spear),
     1 = length(LongSpearList),
+    ok.
+
+
+-spec halberd_list_test() -> ok.
+halberd_list_test() ->
+    HalberdList = dss_equipment:list(halberd),
+    9 = length(HalberdList),
     ok.
 
 
@@ -919,4 +940,61 @@ long_spear_lookup_test(92) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(92, long_spear, <<"pike">>, <<"パイク">>, 10, Requirements).
+
+
+-spec halberd_lookup_test(pos_integer()) -> pos_integer().
+halberd_lookup_test(93) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(93, halberd, <<"halberd">>, <<"ハルバード">>, 6, Requirements);
+halberd_lookup_test(94) ->
+    Requirements = #{ strenght     => 15
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(94, halberd, <<"lucerne">>, <<"ルッツエルン">>, 5.5, Requirements);
+halberd_lookup_test(95) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(95, halberd, <<"scythe">>, <<"サイズ">>, 5, Requirements);
+halberd_lookup_test(96) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(96, halberd, <<"gargoyle's halberd">>, <<"ガーゴイルの斧槍">>, 6, Requirements);
+halberd_lookup_test(97) ->
+    Requirements = #{ strenght     => 36
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(97, halberd, <<"giant's halberd">>, <<"巨人のハルバード">>, 16, Requirements);
+halberd_lookup_test(98) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(98, halberd, <<"titanite catch pole">>, <<"くさびの刺又">>, 6, Requirements);
+halberd_lookup_test(99) ->
+    Requirements = #{ strenght     => 32
+                    , dexterity    => 18
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(99, halberd, <<"black knight halberd">>, <<"黒騎士の斧槍">>, 14, Requirements);
+halberd_lookup_test(100) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(100, halberd, <<"great scythe">>, <<"大鎌">>, 5, Requirements);
+halberd_lookup_test(101) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(101, halberd, <<"lifehunt scythe">>, <<"生命狩りの鎌">>, 6, Requirements).
 
