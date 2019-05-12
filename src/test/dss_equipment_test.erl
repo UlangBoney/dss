@@ -25,7 +25,8 @@ lookup_test() ->
      ok = great_hammer_lookup_test(),
      ok = spear_lookup_test(),
      ok = long_spear_lookup_test(),
-     ok = halberd_lookup_test().
+     ok = halberd_lookup_test(),
+     ok = whip_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -44,7 +45,8 @@ list_test() ->
      ok = great_hammer_list_test(),
      ok = spear_list_test(),
      ok = long_spear_list_test(),
-     ok = halberd_list_test().
+     ok = halberd_list_test(),
+     ok = whip_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -223,6 +225,18 @@ halberd_lookup_test() ->
     ).
 
 
+-spec whip_lookup_test() -> ok.
+whip_lookup_test() ->
+    none = dss_equipment:lookup(101, whip),
+    none = dss_equipment:lookup(105, whip),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            whip_lookup_test(EquipmentID)
+        end,
+        lists:seq(102, 104)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -345,6 +359,13 @@ long_spear_list_test() ->
 halberd_list_test() ->
     HalberdList = dss_equipment:list(halberd),
     9 = length(HalberdList),
+    ok.
+
+
+-spec whip_list_test() -> ok.
+whip_list_test() ->
+    WhipList = dss_equipment:list(whip),
+    3 = length(WhipList),
     ok.
 
 
@@ -997,4 +1018,25 @@ halberd_lookup_test(101) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(101, halberd, <<"lifehunt scythe">>, <<"生命狩りの鎌">>, 6, Requirements).
+
+
+-spec whip_lookup_test(pos_integer()) -> pos_integer().
+whip_lookup_test(102) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(102, whip, <<"whip">>, <<"ウィップ">>, 1.5, Requirements);
+whip_lookup_test(103) ->
+    Requirements = #{ strenght     => 8
+                    , dexterity    => 16
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(103, whip, <<"notched whip">>, <<"イバラムチ">>, 2, Requirements);
+whip_lookup_test(104) ->
+    Requirements = #{ strenght     => 15
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(104, whip, <<"guardian tail">>, <<"聖獣の尾">>, 5, Requirements).
 
