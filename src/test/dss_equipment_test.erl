@@ -31,7 +31,8 @@ lookup_test() ->
      ok = bow_lookup_test(),
      ok = greatbow_lookup_test(),
      ok = crossbow_lookup_test(),
-     ok = catalyst_lookup_test().
+     ok = catalyst_lookup_test(),
+     ok = pyromancy_flame_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -56,7 +57,8 @@ list_test() ->
      ok = bow_list_test(),
      ok = greatbow_list_test(),
      ok = crossbow_list_test(),
-     ok = catalyst_list_test().
+     ok = catalyst_list_test(),
+     ok = pyromancy_flame_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -307,6 +309,18 @@ catalyst_lookup_test() ->
     ).
 
 
+-spec pyromancy_flame_lookup_test() -> ok.
+pyromancy_flame_lookup_test() ->
+    none = dss_equipment:lookup(130, catalyst),
+    none = dss_equipment:lookup(133, catalyst),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            pyromancy_flame_lookup_test(EquipmentID)
+        end,
+        lists:seq(131, 132)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -471,6 +485,13 @@ crossbow_list_test() ->
 catalyst_list_test() ->
     CatalystList = dss_equipment:list(catalyst),
     11 = length(CatalystList),
+    ok.
+
+
+-spec pyromancy_flame_list_test() -> ok.
+pyromancy_flame_list_test() ->
+    PyromancyFlameList = dss_equipment:list(pyromancy_flame),
+    2 = length(PyromancyFlameList),
     ok.
 
 
@@ -1315,4 +1336,19 @@ catalyst_lookup_test(130) ->
                     , intelligence => 13
                     , faith        => 0},
     weapon_lookup_test(130, catalyst, <<"manus catalyst">>, <<"マヌスの大杖">>, 5, Requirements).
+
+
+-spec pyromancy_flame_lookup_test(pos_integer()) -> pos_integer().
+pyromancy_flame_lookup_test(131) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(131, pyromancy_flame, <<"pyromancy flame">>, <<"呪術の火">>, 0, Requirements);
+pyromancy_flame_lookup_test(132) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(132, pyromancy_flame, <<"ascended pyromancy flame">>, <<"呪術の火 (進化後)">>, 0, Requirements).
 
