@@ -23,7 +23,8 @@ lookup_test() ->
      ok = greataxe_lookup_test(),
      ok = hammer_lookup_test(),
      ok = great_hammer_lookup_test(),
-     ok = spear_lookup_test().
+     ok = spear_lookup_test(),
+     ok = long_spear_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -40,7 +41,8 @@ list_test() ->
      ok = greataxe_list_test(),
      ok = hammer_list_test(),
      ok = great_hammer_list_test(),
-     ok = spear_list_test().
+     ok = spear_list_test(),
+     ok = long_spear_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -199,6 +201,14 @@ spear_lookup_test() ->
     ).
 
 
+-spec long_spear_lookup_test() -> ok.
+long_spear_lookup_test() ->
+    none = dss_equipment:lookup(91, long_spear),
+    none = dss_equipment:lookup(93, long_spear),
+    long_spear_lookup_test(92),
+    ok.
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -206,7 +216,7 @@ spear_lookup_test() ->
         unicode:unicode_binary(),
         float(),
         dss_equipment:requirement()
-    ) -> true.
+    ) -> pos_integer().
 weapon_lookup_test(EquipmentID, EqpType, Ename, Jname, Weigth, #{strenght := Strength, dexterity := Dexterity, intelligence := Intelligence, faith := Faith}) ->
     {value, Equipment} = dss_equipment:lookup(EqpType, EquipmentID),
     EquipmentID  = maps:get(id, Equipment),
@@ -307,6 +317,13 @@ great_hammer_list_test() ->
 spear_list_test() ->
     SpearList = dss_equipment:list(spear),
     9 = length(SpearList),
+    ok.
+
+
+-spec long_spear_list_test() -> ok.
+long_spear_list_test() ->
+    LongSpearList = dss_equipment:list(long_spear),
+    1 = length(LongSpearList),
     ok.
 
 
@@ -893,4 +910,13 @@ spear_lookup_test(91) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(91, spear, <<"dragonslayer spear">>, <<"竜狩りの槍">>, 10, Requirements).
+
+
+-spec long_spear_lookup_test(pos_integer()) -> pos_integer().
+long_spear_lookup_test(92) ->
+    Requirements = #{ strenght     => 24
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(92, long_spear, <<"pike">>, <<"パイク">>, 10, Requirements).
 
