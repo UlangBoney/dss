@@ -20,7 +20,8 @@ lookup_test() ->
      ok = thrusting_sword_lookup_test(),
      ok = katana_lookup_test(),
      ok = axe_lookup_test(),
-     ok = greataxe_lookup_test().
+     ok = greataxe_lookup_test(),
+     ok = hammer_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -34,7 +35,8 @@ list_test() ->
      ok = thrusting_sword_list_test(),
      ok = katana_list_test(),
      ok = axe_list_test(),
-     ok = greataxe_list_test().
+     ok = greataxe_list_test(),
+     ok = hammer_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -157,6 +159,18 @@ greataxe_lookup_test() ->
     ).
 
 
+-spec hammer_lookup_test() -> ok.
+hammer_lookup_test() ->
+    none = dss_equipment:lookup(67, hammer),
+    none = dss_equipment:lookup(77, hammer),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            hammer_lookup_test(EquipmentID)
+        end,
+        lists:seq(68, 76)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -244,6 +258,13 @@ axe_list_test() ->
 greataxe_list_test() ->
     GreatAxeList = dss_equipment:list(greataxe),
     5 = length(GreatAxeList),
+    ok.
+
+
+-spec hammer_list_test() -> ok.
+hammer_list_test() ->
+    HammerList = dss_equipment:list(hammer),
+    9 = length(HammerList),
     ok.
 
 
@@ -677,4 +698,61 @@ greataxe_lookup_test(67) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(67, greataxe, <<"dragon king greataxe">>, <<"竜王の大斧">>, 24, Requirements).
+
+
+-spec hammer_lookup_test(pos_integer()) -> pos_integer().
+hammer_lookup_test(68) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(68, hammer, <<"club">>, <<"クラブ">>, 3, Requirements);
+hammer_lookup_test(69) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(69, hammer, <<"reinforced club">>, <<"強化クラブ">>, 4, Requirements);
+hammer_lookup_test(70) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(70, hammer, <<"blacksmith giant hammer">>, <<"巨人鍛冶の木槌">>, 6, Requirements);
+hammer_lookup_test(71) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(71, hammer, <<"mace">>, <<"メイス">>, 4, Requirements);
+hammer_lookup_test(72) ->
+    Requirements = #{ strenght     => 11
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(72, hammer, <<"morning star">>, <<"モーニングスター">>, 4, Requirements);
+hammer_lookup_test(73) ->
+    Requirements = #{ strenght     => 11
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(73, hammer, <<"warpick">>, <<"ウォーピック">>, 3.5, Requirements);
+hammer_lookup_test(74) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(74, hammer, <<"pickaxe">>, <<"つるはし">>, 5, Requirements);
+hammer_lookup_test(75) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(75, hammer, <<"blacksmith hammer">>, <<"鍛冶屋の金槌">>, 5, Requirements);
+hammer_lookup_test(76) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 10
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(76, hammer, <<"hammer of vamos">>, <<"バモスのハンマー">>, 5, Requirements).
 
