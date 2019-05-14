@@ -1,4 +1,4 @@
--module(dss_equipment_test).
+-module(dss_weapon_test).
 
 -include_lib("eunit/include/eunit.hrl").
 
