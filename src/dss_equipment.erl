@@ -158,8 +158,8 @@ lookup(EqpType, ID) ->
         greatbow          -> dss_mongodb:lookup(DB, <<"equipment.weapons.greatbows">>, {<<"_id">>, ID}, fun from_mongo_map/2, weapon);
         crossbow          -> dss_mongodb:lookup(DB, <<"equipment.weapons.crossbows">>, {<<"_id">>, ID}, fun from_mongo_map/2, weapon);
         catalyst          -> dss_mongodb:lookup(DB, <<"equipment.weapons.catalysts">>, {<<"_id">>, ID}, fun from_mongo_map/2, weapon);
-        talisman          -> dss_mongodb:lookup(DB, <<"equipment.weapons.talismans">>, {<<"_id">>, ID}, fun from_mongo_map/2, weapon);
         pyromancy_flame   -> dss_mongodb:lookup(DB, <<"equipment.weapons.pyromancyFlames">>, {<<"_id">>, ID}, fun from_mongo_map/2, weapon);
+        talisman          -> dss_mongodb:lookup(DB, <<"equipment.weapons.talismans">>, {<<"_id">>, ID}, fun from_mongo_map/2, weapon);
         small_shield      -> dss_mongodb:lookup(DB, <<"equipment.shields.smallShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, shield);
         normal_shield     -> dss_mongodb:lookup(DB, <<"equipment.shields.normalShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, shield);
         large_shield      -> dss_mongodb:lookup(DB, <<"equipment.shields.largeShields">>, {<<"_id">>, ID}, fun from_mongo_map/2, shield);

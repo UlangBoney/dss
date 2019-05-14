@@ -1,4 +1,4 @@
--module(dss_weapon_test).
+-module(dss_equipment_test).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -32,7 +32,8 @@ lookup_test() ->
      ok = greatbow_lookup_test(),
      ok = crossbow_lookup_test(),
      ok = catalyst_lookup_test(),
-     ok = pyromancy_flame_lookup_test().
+     ok = pyromancy_flame_lookup_test(),
+     ok = talisman_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -58,7 +59,8 @@ list_test() ->
      ok = greatbow_list_test(),
      ok = crossbow_list_test(),
      ok = catalyst_list_test(),
-     ok = pyromancy_flame_list_test().
+     ok = pyromancy_flame_list_test(),
+     ok = talisman_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -321,6 +323,18 @@ pyromancy_flame_lookup_test() ->
     ).
 
 
+-spec talisman_lookup_test() -> ok.
+talisman_lookup_test() ->
+    none = dss_equipment:lookup(132, talisman),
+    none = dss_equipment:lookup(140, talisman),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            talisman_lookup_test(EquipmentID)
+        end,
+        lists:seq(133, 139)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -492,6 +506,13 @@ catalyst_list_test() ->
 pyromancy_flame_list_test() ->
     PyromancyFlameList = dss_equipment:list(pyromancy_flame),
     2 = length(PyromancyFlameList),
+    ok.
+
+
+-spec talisman_list_test() -> ok.
+talisman_list_test() ->
+    TalismanList = dss_equipment:list(talisman),
+    7 = length(TalismanList),
     ok.
 
 
@@ -1351,4 +1372,49 @@ pyromancy_flame_lookup_test(132) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(132, pyromancy_flame, <<"ascended pyromancy flame">>, <<"呪術の火 (進化後)">>, 0, Requirements).
+
+
+-spec talisman_lookup_test(pos_integer()) -> pos_integer().
+talisman_lookup_test(133) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 10},
+    weapon_lookup_test(133, talisman, <<"talisman">>, <<"タリスマン">>, 0.3, Requirements);
+talisman_lookup_test(134) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 14},
+    weapon_lookup_test(134, talisman, <<"canvas talisman">>, <<"粗布のタリスマン">>, 0.3, Requirements);
+talisman_lookup_test(135) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 10},
+    weapon_lookup_test(135, talisman, <<"thorolund talisman">>, <<"ソルロンドのタリスマン">>, 0.3, Requirements);
+talisman_lookup_test(136) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 16},
+    weapon_lookup_test(136, talisman, <<"ivory talisman">>, <<"白のタリスマン">>, 0.3, Requirements);
+talisman_lookup_test(137) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 14},
+    weapon_lookup_test(137, talisman, <<"sunlight talisman">>, <<"太陽のタリスマン">>, 0.3, Requirements);
+talisman_lookup_test(138) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 24},
+    weapon_lookup_test(138, talisman, <<"darkmoon talisman">>, <<"暗月のタリスマン">>, 0.3, Requirements);
+talisman_lookup_test(139) ->
+    Requirements = #{ strenght     => 4
+                    , dexterity    => 0
+                    , intelligence => 16
+                    , faith        => 0},
+    weapon_lookup_test(139, talisman, <<"velka's talisman">>, <<"ベルカのタリスマン">>, 0.5, Requirements).
 
