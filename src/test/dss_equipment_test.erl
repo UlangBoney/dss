@@ -340,12 +340,12 @@ talisman_lookup_test() ->
 -spec small_shield_lookup_test() -> ok.
 small_shield_lookup_test() ->
     none = dss_equipment:lookup(139, small_shield),
-    none = dss_equipment:lookup(142, small_shield),
+    none = dss_equipment:lookup(151, small_shield),
     ok = lists:foreach(
         fun(EquipmentID) ->
             small_shield_lookup_test(EquipmentID)
         end,
-        lists:seq(140, 141)
+        lists:seq(140, 150)
     ).
 
 
@@ -359,6 +359,7 @@ small_shield_lookup_test() ->
     ) -> pos_integer().
 weapon_lookup_test(EquipmentID, EqpType, Ename, Jname, Weigth, #{strenght := Strength, dexterity := Dexterity, intelligence := Intelligence, faith := Faith}) ->
     {value, Equipment} = dss_equipment:lookup(EqpType, EquipmentID),
+    io:format("ID: ~p~n", [EquipmentID]),
     EquipmentID  = maps:get(id, Equipment),
     EName        = maps:get(english, maps:get(name, Equipment)),
     JName        = maps:get(japanese, maps:get(name, Equipment)),
@@ -1452,19 +1453,19 @@ small_shield_lookup_test(141) ->
                     , dexterity    => 0
                     , intelligence => 0
                     , faith        => 0},
-    weapon_lookup_test(141, small_shield, <<"caduceus round shield">>, <<"双蛇の円盾">>, 1, Requirements);
+    weapon_lookup_test(141, small_shield, <<"red and white round shield">>, <<"紅白の円盾">>, 1, Requirements);
 small_shield_lookup_test(142) ->
-    Requirements = #{ strenght     => 10
-                    , dexterity    => 0
-                    , intelligence => 0
-                    , faith        => 16},
-    weapon_lookup_test(142, small_shield, <<"effigy shield">>, <<"邪神の盾">>, 3, Requirements);
-small_shield_lookup_test(143) ->
     Requirements = #{ strenght     => 6
                     , dexterity    => 0
                     , intelligence => 0
                     , faith        => 0},
-    weapon_lookup_test(143, small_shield, <<"red and white round shield">>, <<"紅白の円盾">>, 1, Requirements);
+    weapon_lookup_test(142, small_shield, <<"caduceus round shield">>, <<"双蛇の円盾">>, 1, Requirements);
+small_shield_lookup_test(143) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 16},
+    weapon_lookup_test(143, small_shield, <<"effigy shield">>, <<"邪神の盾">>, 3, Requirements);
 small_shield_lookup_test(144) ->
     Requirements = #{ strenght     => 6
                     , dexterity    => 0
@@ -1490,11 +1491,11 @@ small_shield_lookup_test(147) ->
                     , faith        => 0},
     weapon_lookup_test(147, small_shield, <<"leather shield">>, <<"レザーシールド">>, 1, Requirements);
 small_shield_lookup_test(148) ->
-    Requirements = #{ strenght     => 6
-                    , dexterity    => 0
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 13
                     , intelligence => 0
                     , faith        => 0},
-    weapon_lookup_test(148, small_shield, <<"buckler">>, <<"バックラー">>, 1, Requirements);
+    weapon_lookup_test(148, small_shield, <<"buckler">>, <<"バックラー">>, 1.5, Requirements);
 small_shield_lookup_test(149) ->
     Requirements = #{ strenght     => 8
                     , dexterity    => 11
