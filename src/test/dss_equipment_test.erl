@@ -36,7 +36,8 @@ lookup_test() ->
     ok = talisman_lookup_test(),
     ok = small_shield_lookup_test(),
     ok = normal_shield_lookup_test(),
-    ok = large_shield_lookup_test().
+    ok = large_shield_lookup_test(),
+    ok = lanthanum_lookup_test().
 
 
 
@@ -1749,4 +1750,14 @@ large_shield_lookup_test(182) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(182, large_shield, <<"cleansing greatshield">>, <<"結晶の大盾">>, 14.5, Requirements).
+
+
+-spec lanthanum_lookup_test() -> pos_integer().
+lanthanum_lookup_test() ->
+    Requirements = #{ strenght     => 5
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(183, lanthanum, <<"skull lanthanum">>, <<"頭蓋ランタン">>, 0.5, Requirements),
+    ok.
 
