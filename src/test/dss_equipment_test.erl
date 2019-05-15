@@ -35,7 +35,8 @@ lookup_test() ->
     ok = pyromancy_flame_lookup_test(),
     ok = talisman_lookup_test(),
     ok = small_shield_lookup_test(),
-    ok = normal_shield_lookup_test().
+    ok = normal_shield_lookup_test(),
+    ok = large_shield_lookup_test().
 
 
 
@@ -65,7 +66,8 @@ list_test() ->
     ok = pyromancy_flame_list_test(),
     ok = talisman_list_test(),
     ok = small_shield_list_test(),
-    ok = normal_shield_list_test().
+    ok = normal_shield_list_test(),
+    ok = large_shield_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -365,6 +367,19 @@ normal_shield_lookup_test() ->
 
 
 
+-spec large_shield_lookup_test() -> ok.
+large_shield_lookup_test() ->
+    none = dss_equipment:lookup(173, large_shield),
+    none = dss_equipment:lookup(183, large_shield),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            large_shield_lookup_test(EquipmentID)
+        end,
+        lists:seq(174, 182)
+    ).
+
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -557,6 +572,13 @@ small_shield_list_test() ->
 normal_shield_list_test() ->
     NormalShieldList = dss_equipment:list(normal_shield),
     23 = length(NormalShieldList),
+    ok.
+
+
+-spec large_shield_list_test() -> ok.
+large_shield_list_test() ->
+    LargeShieldList = dss_equipment:list(large_shield),
+    9 = length(LargeShieldList),
     ok.
 
 
@@ -1670,4 +1692,61 @@ normal_shield_lookup_test(173) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(173, normal_shield, <<"black knight shield">>, <<"黒騎士の盾">>, 6, Requirements).
+
+
+-spec large_shield_lookup_test(pos_integer()) -> pos_integer().
+large_shield_lookup_test(174) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(174, large_shield, <<"eagle shield">>, <<"大鷲の盾">>, 6, Requirements);
+large_shield_lookup_test(175) ->
+    Requirements = #{ strenght     => 30
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(175, large_shield, <<"tower shield">>, <<"タワーシールド">>, 13, Requirements);
+large_shield_lookup_test(176) ->
+    Requirements = #{ strenght     => 34
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(176, large_shield, <<"black iron greatshield">>, <<"黒鉄の大盾">>, 16, Requirements);
+large_shield_lookup_test(177) ->
+    Requirements = #{ strenght     => 36
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(177, large_shield, <<"giant shield">>, <<"巨人の盾">>, 18, Requirements);
+large_shield_lookup_test(178) ->
+    Requirements = #{ strenght     => 30
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(178, large_shield, <<"bonewheel shield">>, <<"骸骨車輪の盾">>, 12, Requirements);
+large_shield_lookup_test(179) ->
+    Requirements = #{ strenght     => 38
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(179, large_shield, <<"stone greatshield">>, <<"石の大盾">>, 20, Requirements);
+large_shield_lookup_test(180) ->
+    Requirements = #{ strenght     => 50
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(180, large_shield, <<"havel's greatshield">>, <<"ハベルの大盾">>, 26, Requirements);
+large_shield_lookup_test(181) ->
+    Requirements = #{ strenght     => 34
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(181, large_shield, <<"greatshield of artorias">>, <<"アルトリウスの大盾">>, 16, Requirements);
+large_shield_lookup_test(182) ->
+    Requirements = #{ strenght     => 31
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(182, large_shield, <<"cleansing greatshield">>, <<"結晶の大盾">>, 14.5, Requirements).
 
