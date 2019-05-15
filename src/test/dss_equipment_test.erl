@@ -11,58 +11,61 @@ equipment_test() ->
 
 -spec lookup_test() -> ok.
 lookup_test() ->
-     ok = dagger_lookup_test(),
-     ok = straight_sword_lookup_test(),
-     ok = greats_sword_lookup_test(),
-     ok = ultra_greatsword_lookup_test(),
-     ok = curved_sword_lookup_test(),
-     ok = curved_greatsword_lookup_test(),
-     ok = thrusting_sword_lookup_test(),
-     ok = katana_lookup_test(),
-     ok = axe_lookup_test(),
-     ok = greataxe_lookup_test(),
-     ok = hammer_lookup_test(),
-     ok = great_hammer_lookup_test(),
-     ok = spear_lookup_test(),
-     ok = long_spear_lookup_test(),
-     ok = halberd_lookup_test(),
-     ok = whip_lookup_test(),
-     ok = fist_lookup_test(),
-     ok = bow_lookup_test(),
-     ok = greatbow_lookup_test(),
-     ok = crossbow_lookup_test(),
-     ok = catalyst_lookup_test(),
-     ok = pyromancy_flame_lookup_test(),
-     ok = talisman_lookup_test(),
-     ok = small_shield_lookup_test().
+    ok = dagger_lookup_test(),
+    ok = straight_sword_lookup_test(),
+    ok = greats_sword_lookup_test(),
+    ok = ultra_greatsword_lookup_test(),
+    ok = curved_sword_lookup_test(),
+    ok = curved_greatsword_lookup_test(),
+    ok = thrusting_sword_lookup_test(),
+    ok = katana_lookup_test(),
+    ok = axe_lookup_test(),
+    ok = greataxe_lookup_test(),
+    ok = hammer_lookup_test(),
+    ok = great_hammer_lookup_test(),
+    ok = spear_lookup_test(),
+    ok = long_spear_lookup_test(),
+    ok = halberd_lookup_test(),
+    ok = whip_lookup_test(),
+    ok = fist_lookup_test(),
+    ok = bow_lookup_test(),
+    ok = greatbow_lookup_test(),
+    ok = crossbow_lookup_test(),
+    ok = catalyst_lookup_test(),
+    ok = pyromancy_flame_lookup_test(),
+    ok = talisman_lookup_test(),
+    ok = small_shield_lookup_test(),
+    ok = normal_shield_lookup_test().
+
 
 
 -spec list_test() -> ok.
 list_test() ->
-     ok = dagger_list_test(),
-     ok = straight_sword_list_test(),
-     ok = greats_sword_list_test(),
-     ok = ultra_greatsword_list_test(),
-     ok = curved_sword_list_test(),
-     ok = curved_greatsword_list_test(),
-     ok = thrusting_sword_list_test(),
-     ok = katana_list_test(),
-     ok = axe_list_test(),
-     ok = greataxe_list_test(),
-     ok = hammer_list_test(),
-     ok = great_hammer_list_test(),
-     ok = spear_list_test(),
-     ok = long_spear_list_test(),
-     ok = halberd_list_test(),
-     ok = whip_list_test(),
-     ok = fist_list_test(),
-     ok = bow_list_test(),
-     ok = greatbow_list_test(),
-     ok = crossbow_list_test(),
-     ok = catalyst_list_test(),
-     ok = pyromancy_flame_list_test(),
-     ok = talisman_list_test(),
-     ok = small_shield_list_test().
+    ok = dagger_list_test(),
+    ok = straight_sword_list_test(),
+    ok = greats_sword_list_test(),
+    ok = ultra_greatsword_list_test(),
+    ok = curved_sword_list_test(),
+    ok = curved_greatsword_list_test(),
+    ok = thrusting_sword_list_test(),
+    ok = katana_list_test(),
+    ok = axe_list_test(),
+    ok = greataxe_list_test(),
+    ok = hammer_list_test(),
+    ok = great_hammer_list_test(),
+    ok = spear_list_test(),
+    ok = long_spear_list_test(),
+    ok = halberd_list_test(),
+    ok = whip_list_test(),
+    ok = fist_list_test(),
+    ok = bow_list_test(),
+    ok = greatbow_list_test(),
+    ok = crossbow_list_test(),
+    ok = catalyst_list_test(),
+    ok = pyromancy_flame_list_test(),
+    ok = talisman_list_test(),
+    ok = small_shield_list_test(),
+    ok = normal_shield_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -349,6 +352,19 @@ small_shield_lookup_test() ->
     ).
 
 
+-spec normal_shield_lookup_test() -> ok.
+normal_shield_lookup_test() ->
+    none = dss_equipment:lookup(150, normal_shield),
+    none = dss_equipment:lookup(174, normal_shield),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            normal_shield_lookup_test(EquipmentID)
+        end,
+        lists:seq(151, 173)
+    ).
+
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -359,7 +375,6 @@ small_shield_lookup_test() ->
     ) -> pos_integer().
 weapon_lookup_test(EquipmentID, EqpType, Ename, Jname, Weigth, #{strenght := Strength, dexterity := Dexterity, intelligence := Intelligence, faith := Faith}) ->
     {value, Equipment} = dss_equipment:lookup(EqpType, EquipmentID),
-    io:format("ID: ~p~n", [EquipmentID]),
     EquipmentID  = maps:get(id, Equipment),
     EName        = maps:get(english, maps:get(name, Equipment)),
     JName        = maps:get(japanese, maps:get(name, Equipment)),
@@ -535,6 +550,13 @@ talisman_list_test() ->
 small_shield_list_test() ->
     SmallShieldList = dss_equipment:list(small_shield),
     11 = length(SmallShieldList),
+    ok.
+
+
+-spec normal_shield_list_test() -> ok.
+normal_shield_list_test() ->
+    NormalShieldList = dss_equipment:list(normal_shield),
+    23 = length(NormalShieldList),
     ok.
 
 
@@ -1508,4 +1530,144 @@ small_shield_lookup_test(150) ->
                     , intelligence => 0
                     , faith        => 0},
     weapon_lookup_test(150, small_shield, <<"crystal ring shield">>, <<"結晶輪の盾">>, 3, Requirements).
+
+
+-spec normal_shield_lookup_test(pos_integer()) -> pos_integer().
+normal_shield_lookup_test(151) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(151, normal_shield, <<"east-west shield">>, <<"双鳥の木盾">>, 1, Requirements);
+normal_shield_lookup_test(152) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(152, normal_shield, <<"wooden shield">>, <<"ウッドシールド">>, 1.5, Requirements);
+normal_shield_lookup_test(153) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(153, normal_shield, <<"large leather shield">>, <<"ラージレザーシールド">>, 1.5, Requirements);
+normal_shield_lookup_test(154) ->
+    Requirements = #{ strenght     => 8
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(154, normal_shield, <<"heater shield">>, <<"ヒーターシールド">>, 2, Requirements);
+normal_shield_lookup_test(155) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(155, normal_shield, <<"tower kite shield">>, <<"塔のカイトシールド">>, 3, Requirements);
+normal_shield_lookup_test(156) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(156, normal_shield, <<"caduceus kite shield">>, <<"双蛇のカイトシールド">>, 3, Requirements);
+normal_shield_lookup_test(157) ->
+    Requirements = #{ strenght     => 11
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(157, normal_shield, <<"hollow soldier shield">>, <<"亡者兵士の盾">>, 3.5, Requirements);
+normal_shield_lookup_test(158) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(158, normal_shield, <<"knight shield">>, <<"ナイトシールド">>, 5.5, Requirements);
+normal_shield_lookup_test(159) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 18},
+    weapon_lookup_test(159, normal_shield, <<"sanctus">>, <<"サンクトゥス">>, 3, Requirements);
+normal_shield_lookup_test(160) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(160, normal_shield, <<"balder shield">>, <<"バルデルの盾">>, 4, Requirements);
+normal_shield_lookup_test(161) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(161, normal_shield, <<"spider shield">>, <<"蜘蛛の盾">>, 3, Requirements);normal_shield_lookup_test(162) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(162, normal_shield, <<"grass crest shield">>, <<"草紋の盾">>, 3, Requirements);
+normal_shield_lookup_test(163) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(163, normal_shield, <<"bloodshield">>, <<"血の盾">>, 3, Requirements);
+normal_shield_lookup_test(164) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(164, normal_shield, <<"iron round shield">>, <<"鉄の円盾">>, 5, Requirements);
+normal_shield_lookup_test(165) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(165, normal_shield, <<"sunlight shield">>, <<"太陽の盾">>, 4, Requirements);
+normal_shield_lookup_test(166) ->
+    Requirements = #{ strenght     => 11
+                    , dexterity    => 14
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(166, normal_shield, <<"pierce shield">>, <<"ピアスシールド">>, 3.5, Requirements);
+normal_shield_lookup_test(167) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 12
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(167, normal_shield, <<"spiked shield">>, <<"トゲの盾">>, 3, Requirements);
+normal_shield_lookup_test(168) ->
+    Requirements = #{ strenght     => 12
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(168, normal_shield, <<"gargoyle's shield">>, <<"ガーゴイルの盾">>, 4, Requirements);
+normal_shield_lookup_test(169) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(169, normal_shield, <<"crystal shield">>, <<"結晶の盾">>, 5, Requirements);
+normal_shield_lookup_test(170) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(170, normal_shield, <<"crest shield">>, <<"紋章の盾">>, 3, Requirements);
+normal_shield_lookup_test(171) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(171, normal_shield, <<"dragon crest shield">>, <<"竜紋章の盾">>, 3, Requirements);
+normal_shield_lookup_test(172) ->
+    Requirements = #{ strenght     => 14
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(172, normal_shield, <<"silver knight shield">>, <<"銀騎士の盾">>, 5, Requirements);
+normal_shield_lookup_test(173) ->
+    Requirements = #{ strenght     => 16
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(173, normal_shield, <<"black knight shield">>, <<"黒騎士の盾">>, 6, Requirements).
 
