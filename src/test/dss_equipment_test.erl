@@ -33,7 +33,8 @@ lookup_test() ->
      ok = crossbow_lookup_test(),
      ok = catalyst_lookup_test(),
      ok = pyromancy_flame_lookup_test(),
-     ok = talisman_lookup_test().
+     ok = talisman_lookup_test(),
+     ok = small_shield_lookup_test().
 
 
 -spec list_test() -> ok.
@@ -60,7 +61,8 @@ list_test() ->
      ok = crossbow_list_test(),
      ok = catalyst_list_test(),
      ok = pyromancy_flame_list_test(),
-     ok = talisman_list_test().
+     ok = talisman_list_test(),
+     ok = small_shield_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -335,6 +337,18 @@ talisman_lookup_test() ->
     ).
 
 
+-spec small_shield_lookup_test() -> ok.
+small_shield_lookup_test() ->
+    none = dss_equipment:lookup(139, small_shield),
+    none = dss_equipment:lookup(142, small_shield),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            small_shield_lookup_test(EquipmentID)
+        end,
+        lists:seq(140, 141)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -513,6 +527,13 @@ pyromancy_flame_list_test() ->
 talisman_list_test() ->
     TalismanList = dss_equipment:list(talisman),
     7 = length(TalismanList),
+    ok.
+
+
+-spec small_shield_list_test() -> ok.
+small_shield_list_test() ->
+    SmallShieldList = dss_equipment:list(small_shield),
+    11 = length(SmallShieldList),
     ok.
 
 
@@ -1417,4 +1438,73 @@ talisman_lookup_test(139) ->
                     , intelligence => 16
                     , faith        => 0},
     weapon_lookup_test(139, talisman, <<"velka's talisman">>, <<"ベルカのタリスマン">>, 0.5, Requirements).
+
+
+-spec small_shield_lookup_test(pos_integer()) -> pos_integer().
+small_shield_lookup_test(140) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(140, small_shield, <<"warrior's round shield">>, <<"戦士の円盾">>, 1, Requirements);
+small_shield_lookup_test(141) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(141, small_shield, <<"caduceus round shield">>, <<"双蛇の円盾">>, 1, Requirements);
+small_shield_lookup_test(142) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 16},
+    weapon_lookup_test(142, small_shield, <<"effigy shield">>, <<"邪神の盾">>, 3, Requirements);
+small_shield_lookup_test(143) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(143, small_shield, <<"red and white round shield">>, <<"紅白の円盾">>, 1, Requirements);
+small_shield_lookup_test(144) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(144, small_shield, <<"cracked round shield">>, <<"壊れかけの木盾">>, 1, Requirements);
+small_shield_lookup_test(145) ->
+    Requirements = #{ strenght     => 7
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(145, small_shield, <<"plank shield">>, <<"木板の盾">>, 1.5, Requirements);
+small_shield_lookup_test(146) ->
+    Requirements = #{ strenght     => 5
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(146, small_shield, <<"small leather shield">>, <<"スモールレザーシールド">>, 0.5, Requirements);
+small_shield_lookup_test(147) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(147, small_shield, <<"leather shield">>, <<"レザーシールド">>, 1, Requirements);
+small_shield_lookup_test(148) ->
+    Requirements = #{ strenght     => 6
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(148, small_shield, <<"buckler">>, <<"バックラー">>, 1, Requirements);
+small_shield_lookup_test(149) ->
+    Requirements = #{ strenght     => 8
+                    , dexterity    => 11
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(149, small_shield, <<"target shield">>, <<"ターゲットシールド">>, 2, Requirements);
+small_shield_lookup_test(150) ->
+    Requirements = #{ strenght     => 10
+                    , dexterity    => 0
+                    , intelligence => 0
+                    , faith        => 0},
+    weapon_lookup_test(150, small_shield, <<"crystal ring shield">>, <<"結晶輪の盾">>, 3, Requirements).
 
