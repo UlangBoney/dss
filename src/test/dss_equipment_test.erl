@@ -37,7 +37,8 @@ lookup_test() ->
     ok = small_shield_lookup_test(),
     ok = normal_shield_lookup_test(),
     ok = large_shield_lookup_test(),
-    ok = lanthanum_lookup_test().
+    ok = lanthanum_lookup_test(),
+    ok = head_armor_lookup_test().
 
 
 
@@ -68,7 +69,8 @@ list_test() ->
     ok = talisman_list_test(),
     ok = small_shield_list_test(),
     ok = normal_shield_list_test(),
-    ok = large_shield_list_test().
+    ok = large_shield_list_test(),
+    ok = head_armor_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -367,7 +369,6 @@ normal_shield_lookup_test() ->
     ).
 
 
-
 -spec large_shield_lookup_test() -> ok.
 large_shield_lookup_test() ->
     none = dss_equipment:lookup(173, large_shield),
@@ -379,6 +380,17 @@ large_shield_lookup_test() ->
         lists:seq(174, 182)
     ).
 
+
+-spec head_armor_lookup_test() -> ok.
+head_armor_lookup_test() ->
+    none = dss_equipment:lookup(182, head_armor),
+    none = dss_equipment:lookup(251, head_armor),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            head_armor_lookup_test(EquipmentID)
+        end,
+        lists:seq(184, 250)
+    ).
 
 
 -spec weapon_lookup_test(
@@ -580,6 +592,13 @@ normal_shield_list_test() ->
 large_shield_list_test() ->
     LargeShieldList = dss_equipment:list(large_shield),
     9 = length(LargeShieldList),
+    ok.
+
+
+-spec head_armor_list_test() -> ok.
+head_armor_list_test() ->
+    HeadArmorList = dss_equipment:list(head_armor),
+    67 = length(HeadArmorList),
     ok.
 
 
@@ -1760,4 +1779,157 @@ lanthanum_lookup_test() ->
                     , faith        => 0},
     weapon_lookup_test(183, lanthanum, <<"skull lanthanum">>, <<"頭蓋ランタン">>, 0.5, Requirements),
     ok.
+
+
+-spec head_armor_lookup_test(
+        dss_equipment:id(),
+        unicode:unicode_binary(),
+        unicode:unicode_binary(),
+        float() | pos_integer(),
+        dss_maybe:maybe(pos_integer())
+    ) -> dss_maybe:maybe(pos_integer()).
+head_armor_lookup_test(EquipmentID, Ename, Jname, Weigth, MaybeEWM) ->
+    {value, Equipment} = dss_equipment:lookup(head_armor, EquipmentID),
+    EquipmentID  = maps:get(id, Equipment),
+    EName        = maps:get(english, maps:get(name, Equipment)),
+    JName        = maps:get(japanese, maps:get(name, Equipment)),
+    Weight       = maps:get(weight, Equipment),
+    MaybeEWM     = maps:get(equipWeightMagnification, Equipment).
+
+
+-spec head_armor_lookup_test(pos_integer) -> pos_integer().
+head_armor_lookup_test(184) ->
+    head_armor_lookup_test(184, <<"standard helm">>, <<"アイアンヘルム">>, 3.5, none);
+head_armor_lookup_test(185) ->
+    head_armor_lookup_test(185, <<"chain helm">>, <<"チェインヘルム">>, 3, none);
+head_armor_lookup_test(186) ->
+    head_armor_lookup_test(186, <<"knight helm">>, <<"騎士の兜">>, 4.2, none);
+head_armor_lookup_test(187) ->
+    head_armor_lookup_test(187, <<"elite knight helm">>, <<"上級騎士の兜">>, 4.5, none);
+head_armor_lookup_test(188) ->
+    head_armor_lookup_test(188, <<"wanderer hood">>, <<"放浪のフード">>, 1.4, none);
+head_armor_lookup_test(189) ->
+    head_armor_lookup_test(189, <<"thief mask">>, <<"盗人マスク">>, 1.2, none);
+head_armor_lookup_test(190) ->
+    head_armor_lookup_test(190, <<"brigand hood">>, <<"山賊の頭巾">>, 1.2, none);
+head_armor_lookup_test(191) ->
+    head_armor_lookup_test(191, <<"sorcerer hat">>, <<"魔術師の帽子">>, 0.9, none);
+head_armor_lookup_test(192) ->
+    head_armor_lookup_test(192, <<"black sorcerer hat">>, <<"魔術師の黒帽子">>, 0.7, none);
+head_armor_lookup_test(193) ->
+    head_armor_lookup_test(193, <<"tattered cloth hood">>, <<"ボロ布のフード">>, 1.1, none);
+head_armor_lookup_test(194) ->
+    head_armor_lookup_test(194, <<"priest`s hat">>, <<"司祭の帽子">>, 1.2, none);
+head_armor_lookup_test(195) ->
+    head_armor_lookup_test(195, <<"cleric helm">>, <<"聖職の兜">>, 4.8, none);
+head_armor_lookup_test(196) ->
+    head_armor_lookup_test(196, <<"iron helm">>, <<"鉄の兜">>, 4.5, none);
+head_armor_lookup_test(197) ->
+    head_armor_lookup_test(197, <<"black iron helm">>, <<"黒鉄の兜">>, 6, none);
+head_armor_lookup_test(198) ->
+    head_armor_lookup_test(198, <<"helm of the wise">>, <<"知恵者の兜">>, 5.1, none);
+head_armor_lookup_test(199) ->
+    head_armor_lookup_test(199, <<"catarina helm">>, <<"カタリナヘルム">>, 4.5, none);
+head_armor_lookup_test(200) ->
+    head_armor_lookup_test(200, <<"crystalline helm">>, <<"結晶付きの兜">>, 4.2, none);
+head_armor_lookup_test(201) ->
+    head_armor_lookup_test(201, <<"brass helm">>, <<"真鍮の兜">>, 5.1, none);
+head_armor_lookup_test(202) ->
+    head_armor_lookup_test(202, <<"pharis`s hat">>, <<"ファリスの帽子">>, 1.2, none);
+head_armor_lookup_test(203) ->
+    head_armor_lookup_test(203, <<"big hat">>, <<"ビッグハット">>, 3, none);
+head_armor_lookup_test(204) ->
+    head_armor_lookup_test(204, <<"mask of the sealer">>, <<"封印者の仮面">>, 1.5, none);
+head_armor_lookup_test(205) ->
+    head_armor_lookup_test(205, <<"witch hat">>, <<"魔女のとんがり帽子">>, 1.1, none);
+head_armor_lookup_test(206) ->
+    head_armor_lookup_test(206, <<"crown of dusk">>, <<"宵闇の頭冠">>, 0.4, none);
+head_armor_lookup_test(207) ->
+    head_armor_lookup_test(207, <<"gold-hemmed black hood">>, <<"黒金糸のフード">>, 1.4, none);
+head_armor_lookup_test(208) ->
+    head_armor_lookup_test(208, <<"mask of velka">>, <<"ベルカの仮面">>, 2.5, none);
+head_armor_lookup_test(209) ->
+    head_armor_lookup_test(209, <<"maiden hood">>, <<"聖女のフード">>, 0.8, none);
+head_armor_lookup_test(210) ->
+    head_armor_lookup_test(210, <<"dingy hood">>, <<"うす汚れたフード">>, 0.8, none);
+head_armor_lookup_test(211) ->
+    head_armor_lookup_test(211, <<"eastern helm">>, <<"東国の兜">>, 4.7, none);
+head_armor_lookup_test(212) ->
+   head_armor_lookup_test(212, <<"shadow mask">>, <<"影の覆面">>, 0.9, none);
+head_armor_lookup_test(213) ->
+   head_armor_lookup_test(213, <<"hollow warrior helm">>, <<"亡者戦士の兜">>, 2.6, none);
+head_armor_lookup_test(214) ->
+   head_armor_lookup_test(214, <<"hollow soldier helm">>, <<"亡者兵士の兜">>, 3, none);
+head_armor_lookup_test(215) ->
+   head_armor_lookup_test(215, <<"balder helm">>, <<"バルデルの兜">>, 4.2, none);
+head_armor_lookup_test(216) ->
+   head_armor_lookup_test(216, <<"steel helm">>, <<"鋼鉄の兜">>, 5.4, none);
+head_armor_lookup_test(217) ->
+   head_armor_lookup_test(217, <<"hollow thief`s hood">>, <<"亡者盗賊のフード">>, 1.1, none);
+head_armor_lookup_test(218) ->
+   head_armor_lookup_test(218, <<"silver knight helm">>, <<"銀騎士の兜">>, 4.8, none);
+head_armor_lookup_test(219) ->
+   head_armor_lookup_test(219, <<"black knight helm">>, <<"黒騎士の兜">>, 5, none);
+head_armor_lookup_test(220) ->
+   head_armor_lookup_test(220, <<"giant helm">>, <<"巨人の兜">>, 6.3, none);
+head_armor_lookup_test(221) ->
+   head_armor_lookup_test(221, <<"six-eyed helm of the channelers">>, <<"伝道者の六目兜">>, 3.9, none);
+head_armor_lookup_test(222) ->
+   head_armor_lookup_test(222, <<"painting guardian hood">>, <<"絵画守りの頭巾">>, 0.6, none);
+head_armor_lookup_test(223) ->
+   head_armor_lookup_test(223, <<"fang boar helm">>, <<"牙猪の兜">>, 8, none);
+head_armor_lookup_test(224) ->
+   head_armor_lookup_test(224, <<"gargoyle helm">>, <<"ガーゴイルの兜">>, 3.5, none);
+head_armor_lookup_test(225) ->
+   head_armor_lookup_test(225, <<"golem helm">>, <<"ゴーレムヘルム">>, 6.3, none);
+head_armor_lookup_test(226) ->
+   head_armor_lookup_test(226, <<"smough`s helm">>, <<"スモウの兜">>, 6.8, none);
+head_armor_lookup_test(227) ->
+   head_armor_lookup_test(227, <<"ornstein`s helm">>, <<"オーンスタインの兜">>, 5.5, none);
+head_armor_lookup_test(228) ->
+   head_armor_lookup_test(228, <<"crown of the great lord">>, <<"大王の王冠">>, 3, none);
+head_armor_lookup_test(229) ->
+   head_armor_lookup_test(229, <<"dark mask">>, <<"闇の仮面">>, 3.8, none);
+head_armor_lookup_test(230) ->
+   head_armor_lookup_test(230, <<"helm of thorns">>, <<"トゲの兜">>, 4.1, none);
+head_armor_lookup_test(231) ->
+   head_armor_lookup_test(231, <<"helm of favor">>, <<"寵愛の兜">>, 4.5, none);
+head_armor_lookup_test(232) ->
+   head_armor_lookup_test(232, <<"crown of the dark sun">>, <<"陰の太陽の王冠">>, 3, none);
+head_armor_lookup_test(233) ->
+   head_armor_lookup_test(233, <<"paladin helm">>, <<"聖騎士の兜">>, 5, none);
+head_armor_lookup_test(234) ->
+   head_armor_lookup_test(234, <<"stone helm">>, <<"石の兜">>, 6.8, none);
+head_armor_lookup_test(235) ->
+   head_armor_lookup_test(235, <<"havel`s helm">>, <<"ハベルの兜">>, 7.5, none);
+head_armor_lookup_test(236) ->
+   head_armor_lookup_test(236, <<"xanthous crown">>, <<"黄衣の冠">>, 5, none);
+head_armor_lookup_test(237) ->
+   head_armor_lookup_test(237, <<"mask of the father">>, <<"父の仮面">>, 1.2, {value, 1.05});
+head_armor_lookup_test(238) ->
+   head_armor_lookup_test(238, <<"mask of the mother">>, <<"母の仮面">>, 1.2, none);
+head_armor_lookup_test(239) ->
+   head_armor_lookup_test(239, <<"mask of the child">>, <<"子の仮面">>, 1.2, none);
+head_armor_lookup_test(240) ->
+   head_armor_lookup_test(240, <<"sack">>, <<"ずた袋">>, 0.6, none);
+head_armor_lookup_test(241) ->
+   head_armor_lookup_test(241, <<"royal helm">>, <<"王族の兜">>, 4.5, none);
+head_armor_lookup_test(242) ->
+   head_armor_lookup_test(242, <<"sunlight maggot">>, <<"太陽虫">>, 1.4, none);
+head_armor_lookup_test(243) ->
+   head_armor_lookup_test(243, <<"symbol of avarice">>, <<"貪欲者の烙印">>, 10, none);
+head_armor_lookup_test(244) ->
+   head_armor_lookup_test(244, <<"guardian helm">>, <<"守護者の兜">>, 7.2, none);
+head_armor_lookup_test(245) ->
+   head_armor_lookup_test(245, <<"porcelain mask">>, <<"白磁の仮面">>, 2.5, none);
+head_armor_lookup_test(246) ->
+   head_armor_lookup_test(246, <<"bloated head">>, <<"肥大した頭部">>, 2.5, none);
+head_armor_lookup_test(247) ->
+   head_armor_lookup_test(247, <<"bloated sorcerer head">>, <<"肥大した魔術師の頭部">>, 2.2, none);
+head_armor_lookup_test(248) ->
+   head_armor_lookup_test(248, <<"helm of artorias">>, <<"アルトリウスの兜">>, 4.2, none);
+head_armor_lookup_test(249) ->
+   head_armor_lookup_test(249, <<"snickering top hat">>, <<"微笑みロングハット">>, 2, none);
+head_armor_lookup_test(250) ->
+   head_armor_lookup_test(250, <<"gough`s helm">>, <<"ゴーの兜">>, 6.5, none).
 
