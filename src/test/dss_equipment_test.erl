@@ -1955,14 +1955,14 @@ head_armor_lookup_test(250) ->
    head_armor_lookup_test(250, <<"gough`s helm">>, <<"ゴーの兜">>, 6.5, none).
 
 
--spec chest_armor_lookup_test(
+-spec armor_lookup_test(
         dss_equipment:id(),
         unicode:unicode_binary(),
         unicode:unicode_binary(),
         float() | pos_integer(),
         dss_maybe:maybe(pos_integer())
     ) -> dss_maybe:maybe(pos_integer()).
-chest_armor_lookup_test(EquipmentID, ArmorType, Ename, Jname, Weigth) ->
+armor_lookup_test(EquipmentID, ArmorType, Ename, Jname, Weigth) ->
     {value, Equipment} = dss_equipment:lookup(ArmorType, EquipmentID),
     EquipmentID  = maps:get(id, Equipment),
     EName        = maps:get(english, maps:get(name, Equipment)),
@@ -1972,115 +1972,115 @@ chest_armor_lookup_test(EquipmentID, ArmorType, Ename, Jname, Weigth) ->
 
 -spec chest_armor_lookup_test(pos_integer) -> pos_integer().
 chest_armor_lookup_test(251) ->
-    chest_armor_lookup_test(251, chest_armor, <<"hard leather armor">>, <<"ハードレザーアーマー">>, 5.9);
+    armor_lookup_test(251, chest_armor, <<"hard leather armor">>, <<"ハードレザーアーマー">>, 5.9);
 chest_armor_lookup_test(252) ->
-    chest_armor_lookup_test(252, chest_armor, <<"chain armor">>, <<"チェインアーマー">>, 6);
+    armor_lookup_test(252, chest_armor, <<"chain armor">>, <<"チェインアーマー">>, 6);
 chest_armor_lookup_test(253) ->
-    chest_armor_lookup_test(253, chest_armor, <<"knight armor">>, <<"騎士の鎧">>, 10.9);
+    armor_lookup_test(253, chest_armor, <<"knight armor">>, <<"騎士の鎧">>, 10.9);
 chest_armor_lookup_test(254) ->
-    chest_armor_lookup_test(254, chest_armor, <<"elite knight armor">>, <<"上級騎士の鎧">>, 11.7);
+    armor_lookup_test(254, chest_armor, <<"elite knight armor">>, <<"上級騎士の鎧">>, 11.7);
 chest_armor_lookup_test(255) ->
-    chest_armor_lookup_test(255, chest_armor, <<"wanderer coat">>, <<"放浪のコート">>, 3.5);
+    armor_lookup_test(255, chest_armor, <<"wanderer coat">>, <<"放浪のコート">>, 3.5);
 chest_armor_lookup_test(256) ->
-    chest_armor_lookup_test(256, chest_armor, <<"black leather armor">>, <<"黒革の鎧">>, 3.1);
+    armor_lookup_test(256, chest_armor, <<"black leather armor">>, <<"黒革の鎧">>, 3.1);
 chest_armor_lookup_test(257) ->
-    chest_armor_lookup_test(257, chest_armor, <<"brigand armor">>, <<"山賊の鎧">>, 3.1);
+    armor_lookup_test(257, chest_armor, <<"brigand armor">>, <<"山賊の鎧">>, 3.1);
 chest_armor_lookup_test(258) ->
-    chest_armor_lookup_test(258, chest_armor, <<"leather armor">>, <<"レザーアーマー">>, 4.7);
+    armor_lookup_test(258, chest_armor, <<"leather armor">>, <<"レザーアーマー">>, 4.7);
 chest_armor_lookup_test(259) ->
-    chest_armor_lookup_test(259, chest_armor, <<"sorcerer cloak">>, <<"魔術師のコート">>, 2.3);
+    armor_lookup_test(259, chest_armor, <<"sorcerer cloak">>, <<"魔術師のコート">>, 2.3);
 chest_armor_lookup_test(260) ->
-    chest_armor_lookup_test(260, chest_armor, <<"black sorcerer cloak">>, <<"魔術師の黒コート">>, 1.8);
+    armor_lookup_test(260, chest_armor, <<"black sorcerer cloak">>, <<"魔術師の黒コート">>, 1.8);
 chest_armor_lookup_test(261) ->
-    chest_armor_lookup_test(261, chest_armor, <<"tattered cloth robe">>, <<"ボロ布のローブ">>, 2.7);
+    armor_lookup_test(261, chest_armor, <<"tattered cloth robe">>, <<"ボロ布のローブ">>, 2.7);
 chest_armor_lookup_test(262) ->
-    chest_armor_lookup_test(262, chest_armor, <<"holy robe">>, <<"聖職の上衣">>, 4);
+    armor_lookup_test(262, chest_armor, <<"holy robe">>, <<"聖職の上衣">>, 4);
 chest_armor_lookup_test(263) ->
-    chest_armor_lookup_test(263, chest_armor, <<"cleric armor">>, <<"聖職の鎧">>, 12.5);
+    armor_lookup_test(263, chest_armor, <<"cleric armor">>, <<"聖職の鎧">>, 12.5);
 chest_armor_lookup_test(264) ->
-    chest_armor_lookup_test(264, chest_armor, <<"armor of the sun">>, <<"太陽印の鎧">>, 9);
+    armor_lookup_test(264, chest_armor, <<"armor of the sun">>, <<"太陽印の鎧">>, 9);
 chest_armor_lookup_test(265) ->
-    chest_armor_lookup_test(265, chest_armor, <<"black iron armor">>, <<"黒鉄の鎧">>, 15.6);
+    armor_lookup_test(265, chest_armor, <<"black iron armor">>, <<"黒鉄の鎧">>, 15.6);
 chest_armor_lookup_test(266) ->
-    chest_armor_lookup_test(266, chest_armor, <<"armor of the glorious">>, <<"名誉者の鎧">>, 13.3);
+    armor_lookup_test(266, chest_armor, <<"armor of the glorious">>, <<"名誉者の鎧">>, 13.3);
 chest_armor_lookup_test(267) ->
-    chest_armor_lookup_test(267, chest_armor, <<"catarina armor">>, <<"カタリナアーマー">>, 11.7);
+    armor_lookup_test(267, chest_armor, <<"catarina armor">>, <<"カタリナアーマー">>, 11.7);
 chest_armor_lookup_test(268) ->
-    chest_armor_lookup_test(268, chest_armor, <<"crystalline armor">>, <<"結晶付きの鎧">>, 10.9);
+    armor_lookup_test(268, chest_armor, <<"crystalline armor">>, <<"結晶付きの鎧">>, 10.9);
 chest_armor_lookup_test(269) ->
-    chest_armor_lookup_test(269, chest_armor, <<"brass armor">>, <<"真鍮の鎧">>, 10.9);
+    armor_lookup_test(269, chest_armor, <<"brass armor">>, <<"真鍮の鎧">>, 10.9);
 chest_armor_lookup_test(270) ->
-    chest_armor_lookup_test(270, chest_armor, <<"sage robe">>, <<"賢者のローブ">>, 4);
+    armor_lookup_test(270, chest_armor, <<"sage robe">>, <<"賢者のローブ">>, 4);
 chest_armor_lookup_test(271) ->
-    chest_armor_lookup_test(271, chest_armor, <<"crimson robe">>, <<"紅のローブ">>, 3.9);
+    armor_lookup_test(271, chest_armor, <<"crimson robe">>, <<"紅のローブ">>, 3.9);
 chest_armor_lookup_test(272) ->
-    chest_armor_lookup_test(272, chest_armor, <<"antiquated dress">>, <<"古めかしいドレス">>, 1);
+    armor_lookup_test(272, chest_armor, <<"antiquated dress">>, <<"古めかしいドレス">>, 1);
 chest_armor_lookup_test(273) ->
-    chest_armor_lookup_test(273, chest_armor, <<"witch cloak">>, <<"魔女のコート">>, 4);
+    armor_lookup_test(273, chest_armor, <<"witch cloak">>, <<"魔女のコート">>, 4);
 chest_armor_lookup_test(274) ->
-    chest_armor_lookup_test(274, chest_armor, <<"gold-hemmed black cloak">>, <<"黒金糸のローブ">>, 3.5);
+    armor_lookup_test(274, chest_armor, <<"gold-hemmed black cloak">>, <<"黒金糸のローブ">>, 3.5);
 chest_armor_lookup_test(275) ->
-    chest_armor_lookup_test(275, chest_armor, <<"black cleric robe">>, <<"黒の聖職衣">>, 3.9);
+    armor_lookup_test(275, chest_armor, <<"black cleric robe">>, <<"黒の聖職衣">>, 3.9);
 chest_armor_lookup_test(276) ->
-    chest_armor_lookup_test(276, chest_armor, <<"maiden robe">>, <<"聖女の上衣">>, 2);
+    armor_lookup_test(276, chest_armor, <<"maiden robe">>, <<"聖女の上衣">>, 2);
 chest_armor_lookup_test(277) ->
-    chest_armor_lookup_test(277, chest_armor, <<"dingy robe">>, <<"うす汚れた上衣">>, 3);
+    armor_lookup_test(277, chest_armor, <<"dingy robe">>, <<"うす汚れた上衣">>, 3);
 chest_armor_lookup_test(278) ->
-    chest_armor_lookup_test(278, chest_armor, <<"eastern armor">>, <<"東国の鎧">>, 12.3);
+    armor_lookup_test(278, chest_armor, <<"eastern armor">>, <<"東国の鎧">>, 12.3);
 chest_armor_lookup_test(279) ->
-    chest_armor_lookup_test(279, chest_armor, <<"shadow garb">>, <<"影の上衣">>, 2.3);
+    armor_lookup_test(279, chest_armor, <<"shadow garb">>, <<"影の上衣">>, 2.3);
 chest_armor_lookup_test(280) ->
-    chest_armor_lookup_test(280, chest_armor, <<"hollow warrior armor">>, <<"亡者戦士の鎧">>, 6.6);
+    armor_lookup_test(280, chest_armor, <<"hollow warrior armor">>, <<"亡者戦士の鎧">>, 6.6);
 chest_armor_lookup_test(281) ->
-    chest_armor_lookup_test(281, chest_armor, <<"hollow soldier armor">>, <<"亡者兵士の鎧">>, 7.8);
+    armor_lookup_test(281, chest_armor, <<"hollow soldier armor">>, <<"亡者兵士の鎧">>, 7.8);
 chest_armor_lookup_test(282) ->
-    chest_armor_lookup_test(282, chest_armor, <<"balder armor">>, <<"バルデルの鎧">>, 10.9);
+    armor_lookup_test(282, chest_armor, <<"balder armor">>, <<"バルデルの鎧">>, 10.9);
 chest_armor_lookup_test(283) ->
-    chest_armor_lookup_test(283, chest_armor, <<"steel armor">>, <<"鋼鉄の鎧">>, 14);
+    armor_lookup_test(283, chest_armor, <<"steel armor">>, <<"鋼鉄の鎧">>, 14);
 chest_armor_lookup_test(284) ->
-    chest_armor_lookup_test(284, chest_armor, <<"hollow thief`s leather armor">>, <<"亡者盗賊の革鎧">>, 2.8);
+    armor_lookup_test(284, chest_armor, <<"hollow thief`s leather armor">>, <<"亡者盗賊の革鎧">>, 2.8);
 chest_armor_lookup_test(285) ->
-    chest_armor_lookup_test(285, chest_armor, <<"silver knight armor">>, <<"銀騎士の鎧">>, 12);
+    armor_lookup_test(285, chest_armor, <<"silver knight armor">>, <<"銀騎士の鎧">>, 12);
 chest_armor_lookup_test(286) ->
-    chest_armor_lookup_test(286, chest_armor, <<"black knight armor">>, <<"黒騎士の鎧">>, 13);
+    armor_lookup_test(286, chest_armor, <<"black knight armor">>, <<"黒騎士の鎧">>, 13);
 chest_armor_lookup_test(287) ->
-    chest_armor_lookup_test(287, chest_armor, <<"giant armor">>, <<"巨人の鎧">>, 16.4);
+    armor_lookup_test(287, chest_armor, <<"giant armor">>, <<"巨人の鎧">>, 16.4);
 chest_armor_lookup_test(288) ->
-    chest_armor_lookup_test(288, chest_armor, <<"robe of the channelers">>, <<"伝道者の聖衣">>, 10.1);
+    armor_lookup_test(288, chest_armor, <<"robe of the channelers">>, <<"伝道者の聖衣">>, 10.1);
 chest_armor_lookup_test(289) ->
-    chest_armor_lookup_test(289, chest_armor, <<"painting guardian robe">>, <<"絵画守りの長衣">>, 1.6);
+    armor_lookup_test(289, chest_armor, <<"painting guardian robe">>, <<"絵画守りの長衣">>, 1.6);
 chest_armor_lookup_test(290) ->
-    chest_armor_lookup_test(290, chest_armor, <<"golem armor">>, <<"ゴーレムアーマー">>, 16.4);
+    armor_lookup_test(290, chest_armor, <<"golem armor">>, <<"ゴーレムアーマー">>, 16.4);
 chest_armor_lookup_test(291) ->
-    chest_armor_lookup_test(291, chest_armor, <<"smough`s armor">>, <<"スモウの鎧">>, 17.6);
+    armor_lookup_test(291, chest_armor, <<"smough`s armor">>, <<"スモウの鎧">>, 17.6);
 chest_armor_lookup_test(292) ->
-    chest_armor_lookup_test(292, chest_armor, <<"ornstein`s armor">>, <<"オーンスタインの鎧">>, 12);
+    armor_lookup_test(292, chest_armor, <<"ornstein`s armor">>, <<"オーンスタインの鎧">>, 12);
 chest_armor_lookup_test(293) ->
-    chest_armor_lookup_test(293, chest_armor, <<"moonlight robe">>, <<"月光の長衣">>, 3.1);
+    armor_lookup_test(293, chest_armor, <<"moonlight robe">>, <<"月光の長衣">>, 3.1);
 chest_armor_lookup_test(294) ->
-    chest_armor_lookup_test(294, chest_armor, <<"robe of the great lord">>, <<"大王の長衣">>, 6);
+    armor_lookup_test(294, chest_armor, <<"robe of the great lord">>, <<"大王の長衣">>, 6);
 chest_armor_lookup_test(295) ->
-    chest_armor_lookup_test(295, chest_armor, <<"dark armor">>, <<"闇の鎧">>, 9.8);
+    armor_lookup_test(295, chest_armor, <<"dark armor">>, <<"闇の鎧">>, 9.8);
 chest_armor_lookup_test(296) ->
-    chest_armor_lookup_test(296, chest_armor, <<"armor of thorns">>, <<"トゲの鎧">>, 10.5);
+    armor_lookup_test(296, chest_armor, <<"armor of thorns">>, <<"トゲの鎧">>, 10.5);
 chest_armor_lookup_test(297) ->
-    chest_armor_lookup_test(297, chest_armor, <<"embraced armor of favor">>, <<"寵愛の抱かれ鎧">>, 11.7);
+    armor_lookup_test(297, chest_armor, <<"embraced armor of favor">>, <<"寵愛の抱かれ鎧">>, 11.7);
 chest_armor_lookup_test(298) ->
-    chest_armor_lookup_test(298, chest_armor, <<"paladin armor">>, <<"聖騎士の鎧">>, 12.9);
+    armor_lookup_test(298, chest_armor, <<"paladin armor">>, <<"聖騎士の鎧">>, 12.9);
 chest_armor_lookup_test(299) ->
-    chest_armor_lookup_test(299, chest_armor, <<"stone armor">>, <<"石の鎧">>, 17.6);
+    armor_lookup_test(299, chest_armor, <<"stone armor">>, <<"石の鎧">>, 17.6);
 chest_armor_lookup_test(300) ->
-    chest_armor_lookup_test(300, chest_armor, <<"havel`s armor">>, <<"ハベルの鎧">>, 19.5);
+    armor_lookup_test(300, chest_armor, <<"havel`s armor">>, <<"ハベルの鎧">>, 19.5);
 chest_armor_lookup_test(301) ->
-    chest_armor_lookup_test(301, chest_armor, <<"xanthous overcoat">>, <<"黄の上衣">>, 3.9);
+    armor_lookup_test(301, chest_armor, <<"xanthous overcoat">>, <<"黄の上衣">>, 3.9);
 chest_armor_lookup_test(302) ->
-    chest_armor_lookup_test(302, chest_armor, <<"guardian armor">>, <<"守護者の鎧">>, 17);
+    armor_lookup_test(302, chest_armor, <<"guardian armor">>, <<"守護者の鎧">>, 17);
 chest_armor_lookup_test(303) ->
-    chest_armor_lookup_test(303, chest_armor, <<"lord`s blade robe">>, <<"王刃の長衣">>, 6.4);
+    armor_lookup_test(303, chest_armor, <<"lord`s blade robe">>, <<"王刃の長衣">>, 6.4);
 chest_armor_lookup_test(304) ->
-    chest_armor_lookup_test(304, chest_armor, <<"armor of artorias">>, <<"アルトリウスの鎧">>, 10.5);
+    armor_lookup_test(304, chest_armor, <<"armor of artorias">>, <<"アルトリウスの鎧">>, 10.5);
 chest_armor_lookup_test(305) ->
-    chest_armor_lookup_test(305, chest_armor, <<"chester`s long coat">>, <<"チェスターのロングコート">>, 4.5);
+    armor_lookup_test(305, chest_armor, <<"chester`s long coat">>, <<"チェスターのロングコート">>, 4.5);
 chest_armor_lookup_test(306) ->
-    chest_armor_lookup_test(306, chest_armor, <<"gough`s armor">>, <<"ゴーの鎧">>, 13).
+    armor_lookup_test(306, chest_armor, <<"gough`s armor">>, <<"ゴーの鎧">>, 13).
 
