@@ -39,7 +39,8 @@ lookup_test() ->
     ok = large_shield_lookup_test(),
     ok = lanthanum_lookup_test(),
     ok = head_armor_lookup_test(),
-    ok = chest_armor_lookup_test().
+    ok = chest_armor_lookup_test(),
+    ok = hand_armor_lookup_test().
 
 
 
@@ -72,7 +73,8 @@ list_test() ->
     ok = normal_shield_list_test(),
     ok = large_shield_list_test(),
     ok = head_armor_list_test(),
-    ok = chest_armor_list_test().
+    ok = chest_armor_list_test(),
+    ok = hand_armor_list_test().
 
 
 -spec dagger_lookup_test() -> ok.
@@ -407,6 +409,18 @@ chest_armor_lookup_test() ->
     ).
 
 
+-spec hand_armor_lookup_test() -> ok.
+hand_armor_lookup_test() ->
+    none = dss_equipment:lookup(306, hand_armor),
+    none = dss_equipment:lookup(360, hand_armor),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            hand_armor_lookup_test(EquipmentID)
+        end,
+        lists:seq(307, 359)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -620,6 +634,13 @@ head_armor_list_test() ->
 chest_armor_list_test() ->
     ChestArmorList = dss_equipment:list(chest_armor),
     56 = length(ChestArmorList),
+    ok.
+
+
+-spec hand_armor_list_test() -> ok.
+hand_armor_list_test() ->
+    HandArmorList = dss_equipment:list(hand_armor),
+    53 = length(HandArmorList),
     ok.
 
 
@@ -2083,4 +2104,113 @@ chest_armor_lookup_test(305) ->
     armor_lookup_test(305, chest_armor, <<"chester`s long coat">>, <<"チェスターのロングコート">>, 4.5);
 chest_armor_lookup_test(306) ->
     armor_lookup_test(306, chest_armor, <<"gough`s armor">>, <<"ゴーの鎧">>, 13).
+
+
+-spec hand_armor_lookup_test(pos_integer) -> pos_integer().
+hand_armor_lookup_test(307) ->
+    armor_lookup_test(307, hand_armor, <<"hard leather gauntlets">>, <<"ハードレザーガントレット">>, 3.5);
+hand_armor_lookup_test(308) ->
+    armor_lookup_test(308, hand_armor, <<"leather gauntlets">>, <<"レザーガントレット">>, 3.6);
+hand_armor_lookup_test(309) ->
+    armor_lookup_test(309, hand_armor, <<"knight gauntlets">>, <<"騎士の手甲">>, 3.5);
+hand_armor_lookup_test(310) ->
+    armor_lookup_test(310, hand_armor, <<"elite knight gauntlets">>, <<"上級騎士の手甲">>, 3.7);
+hand_armor_lookup_test(311) ->
+    armor_lookup_test(311, hand_armor, <<"wanderer manchette">>, <<"放浪のマンシェット">>, 2.1);
+hand_armor_lookup_test(312) ->
+    armor_lookup_test(312, hand_armor, <<"black leather gloves">>, <<"黒革の手袋">>, 1.8);
+hand_armor_lookup_test(313) ->
+    armor_lookup_test(313, hand_armor, <<"brigand gauntlets">>, <<"山賊の篭手">>, 1.8);
+hand_armor_lookup_test(314) ->
+    armor_lookup_test(314, hand_armor, <<"leather gloves">>, <<"レザーグローブ">>, 2.8);
+hand_armor_lookup_test(315) ->
+    armor_lookup_test(315, hand_armor, <<"sorcerer gauntlets">>, <<"魔術師のガントレット">>, 1.4);
+hand_armor_lookup_test(316) ->
+    armor_lookup_test(316, hand_armor, <<"black sorcerer gauntlets">>, <<"魔術師の黒ガントレット">>, 1);
+hand_armor_lookup_test(317) ->
+    armor_lookup_test(317, hand_armor, <<"tattered cloth manchette">>, <<"ボロ布のマンシェット">>, 1.6);
+hand_armor_lookup_test(318) ->
+    armor_lookup_test(318, hand_armor, <<"traveling gloves (creric)">>, <<"旅の手袋">>, 0.7);
+hand_armor_lookup_test(319) ->
+    armor_lookup_test(319, hand_armor, <<"cleric gauntlets">>, <<"聖職の手甲">>, 7.4);
+hand_armor_lookup_test(320) ->
+    armor_lookup_test(320, hand_armor, <<"iron bracelet">>, <<"鉄の腕輪">>, 4.3);
+hand_armor_lookup_test(321) ->
+    armor_lookup_test(321, hand_armor, <<"black iron gauntlets">>, <<"黒鉄の手甲">>, 9.2);
+hand_armor_lookup_test(322) ->
+    armor_lookup_test(322, hand_armor, <<"gauntlets of the vanquisher">>, <<"獲得者の篭手">>, 3);
+hand_armor_lookup_test(323) ->
+    armor_lookup_test(323, hand_armor, <<"catarina gauntlets">>, <<"カタリナガントレット">>, 6.9);
+hand_armor_lookup_test(324) ->
+    armor_lookup_test(324, hand_armor, <<"crystalline gauntlets">>, <<"結晶付きの手甲">>, 6.4);
+hand_armor_lookup_test(325) ->
+    armor_lookup_test(325, hand_armor, <<"brass gauntlets">>, <<"真鍮の手甲">>, 5.4);
+hand_armor_lookup_test(326) ->
+    armor_lookup_test(326, hand_armor, <<"traveling gloves (big hat)">>, <<"旅の長手袋">>, 1.6);
+hand_armor_lookup_test(327) ->
+    armor_lookup_test(327, hand_armor, <<"crimson gloves">>, <<"紅のグローブ">>, 0.8);
+hand_armor_lookup_test(328) ->
+    armor_lookup_test(328, hand_armor, <<"antiquated gloves">>, <<"古めかしいロンググローブ">>, 0.6);
+hand_armor_lookup_test(329) ->
+    armor_lookup_test(329, hand_armor, <<"witch gloves">>, <<"魔女のグローブ">>, 1.7);
+hand_armor_lookup_test(330) ->
+    armor_lookup_test(330, hand_armor, <<"gold-hemmed black gloves">>, <<"黒金糸のロンググローブ">>, 1.2);
+hand_armor_lookup_test(331) ->
+    armor_lookup_test(331, hand_armor, <<"black manchette">>, <<"黒のマンシェット">>, 1.8);
+hand_armor_lookup_test(332) ->
+    armor_lookup_test(332, hand_armor, <<"maiden gloves">>, <<"聖女の手袋">>, 1.2);
+hand_armor_lookup_test(333) ->
+    armor_lookup_test(333, hand_armor, <<"dingy gloves">>, <<"うす汚れた手袋">>, 1.2);
+hand_armor_lookup_test(334) ->
+    armor_lookup_test(334, hand_armor, <<"eastern gauntlets">>, <<"東国の手甲">>, 1.5);
+hand_armor_lookup_test(335) ->
+    armor_lookup_test(335, hand_armor, <<"shadow gauntlets">>, <<"影の手甲">>, 1.4);
+hand_armor_lookup_test(336) ->
+    armor_lookup_test(336, hand_armor, <<"balder gauntlets">>, <<"バルデルの手甲">>, 3.5);
+hand_armor_lookup_test(337) ->
+    armor_lookup_test(337, hand_armor, <<"steel gauntlets">>, <<"鋼鉄の手甲">>, 8.3);
+hand_armor_lookup_test(338) ->
+    armor_lookup_test(338, hand_armor, <<"silver knight gauntlets">>, <<"銀騎士の手甲">>, 5.5);
+hand_armor_lookup_test(339) ->
+    armor_lookup_test(339, hand_armor, <<"black knight gauntlets">>, <<"黒騎士の手甲">>, 6);
+hand_armor_lookup_test(340) ->
+    armor_lookup_test(340, hand_armor, <<"giant gauntlets">>, <<"巨人の手甲">>, 9.7);
+hand_armor_lookup_test(341) ->
+    armor_lookup_test(341, hand_armor, <<"gauntlets of the channelers">>, <<"伝道者の篭手">>, 3);
+hand_armor_lookup_test(342) ->
+    armor_lookup_test(342, hand_armor, <<"painting guardian gloves">>, <<"絵画守りの長手袋">>, 0.9);
+hand_armor_lookup_test(343) ->
+    armor_lookup_test(343, hand_armor, <<"golem gauntlets">>, <<"ゴーレムガントレット">>, 9.7);
+hand_armor_lookup_test(344) ->
+    armor_lookup_test(344, hand_armor, <<"smough`s gauntlets">>, <<"スモウの手甲">>, 10.4);
+hand_armor_lookup_test(345) ->
+    armor_lookup_test(345, hand_armor, <<"ornstein`s gauntlets">>, <<"オーンスタインの手甲">>, 4);
+hand_armor_lookup_test(346) ->
+    armor_lookup_test(346, hand_armor, <<"gauntlets of favor">>, <<"寵愛の手甲">>, 5);
+hand_armor_lookup_test(347) ->
+    armor_lookup_test(347, hand_armor, <<"paladin gauntlets">>, <<"聖騎士の手甲">>, 7.6);
+hand_armor_lookup_test(348) ->
+    armor_lookup_test(348, hand_armor, <<"stone gauntlets">>, <<"石の手甲">>, 10.4);
+hand_armor_lookup_test(349) ->
+    armor_lookup_test(349, hand_armor, <<"havel`s gauntlets">>, <<"ハベルの手甲">>, 11.5);
+hand_armor_lookup_test(350) ->
+    armor_lookup_test(350, hand_armor, <<"xanthous gloves">>, <<"黄衣の長手袋">>, 2.3);
+hand_armor_lookup_test(351) ->
+    armor_lookup_test(351, hand_armor, <<"dark gauntlets">>, <<"闇の手甲">>, 5.8);
+hand_armor_lookup_test(352) ->
+    armor_lookup_test(352, hand_armor, <<"gauntlets of thorns">>, <<"トゲの手甲">>, 6.2);
+hand_armor_lookup_test(353) ->
+    armor_lookup_test(353, hand_armor, <<"moonlight gloves">>, <<"月光の長手袋">>, 0.5);
+hand_armor_lookup_test(354) ->
+    armor_lookup_test(354, hand_armor, <<"bracelet of the great lord">>, <<"大王の腕輪">>, 2.8);
+hand_armor_lookup_test(355) ->
+    armor_lookup_test(355, hand_armor, <<"guardian gauntlets">>, <<"守護者の手甲">>, 10.4);
+hand_armor_lookup_test(356) ->
+    armor_lookup_test(356, hand_armor, <<"lord`s blade gloves">>, <<"王刃の長手袋">>, 2.8);
+hand_armor_lookup_test(357) ->
+    armor_lookup_test(357, hand_armor, <<"gauntlets of artorias">>, <<"アルトリウスの手甲">>, 4.6);
+hand_armor_lookup_test(358) ->
+    armor_lookup_test(358, hand_armor, <<"chester`s gloves">>, <<"チェスターのグローブ">>, 1.5);
+hand_armor_lookup_test(359) ->
+    armor_lookup_test(359, hand_armor, <<"gough`s gauntlets">>, <<"ゴーの手甲">>, 7).
 
