@@ -4,6 +4,7 @@
 ]).
 -export([
     simulator_list/1
+  , simulator/0
   , simulator/2
 
     % * Getters
@@ -60,8 +61,45 @@
 
 -spec simulator_list([{unicode:unicode_binary(), unicode:unicode_binary()}]) -> [character()].
 simulator_list(QsList) ->
-    IDList = lists:seq(1, 10),
-    [simulator(ClassID, QsList) || ClassID <- IDList].
+    list_parallel(lists:seq(1, 10), QsList).
+
+
+-spec list_parallel([pos_integer()], [{unicode:unicode_binary(), unicode:unicode_binary()}]) -> [character()].
+list_parallel([], _) ->
+    make_list([]);
+
+list_parallel([ClassID | Tail], QsList) ->
+    process_flag(trap_exit, true),
+    {Pid, _Ref} = spawn_monitor(?MODULE, simulator, []),
+    Pid ! {self(), ClassID, QsList},
+    list_parallel(Tail, QsList).
+
+
+-spec simulator() -> {pid(), pos_integer(), character()}.
+simulator() ->
+    receive
+        {From, ClassID, QsList} ->
+            Character = simulator(ClassID, QsList),
+            From ! {self(), Character}
+    after 10000 ->
+        exit(timeout)
+    end.
+
+
+make_list(CharList) when length(CharList) == 10 -> CharList;
+
+make_list(CharList) ->
+    receive
+        {_From, Character} ->
+            make_list(lists:append(CharList, [Character]));
+
+        {'DOWN', _Ref, process, _From, normal} ->
+            %% 正常終了したプロセスを補足
+            make_list(CharList);
+
+        {'DOWN', _Ref, process, _From, timeout} ->
+            error(timeout)
+    end.
 
 
 -spec simulator(dss_classes:id(), [{unicode:unicode_binary(), unicode:unicode_binary()}]) -> character().
