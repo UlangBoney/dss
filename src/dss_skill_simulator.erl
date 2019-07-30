@@ -140,9 +140,11 @@ equipment_list(QsList, [Parameter | Tail], EqpIDList) ->
 
 -spec validate_id(unicode:unicode_binary()) -> pos_integer() | none.
 validate_id(ID) ->
-    case re:run(ID, <<"^\\d+$">>, [global, {capture, all, binary}]) of
-        {match, [[Matched]]} -> binary_to_integer(Matched);
-        nomatch -> none
+    try
+        binary_to_integer(ID)
+    catch
+        error:badarg ->
+        none
     end.
 
 
@@ -294,6 +296,7 @@ calculate_equip_weight(Character, QsList) ->
     Calculated = maps:put(equipWeight, Weight / CharEQW, Character),
     case lists:keyfind(<<"equipweight-levels">>, 1, QsList) of
         {<<"equipweight-levels">>, EWL} ->
+            %% ガードより正規表現の方が若干速い
             case re:run(EWL, <<"^[0-2]$">>, [global, {capture, all, binary}]) of
                  {match, [[Matched]]} -> equip_weight_levels(Calculated, CharEQW, binary_to_integer(Matched));
                  nomatch -> Calculated
@@ -427,6 +430,7 @@ status_up(Character, [Parameter | Tail]) ->
 status_up_(Character, EqpID) ->
     List = [ dexterity, intelligence, faith ],
     status_up_(Character, EqpID, List).
+
 
 -spec status_up_(character(), pos_integer(), [atom()]) -> character().
 status_up_(Character, _, []) -> Character;
