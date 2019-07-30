@@ -22,7 +22,7 @@ start(_StartType, _StartArgs) ->
     dss_sup:start_link().
 
 start_mongodb() ->
-    application:ensure_all_started(mongodb).
+    {ok, [bson, poolboy, pbkdf2, mongodb]} = application:ensure_all_started(mongodb).
 
 %%--------------------------------------------------------------------
 stop(_State) ->

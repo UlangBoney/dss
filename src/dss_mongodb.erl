@@ -10,10 +10,10 @@
 
 -spec auth_admin(database()) -> connection().
 auth_admin(DB) ->
-    {ok, Host} = application:get_env(mongodb_config, hostname),
-    {ok, Port} = application:get_env(mongodb_config, port),
-    {ok, User} = application:get_env(mongodb_config, username),
-    {ok, Pass} = application:get_env(mongodb_config, password),
+    {ok, Host} = application:get_env(mongodb, hostname),
+    {ok, Port} = application:get_env(mongodb, port),
+    {ok, User} = application:get_env(mongodb, username),
+    {ok, Pass} = application:get_env(mongodb, password),
     {ok, Conn} = mc_worker_api:connect([
                     {auth_source, <<"admin">>}
                   , {database   , DB}
