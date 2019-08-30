@@ -8,8 +8,8 @@ clean:
 tar:
 	$(REBAR3) tar
 
-test:
-	$(REBAR3) eunit
+check:
+	$(REBAR3) ct
 
 compile:
 	$(REBAR3) compile;

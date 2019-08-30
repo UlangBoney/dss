@@ -1,12 +1,28 @@
--module(dss_classes_test).
-
+-module(dss_classes_SUITE).
+-export([
+    all/0
+]).
+-export([
+    classes_test/1
+]).
+-include_lib("common_test/include/ct.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
 
--spec classes_test() -> ok.
-classes_test() ->
-    ok = lookup_test(),
-    ok = list_test().
+-spec all() -> [atom()].
+all() ->
+    [classes_test].
+
+
+-spec classes_test([tuple()]) -> ok.
+classes_test(_Config) ->
+    {ok, [bson, poolboy, pbkdf2, mongodb]} = application:ensure_all_started(mongodb),
+    ?assertMatch(ok, lookup_test()),
+    ?assertMatch(ok, list_test()),
+    ok = application:stop(bson),
+    ok = application:stop(poolboy),
+    ok = application:stop(pbkdf2),
+    ok = application:stop(mongodb).
 
 
 -spec lookup_test() -> ok.
@@ -68,12 +84,12 @@ lookup_test(11) ->
         pos_integer(),
         pos_integer()
     ) -> pos_integer().
-lookup_test(ClassID, Ename, Jname, Levels, Vitality, Attunement, Endurance
-         , Strength, Dexterity, Resistance, Intelligence, Faith, AtttSlots) ->
+lookup_test(ClassID, Ename, _Jname, Levels, Vitality, Attunement, Endurance
+          , Strength, Dexterity, Resistance, Intelligence, Faith, AttSlots) ->
     {value, Class} = dss_classes:lookup(ClassID),
     ClassID        = maps:get(id, Class),
-    EName          = maps:get(english, maps:get(name, Class)),
-    JName          = maps:get(japanese, maps:get(name, Class)),
+    Ename          = maps:get(english, maps:get(name, Class)),
+    _              = maps:get(japanese, maps:get(name, Class)),
     Levels         = maps:get(levels, Class),
     Vitality       = maps:get(vitality, Class),
     Attunement     = maps:get(attunement, Class),

@@ -1,80 +1,96 @@
--module(dss_equipment_test).
-
+-module(dss_equipment_SUITE).
+-export([
+    all/0
+]).
+-export([
+    equipment_tests/1
+]).
+-include_lib("common_test/include/ct.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
 
--spec equipment_test() -> ok.
-equipment_test() ->
-    ok = lookup_test(),
-    ok = list_test().
+-spec all() -> [atom()].
+all() ->
+    [equipment_tests].
+
+
+-spec equipment_tests(any()) -> ok.
+equipment_tests(_Config) ->
+    {ok, [bson, poolboy, pbkdf2, mongodb]} = application:ensure_all_started(mongodb),
+    ?assertMatch(ok, lookup_test()),
+    ?assertMatch(ok, list_test()),
+    ok = application:stop(bson),
+    ok = application:stop(poolboy),
+    ok = application:stop(pbkdf2),
+    ok = application:stop(mongodb).
 
 
 -spec lookup_test() -> ok.
 lookup_test() ->
-    ok = dagger_lookup_test(),
-    ok = straight_sword_lookup_test(),
-    ok = greats_sword_lookup_test(),
-    ok = ultra_greatsword_lookup_test(),
-    ok = curved_sword_lookup_test(),
-    ok = curved_greatsword_lookup_test(),
-    ok = thrusting_sword_lookup_test(),
-    ok = katana_lookup_test(),
-    ok = axe_lookup_test(),
-    ok = greataxe_lookup_test(),
-    ok = hammer_lookup_test(),
-    ok = great_hammer_lookup_test(),
-    ok = spear_lookup_test(),
-    ok = long_spear_lookup_test(),
-    ok = halberd_lookup_test(),
-    ok = whip_lookup_test(),
-    ok = fist_lookup_test(),
-    ok = bow_lookup_test(),
-    ok = greatbow_lookup_test(),
-    ok = crossbow_lookup_test(),
-    ok = catalyst_lookup_test(),
-    ok = pyromancy_flame_lookup_test(),
-    ok = talisman_lookup_test(),
-    ok = small_shield_lookup_test(),
-    ok = normal_shield_lookup_test(),
-    ok = large_shield_lookup_test(),
-    ok = lanthanum_lookup_test(),
-    ok = head_armor_lookup_test(),
-    ok = chest_armor_lookup_test(),
-    ok = hand_armor_lookup_test().
-
+    ?assertMatch(ok, dagger_lookup_test()),
+    ?assertMatch(ok, straight_sword_lookup_test()),
+    ?assertMatch(ok, greats_sword_lookup_test()),
+    ?assertMatch(ok, ultra_greatsword_lookup_test()),
+    ?assertMatch(ok, curved_sword_lookup_test()),
+    ?assertMatch(ok, curved_greatsword_lookup_test()),
+    ?assertMatch(ok, thrusting_sword_lookup_test()),
+    ?assertMatch(ok, katana_lookup_test()),
+    ?assertMatch(ok, axe_lookup_test()),
+    ?assertMatch(ok, greataxe_lookup_test()),
+    ?assertMatch(ok, hammer_lookup_test()),
+    ?assertMatch(ok, great_hammer_lookup_test()),
+    ?assertMatch(ok, spear_lookup_test()),
+    ?assertMatch(ok, long_spear_lookup_test()),
+    ?assertMatch(ok, halberd_lookup_test()),
+    ?assertMatch(ok, whip_lookup_test()),
+    ?assertMatch(ok, fist_lookup_test()),
+    ?assertMatch(ok, bow_lookup_test()),
+    ?assertMatch(ok, greatbow_lookup_test()),
+    ?assertMatch(ok, crossbow_lookup_test()),
+    ?assertMatch(ok, catalyst_lookup_test()),
+    ?assertMatch(ok, pyromancy_flame_lookup_test()),
+    ?assertMatch(ok, talisman_lookup_test()),
+    ?assertMatch(ok, small_shield_lookup_test()),
+    ?assertMatch(ok, normal_shield_lookup_test()),
+    ?assertMatch(ok, large_shield_lookup_test()),
+    ?assertMatch(ok, lanthanum_lookup_test()),
+    ?assertMatch(ok, head_armor_lookup_test()),
+    ?assertMatch(ok, chest_armor_lookup_test()),
+    ?assertMatch(ok, hand_armor_lookup_test()),
+    ok.
 
 
 -spec list_test() -> ok.
 list_test() ->
-    ok = dagger_list_test(),
-    ok = straight_sword_list_test(),
-    ok = greats_sword_list_test(),
-    ok = ultra_greatsword_list_test(),
-    ok = curved_sword_list_test(),
-    ok = curved_greatsword_list_test(),
-    ok = thrusting_sword_list_test(),
-    ok = katana_list_test(),
-    ok = axe_list_test(),
-    ok = greataxe_list_test(),
-    ok = hammer_list_test(),
-    ok = great_hammer_list_test(),
-    ok = spear_list_test(),
-    ok = long_spear_list_test(),
-    ok = halberd_list_test(),
-    ok = whip_list_test(),
-    ok = fist_list_test(),
-    ok = bow_list_test(),
-    ok = greatbow_list_test(),
-    ok = crossbow_list_test(),
-    ok = catalyst_list_test(),
-    ok = pyromancy_flame_list_test(),
-    ok = talisman_list_test(),
-    ok = small_shield_list_test(),
-    ok = normal_shield_list_test(),
-    ok = large_shield_list_test(),
-    ok = head_armor_list_test(),
-    ok = chest_armor_list_test(),
-    ok = hand_armor_list_test().
+    ?assertMatch(ok, dagger_list_test()),
+    ?assertMatch(ok, straight_sword_list_test()),
+    ?assertMatch(ok, greats_sword_list_test()),
+    ?assertMatch(ok, ultra_greatsword_list_test()),
+    ?assertMatch(ok, curved_sword_list_test()),
+    ?assertMatch(ok, curved_greatsword_list_test()),
+    ?assertMatch(ok, thrusting_sword_list_test()),
+    ?assertMatch(ok, katana_list_test()),
+    ?assertMatch(ok, axe_list_test()),
+    ?assertMatch(ok, greataxe_list_test()),
+    ?assertMatch(ok, hammer_list_test()),
+    ?assertMatch(ok, great_hammer_list_test()),
+    ?assertMatch(ok, spear_list_test()),
+    ?assertMatch(ok, long_spear_list_test()),
+    ?assertMatch(ok, halberd_list_test()),
+    ?assertMatch(ok, whip_list_test()),
+    ?assertMatch(ok, fist_list_test()),
+    ?assertMatch(ok, bow_list_test()),
+    ?assertMatch(ok, greatbow_list_test()),
+    ?assertMatch(ok, crossbow_list_test()),
+    ?assertMatch(ok, catalyst_list_test()),
+    ?assertMatch(ok, pyromancy_flame_list_test()),
+    ?assertMatch(ok, talisman_list_test()),
+    ?assertMatch(ok, small_shield_list_test()),
+    ?assertMatch(ok, normal_shield_list_test()),
+    ?assertMatch(ok, large_shield_list_test()),
+    ?assertMatch(ok, head_armor_list_test()),
+    ?assertMatch(ok, chest_armor_list_test()),
+    ?assertMatch(ok, hand_armor_list_test()).
 
 
 -spec dagger_lookup_test() -> ok.
