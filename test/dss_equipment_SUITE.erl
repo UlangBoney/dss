@@ -56,8 +56,7 @@ lookup_test() ->
     ?assertMatch(ok, lanthanum_lookup_test()),
     ?assertMatch(ok, head_armor_lookup_test()),
     ?assertMatch(ok, chest_armor_lookup_test()),
-    ?assertMatch(ok, hand_armor_lookup_test()),
-    ok.
+    ?assertMatch(ok, hand_armor_lookup_test()).
 
 
 -spec list_test() -> ok.
