@@ -1,11 +1,18 @@
 -module(dss_mongodb).
 -export([
-    cursor/5
+    start_mongodb/0
+  , cursor/5
   , lookup/5
 ]).
 
 -include_lib("mongodb/include/mongo_protocol.hrl").
 -include_lib("mongodb/include/mongo_types.hrl").
+
+
+-spec start_mongodb() -> ok.
+start_mongodb() ->
+    {ok, [bson, poolboy, pbkdf2, mongodb]} = application:ensure_all_started(mongodb),
+    ok.
 
 
 -spec auth_admin(database()) -> connection().

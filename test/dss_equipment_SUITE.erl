@@ -16,7 +16,7 @@ all() ->
 
 -spec equipment_tests(any()) -> ok.
 equipment_tests(_Config) ->
-    {ok, [bson, poolboy, pbkdf2, mongodb]} = application:ensure_all_started(mongodb),
+    ok = dss_mongodb:start_mongodb(),
     ?assertMatch(ok, lookup_test()),
     ?assertMatch(ok, list_test()),
     ok = application:stop(bson),
