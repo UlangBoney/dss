@@ -441,12 +441,12 @@ hand_armor_lookup_test() ->
 -spec leg_armor_lookup_test() -> ok.
 leg_armor_lookup_test() ->
     none = dss_equipment:lookup(359, leg_armor),
-    none = dss_equipment:lookup(411, leg_armor),
+    none = dss_equipment:lookup(416, leg_armor),
     ok = lists:foreach(
         fun(EquipmentID) ->
             leg_armor_lookup_test(EquipmentID)
         end,
-        lists:seq(360, 410)
+        lists:seq(360, 415)
     ).
 
 
