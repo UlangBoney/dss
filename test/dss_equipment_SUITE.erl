@@ -57,7 +57,8 @@ lookup_test() ->
     ?assertMatch(ok, head_armor_lookup_test()),
     ?assertMatch(ok, chest_armor_lookup_test()),
     ?assertMatch(ok, hand_armor_lookup_test()),
-    ?assertMatch(ok, leg_armor_lookup_test()).
+    ?assertMatch(ok, leg_armor_lookup_test()),
+    ?assertMatch(ok, ring_lookup_test()).
 
 
 -spec list_test() -> ok.
@@ -91,7 +92,8 @@ list_test() ->
     ?assertMatch(ok, head_armor_list_test()),
     ?assertMatch(ok, chest_armor_list_test()),
     ?assertMatch(ok, hand_armor_list_test()),
-    ?assertMatch(ok, leg_armor_list_test()).
+    ?assertMatch(ok, leg_armor_list_test()),
+    ?assertMatch(ok, ring_list_test()).
 
 
 -spec dagger_lookup_test() -> ok.
@@ -450,6 +452,18 @@ leg_armor_lookup_test() ->
     ).
 
 
+-spec ring_lookup_test() -> ok.
+ring_lookup_test() ->
+    none = dss_equipment:lookup(415, ring),
+    none = dss_equipment:lookup(457, ring),
+    ok = lists:foreach(
+        fun(EquipmentID) ->
+            ring_lookup_test(EquipmentID)
+        end,
+        lists:seq(416, 456)
+    ).
+
+
 -spec weapon_lookup_test(
         dss_equipment:id(),
         dss_equipment:equipment_type(),
@@ -459,7 +473,6 @@ leg_armor_lookup_test() ->
         dss_equipment:requirement()
     ) -> pos_integer().
 weapon_lookup_test(EquipmentID, EqpType, Ename, Jname, Weight, #{strenght := Strength, dexterity := Dexterity, intelligence := Intelligence, faith := Faith}) ->
-    ct:pal("EquipmentID: ~p~n", [EquipmentID]),
     {value, Equipment} = dss_equipment:lookup(EqpType, EquipmentID),
     EquipmentID  = maps:get(id, Equipment),
     Ename        = maps:get(english, maps:get(name, Equipment)),
@@ -678,6 +691,13 @@ hand_armor_list_test() ->
 leg_armor_list_test() ->
     LegArmorList = dss_equipment:list(leg_armor),
     56 = length(LegArmorList),
+    ok.
+
+
+-spec ring_list_test() -> ok.
+ring_list_test() ->
+    RingList = dss_equipment:list(ring),
+    41 = length(RingList),
     ok.
 
 
@@ -1868,7 +1888,6 @@ lanthanum_lookup_test() ->
         dss_maybe:maybe(pos_integer())
     ) -> dss_maybe:maybe(pos_integer()).
 head_armor_lookup_test(EquipmentID, Ename, Jname, Weight, MaybeEWM) ->
-    ct:pal("EquipmentID: ~p~n", [EquipmentID]),
     {value, Equipment} = dss_equipment:lookup(head_armor, EquipmentID),
     EquipmentID  = maps:get(id, Equipment),
     Ename        = maps:get(english, maps:get(name, Equipment)),
@@ -2022,7 +2041,6 @@ head_armor_lookup_test(250) ->
         dss_maybe:maybe(pos_integer())
     ) -> dss_maybe:maybe(pos_integer()).
 armor_lookup_test(EquipmentID, ArmorType, Ename, Jname, Weight) ->
-    ct:pal("EquipmentID: ~p~n", [EquipmentID]),
     {value, Equipment} = dss_equipment:lookup(ArmorType, EquipmentID),
     EquipmentID  = maps:get(id, Equipment),
     Ename        = maps:get(english, maps:get(name, Equipment)),
@@ -2368,3 +2386,105 @@ leg_armor_lookup_test(414) ->
 leg_armor_lookup_test(415) ->
     armor_lookup_test(415, leg_armor, <<"gough`s leggings">>, <<"ゴーの足甲"/utf8>>, 8).
 
+
+-spec ring_lookup_test(
+        dss_equipment:id(),
+        atom(),
+        unicode:unicode_binary(),
+        unicode:unicode_binary(),
+        dss_maybe:maybe(float()),
+        dss_maybe:maybe(pos_integer())
+    ) -> dss_maybe:maybe(pos_integer()).
+ring_lookup_test(EquipmentID, EquipmentType, Ename, Jname, EQM, AttSlots) ->
+    ct:pal("EquipmentID: ~p~n", [EquipmentID]),
+    {value, Equipment} = dss_equipment:lookup(EquipmentType, EquipmentID),
+    EquipmentID = maps:get(id, Equipment),
+    Ename       = maps:get(english, maps:get(name, Equipment)),
+    Jname       = maps:get(japanese, maps:get(name, Equipment)),
+    EQM         = maps:get(equipWeightMagnification, Equipment),
+    AttSlots    = maps:get(attunementSlots, Equipment).
+
+
+-spec ring_lookup_test(pos_integer()) -> pos_integer().
+ring_lookup_test(416) ->
+    ring_lookup_test(416, ring, <<"tiny being's ring">>, <<"小さな生命の指輪"/utf8>>, none, none);
+ring_lookup_test(417) ->
+    ring_lookup_test(417, ring, <<"cloranthy ring">>, <<"緑花の指輪"/utf8>>, none, none);
+ring_lookup_test(418) ->
+    ring_lookup_test(418, ring, <<"havel's ring">>, <<"ハベルの指輪"/utf8>>, {value, 1.5}, none);
+ring_lookup_test(419) ->
+    ring_lookup_test(419, ring, <<"ring of steel protection">>, <<"鉄の加護の指輪"/utf8>>, none, none);
+ring_lookup_test(420) ->
+    ring_lookup_test(420, ring, <<"flame stoneplate ring">>, <<"炎方石の指輪"/utf8>>, none, none);
+ring_lookup_test(421) ->
+    ring_lookup_test(421, ring, <<"thunder stoneplate ring">>, <<"雷方石の指輪"/utf8>>, none, none);
+ring_lookup_test(422) ->
+    ring_lookup_test(422, ring, <<"spell stoneplate ring">>, <<"魔法方石の指輪"/utf8>>, none, none);
+ring_lookup_test(423) ->
+    ring_lookup_test(423, ring, <<"speckled stoneplate ring">>, <<"斑方石の指輪"/utf8>>, none, none);
+ring_lookup_test(424) ->
+    ring_lookup_test(424, ring, <<"bloodbite ring">>, <<"血咬みの指輪"/utf8>>, none, none);
+ring_lookup_test(425) ->
+    ring_lookup_test(425, ring, <<"poisonbite ring">>, <<"毒咬みの指輪"/utf8>>, none, none);
+ring_lookup_test(426) ->
+    ring_lookup_test(426, ring, <<"cursebite ring">>, <<"呪い咬みの指輪"/utf8>>, none, none);
+ring_lookup_test(427) ->
+    ring_lookup_test(427, ring, <<"red tearstone ring">>, <<"赤い涙石の指輪"/utf8>>, none, none);
+ring_lookup_test(428) ->
+    ring_lookup_test(428, ring, <<"blue tearstone ring">>, <<"青い涙石の指輪"/utf8>>, none, none);
+ring_lookup_test(429) ->
+    ring_lookup_test(429, ring, <<"ring of sacrifice">>, <<"犠牲の指輪"/utf8>>, none, none);
+ring_lookup_test(430) ->
+    ring_lookup_test(430, ring, <<"rare ring of sacrifice">>, <<"貴い犠牲の指輪"/utf8>>, none, none);
+ring_lookup_test(431) ->
+    ring_lookup_test(431, ring, <<"bellowing dragoncrest ring">>, <<"吠える竜印の指輪"/utf8>>, none, none);
+ring_lookup_test(432) ->
+    ring_lookup_test(432, ring, <<"lingering dragoncrest ring">>, <<"佇む竜印の指輪"/utf8>>, none, none);
+ring_lookup_test(433) ->
+    ring_lookup_test(433, ring, <<"slumbering dragoncrest ring">>, <<"静かに眠る竜印の指輪"/utf8>>, none, none);
+ring_lookup_test(434) ->
+    ring_lookup_test(434, ring, <<"dusk crown ring">>, <<"宵闇の指冠"/utf8>>, none, none);
+ring_lookup_test(435) ->
+    ring_lookup_test(435, ring, <<"white seance ring">>, <<"白教の司祭の指輪"/utf8>>, none, {value, 1});
+ring_lookup_test(436) ->
+    ring_lookup_test(436, ring, <<"darkmoon seance ring">>, <<"暗月の司祭の指輪"/utf8>>, none, {value, 1});
+ring_lookup_test(437) ->
+    ring_lookup_test(437, ring, <<"ring of the sun's firstborn">>, <<"太陽の長子の指輪"/utf8>>, none, none);
+ring_lookup_test(438) ->
+    ring_lookup_test(438, ring, <<"darkmoon blade covenant ring">>, <<"暗月剣の誓約指輪"/utf8>>, none, none);
+ring_lookup_test(439) ->
+    ring_lookup_test(439, ring, <<"ring of the sun princess">>, <<"太陽の王女の指輪"/utf8>>, none, none);
+ring_lookup_test(440) ->
+    ring_lookup_test(440, ring, <<"leo ring">>, <<"獅子の指輪"/utf8>>, none, none);
+ring_lookup_test(441) ->
+    ring_lookup_test(441, ring, <<"wolf ring">>, <<"狼の指輪"/utf8>>, none, none);
+ring_lookup_test(442) ->
+    ring_lookup_test(442, ring, <<"hawk ring">>, <<"鷹の指輪"/utf8>>, none, none);
+ring_lookup_test(443) ->
+    ring_lookup_test(443, ring, <<"hornet ring">>, <<"スズメバチの指輪"/utf8>>, none, none);
+ring_lookup_test(444) ->
+    ring_lookup_test(444, ring, <<"east wood grain ring">>, <<"東の木目指輪"/utf8>>, none, none);
+ring_lookup_test(445) ->
+    ring_lookup_test(445, ring, <<"dark wood grain ring">>, <<"暗い木目指輪"/utf8>>, none, none);
+ring_lookup_test(446) ->
+    ring_lookup_test(446, ring, <<"rusted iron ring">>, <<"錆びた鉄輪"/utf8>>, none, none);
+ring_lookup_test(447) ->
+    ring_lookup_test(447, ring, <<"covetous gold serpent ring">>, <<"貪欲な金の蛇の指輪"/utf8>>, none, none);
+ring_lookup_test(448) ->
+    ring_lookup_test(448, ring, <<"covetous silver serpent ring">>, <<"貪欲な銀の蛇の指輪"/utf8>>, none, none);
+ring_lookup_test(449) ->
+    ring_lookup_test(449, ring, <<"covenant of artorias">>, <<"アルトリウスの契約"/utf8>>, none, none);
+ring_lookup_test(450) ->
+    ring_lookup_test(450, ring, <<"orange charred ring">>, <<"黒焦げた橙の指輪"/utf8>>, none, none);
+ring_lookup_test(451) ->
+    ring_lookup_test(451, ring, <<"old witch's ring">>, <<"老魔女の指輪"/utf8>>, none, none);
+ring_lookup_test(452) ->
+    ring_lookup_test(452, ring, <<"cat covenant ring">>, <<"猫の誓約指輪"/utf8>>, none, none);
+ring_lookup_test(453) ->
+    ring_lookup_test(453, ring, <<"ring of fog">>, <<"霧の指輪"/utf8>>, none, none);
+ring_lookup_test(454) ->
+    ring_lookup_test(454, ring, <<"ring of favor and protection">>, <<"寵愛と加護の指輪"/utf8>>, {value, 1.2}, none);
+ring_lookup_test(455) ->
+    ring_lookup_test(455, ring, <<"ring of the evil eye">>, <<"邪眼の指輪"/utf8>>, none, none);
+ring_lookup_test(456) ->
+    ring_lookup_test(456, ring, <<"calamity ring">>, <<"災厄の指輪"/utf8>>, none, none).
