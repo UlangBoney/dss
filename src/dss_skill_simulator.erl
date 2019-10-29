@@ -104,12 +104,27 @@ make_list(CharList) ->
 
 -spec simulator(dss_classes:id(), [{unicode:unicode_binary(), unicode:unicode_binary()}]) -> character().
 simulator(ClassID, QsList) ->
+Start = now(),
     Class = dss_classes:get(ClassID),
+ClassTime = now(),
     EqpIDList  = equipment_list(QsList),
+EqpIDListTime = now(),
     Character0 = make_character(Class, EqpIDList),
+CharTime = now(),
     LevelUped  = levels_up(Character0, QsList),
+LevelUpedTime = now(),
     SlotsPlus  = slots_plus_by_ring(LevelUped),
+SlotsPlusTime = now(),
     Calculated = calculate_equip_weight(SlotsPlus, QsList),
+CalculatedTime = now(),
+
+ClassTimeDiff = timer:now_diff(ClassTime, Start),
+EqpIDListTimeDiff = timer:now_diff(EqpIDListTime, ClassTime),
+CharTimeDiff = timer:now_diff(CharTime, EqpIDListTime),
+LevelUpedTimeDiff = timer:now_diff(LevelUpedTime, CharTime),
+SlotsPlusTimeDiff = timer:now_diff(SlotsPlusTime, LevelUpedTime),
+CalculatedTimeDiff = timer:now_diff(CalculatedTime, SlotsPlusTime),
+io:format("ClassTimeDiff: ~p~nEqpIDListTimeDiff: ~p~nCharTimeDiff: ~p~nLevelUpedTimeDiff: ~p~nSlotsPlusTimeDiff: ~p~nCalculatedTimeDiff: ~p~n~n", [ClassTimeDiff, EqpIDListTimeDiff, CharTimeDiff, LevelUpedTimeDiff, SlotsPlusTimeDiff, CalculatedTimeDiff]),
     requirement(Calculated, QsList).
 
 
@@ -271,14 +286,16 @@ slots_plus_by_ring(Character) ->
 calculate_equip_weight(Character, QsList) ->
     List = [ rightWeapon1, rightWeapon2, leftWeapon1, leftWeapon2,
              headArmor, chestArmor, handArmor, legArmor ],
+StartTime = now(),
     Weight = sum_weight(Character, List, 0),
+WeightTime = now(),
     Endurance = endurance(Character),
     CharEQW = case ring(Character) of
         {value, RingIDMap} ->
             HeadMag = case head_armor(Character) of
                 {value, HeadIDMap} ->
                     HeadID = maps:get(equipmentID, HeadIDMap),
-                    HeadArmor = dss_equipment:get(head_armor, HeadID),
+                    HeadArmor = dss_equipment:get(HeadID),
                     case dss_equipment:equip_weight_magnification(HeadArmor) of
                         {value, Mag} -> Mag;
                         none -> 1
@@ -286,15 +303,17 @@ calculate_equip_weight(Character, QsList) ->
                 none -> 1
             end,
             RingID = maps:get(equipmentID, RingIDMap),
-            Ring   = dss_equipment:get(ring, RingID),
+            Ring   = dss_equipment:get(RingID),
             case dss_equipment:equip_weight_magnification(Ring) of
                 {value, RingMag} -> (Endurance + 40) * HeadMag * RingMag;
                 none             -> (Endurance + 40) * HeadMag
             end;
         none -> Endurance + 40
     end,
+EQWTime = now(),
     Calculated = maps:put(equipWeight, Weight / CharEQW, Character),
-    case lists:keyfind(<<"equipweight-levels">>, 1, QsList) of
+CalculatedTime = now(),
+    Char = case lists:keyfind(<<"equipweight-levels">>, 1, QsList) of
         {<<"equipweight-levels">>, EWL} ->
             %% ガードより正規表現の方が若干速い
             case re:run(EWL, <<"^[0-2]$">>, [global, {capture, all, binary}]) of
@@ -303,17 +322,34 @@ calculate_equip_weight(Character, QsList) ->
             end;
         false ->
             Calculated
-    end.
+    end,
+CharTime = now(),
+
+WeightTimeDiff = timer:now_diff(WeightTime, StartTime),
+EQWTimeDiff = timer:now_diff(EQWTime, WeightTime),
+CalculatedTimeDiff = timer:now_diff(CalculatedTime, EQWTime),
+CharTimeDiff = timer:now_diff(CharTime, CalculatedTime),
+io:format("WeightTimeDiff: ~p~nEQWTimeDiff: ~p~nCalculatedTimeDiff: ~p~nCharTimeDiff: ~p~n~n", [WeightTimeDiff, EQWTimeDiff, CalculatedTimeDiff, CharTimeDiff]),
+    Char.
 
 
 -spec sum_weight(character(), [atom()], pos_integer()) -> pos_integer().
 sum_weight(_, [], Sum) -> Sum;
 
 sum_weight(Character, [Parameter | Tail], Sum) ->
+SumStart = now(),
     case maps:get(Parameter, Character) of
         {value, EqpIDMap} ->
+GetParam = now(),
             EqpID = maps:get(equipmentID, EqpIDMap),
-            Equipment = dss_equipment:get(dss_equipment:equipment_type(EqpID), EqpID),
+GetEqpID = now(),
+            %% ここの DB アクセスの処理で時間がかかっている
+            Equipment = dss_equipment:get(EqpID),
+GetEqp = now(),
+GetParamDiff = timer:now_diff(GetParam, SumStart),
+GetEqpIDDiff = timer:now_diff(GetEqpID, GetParam),
+GetEqpDiff = timer:now_diff(GetEqp, GetEqpID),
+io:format("GetParamDiff: ~p~nGetEqpIDDiff: ~p~nGetEqpDiff: ~p~n~n", [GetParamDiff, GetEqpIDDiff, GetEqpDiff]),
             sum_weight(Character, Tail, dss_equipment:weight(Equipment) + Sum);
         none ->
             sum_weight(Character, Tail, Sum)
@@ -404,7 +440,7 @@ requirement_strength(Character, [Param | Tail], RequireStrList) ->
     case maps:get(Param, Character) of
         {value, EqpIDMap} ->
             EqpID = maps:get(equipmentID, EqpIDMap),
-            Eqp = dss_equipment:get(dss_equipment:equipment_type(EqpID), EqpID),
+            Eqp = dss_equipment:get(EqpID),
             EquipStr = maps:get(strength, maps:get(requirements, Eqp)),
             requirement_strength(Character, Tail, lists:append(RequireStrList, [EquipStr]));
         none ->
@@ -436,7 +472,7 @@ status_up_(Character, EqpID) ->
 status_up_(Character, _, []) -> Character;
 
 status_up_(Character, EqpID, [Parameter | Tail]) ->
-    Eqp = dss_equipment:get(dss_equipment:equipment_type(EqpID), EqpID),
+    Eqp = dss_equipment:get(EqpID),
     Require = dss_equipment:requirements(Eqp),
     BaseValue = maps:get(Parameter, Character),
     Character1 = case maps:get(Parameter, Require) of

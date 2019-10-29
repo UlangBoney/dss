@@ -1,8 +1,8 @@
 -module(dss_mongodb).
 -export([
     start_mongodb/0
-  , cursor/5
-  , lookup/5
+  , cursor/4
+  , lookup/4
 ]).
 
 -include_lib("mongodb/include/mongo_protocol.hrl").
@@ -36,13 +36,12 @@ auth_admin(DB) ->
       , collection()
       , [] | [binary()]
       , fun()
-      , dss_equipment:equipment_type() | classes | weqpon | shield
     ) -> [dss_equipment:equipment()].
-cursor(DB, Coll, Args, Fun, Type) ->
+cursor(DB, Coll, Args, Fun) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find(Conn, Coll, Args) of
         {ok, Cursor} -> List = mc_cursor:rest(Cursor),
-                        [ Fun(Next, Type) || Next <- List ];
+                        [ Fun(Next) || Next <- List ];
         []           -> []
     end.
 
@@ -52,12 +51,11 @@ cursor(DB, Coll, Args, Fun, Type) ->
       , collection()
       , selector()
       , fun()
-      , dss_equipment:equipment_type() | classes | weqpon | shield
     ) -> dss_maybe:maybe(dss_equipment:equipment()).
-lookup(DB, Coll, Selector, Fun, Type) ->
+lookup(DB, Coll, Selector, Fun) ->
     Conn = auth_admin(DB),
     case mc_worker_api:find_one(Conn, Coll, Selector) of
         undefined -> none;
-        Map       -> {value, Fun(Map, Type)}
+        Map       -> {value, Fun(Map)}
     end.
 

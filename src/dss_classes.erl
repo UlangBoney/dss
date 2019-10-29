@@ -47,14 +47,14 @@
 list() ->
     DB   = <<"dss_master">>,
     Coll = <<"classes">>,
-    dss_mongodb:cursor(DB, Coll, [], fun from_mongo_map/2, {none, classes}).
+    dss_mongodb:cursor(DB, Coll, [], fun from_mongo_map/1).
 
 
 -spec lookup(id()) -> dss_maybe:maybe(class()).
 lookup(ID) ->
     DB   = <<"dss_master">>,
     Coll = <<"classes">>,
-    dss_mongodb:lookup(DB, Coll, {<<"_id">>, ID}, fun from_mongo_map/2, {none, classes}).
+    dss_mongodb:lookup(DB, Coll, {<<"_id">>, ID}, fun from_mongo_map/1).
 
 
 -spec get(id()) -> class().
@@ -113,8 +113,8 @@ faith(Class) -> maps:get(faith, Class).
 attunement_slots(Class) -> maps:get(attunementSlots, Class).
 
 
--spec from_mongo_map(map(), {none, classes}) -> class().
-from_mongo_map(MongoMap, _) ->
+-spec from_mongo_map(map()) -> class().
+from_mongo_map(MongoMap) ->
     #{ id              => maps:get(<<"_id">>, MongoMap)
      , name            => #{ english  => maps:get(<<"english">>, maps:get(<<"name">>, MongoMap))
                            , japanese => maps:get(<<"japanese">>, maps:get(<<"name">>, MongoMap))}
